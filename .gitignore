@@ -1,0 +1,7 @@
+node_modules
+.env
+*.zip
+dist/
+build/
+.DS_Store
+wrangler.toml

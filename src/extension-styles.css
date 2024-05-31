@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
+
+#reaction-info {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    padding: 8px;
+    padding-left: 16px;
+    /* Adjust padding to make space for the accent */
+    background: linear-gradient(to right, rgba(76, 175, 80, 1) 8px, rgba(242, 242, 242, 0.5) 8px, rgba(242, 242, 242, 1));
+    border-radius: 12px;
+    display: block;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    /* Ensure content stays within bounds */
+
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+html[dark] #reaction-info {
+    background: linear-gradient(to left, rgba(76, 175, 80, .75), rgba(39, 39, 39, 1));
+}
+
+#reaction-info.gray {
+    background: linear-gradient(to left, rgb(72, 72, 72, .75), rgba(242, 242, 242, 1));
+    border: 2px solid rgb(72, 72, 72);
+}
+
+html[dark] #reaction-info.gray {
+    background: linear-gradient(to left, rgb(0, 0, 0, .75), rgba(39, 39, 39, 1));
+    border: 2px solid rgb(0, 0, 0);
+}
+
+#reaction-info.green {
+    background: linear-gradient(to left, rgba(76, 175, 80, .75), rgba(242, 242, 242, 1));
+    border: 2px solid rgba(76, 175, 80, 1);
+}
+
+html[dark] #reaction-info.green {
+    background: linear-gradient(to left, rgba(76, 175, 80, .75), rgba(39, 39, 39, 1));
+}
+
+#reaction-info.red {
+    background: linear-gradient(to left, rgba(244, 67, 54, .75), rgba(242, 242, 242, 1));
+    border: 2px solid rgba(244, 67, 54, 1);
+}
+
+html[dark] #reaction-info.red {
+    background: linear-gradient(to left, rgba(244, 67, 54, .75), rgba(39, 39, 39, 1));
+}
+
+#reaction-info.orange {
+    background: linear-gradient(to left, rgba(255, 152, 0, .75), rgba(242, 242, 242, 1));
+    border: 2px solid rgba(255, 152, 0, 1);
+}
+
+html[dark] #reaction-info.orange {
+    background: linear-gradient(to left, rgba(255, 152, 0, .75), rgba(39, 39, 39, 1));
+}
+
+#reaction-info-inner {
+    padding: 8px;
+    display: block;
+}
+
+.reaction-info-preview {
+    position: "absolute";
+    top: 10px;
+    left: 18px;
+    margin-top: 8px;
+    font-size: 16px;
+    background-color: var(--yt-spec-brand-background-primary);
+    color: var(--yt-spec-text-primary);
+    padding: 4px 8px;
+    border-radius: 4px;
+    width: calc(var(--ytd-video-preview-width)-50px);
+    position: absolute;
+    z-index: 500;
+}
+
+.reaction-info-major {
+    font-size: 16px;
+    background-color: var(--yt-spec-brand-background-primary);
+    color: var(--yt-spec-text-primary);
+    padding: 4px 8px;
+    border-radius: 40px;
+    width: fit-content;
+    font-weight: 600;
+}
+
+.reaction-info-detailed {
+    margin-top: 5px;
+}
+
+.reaction-thumbnail-info {
+    display: flex;
+    align-items: center;
+    margin-left: 3px;
+    padding: 4px 8px;
+    border-radius: 40px;
+    background-color: var(--yt-spec-brand-background-primary);
+    width: max-content;
+}
+
+.reaction-source {
+    margin-top: 10px;
+}
+
+.reaction-info-source {
+    margin-top: 5px;
+    max-height: 25px;
+}
+
+html[dark] .reaction-info-source.light-version {
+    display: none;
+}
+
+html[dark] .reaction-info-source.dark-version {
+    display: block;
+}
+
+html:not([dark]) .reaction-info-source.light-version {
+    display: block;
+}
+
+html:not([dark]) .reaction-info-source.dark-version {
+    display: none;
+}
+
+.reaction-info-success {
+    background-color: #4CAF50;
+}
+
+.reaction-info-error {
+    background-color: #f44336;
+}
+
+.font-bold {
+    font-weight: bold;
+    margin-top: 6px;
+}
+
+.reaction-info-secondary {
+    color: var(--yt-endpoint-color);
+    font-size: 14px;
+}
+
+#reaction-info-toggle {
+    cursor: pointer;
+    color: var(--yt-endpoint-color);
+
+    background-color: #ffffffbb;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: bold;
+
+    user-select: none;
+    border: none;
+
+    position: absolute;
+    right: 6px;
+    top: 6px;
+}
+
+html[dark] #reaction-info-toggle {
+    background-color: #0f0f0fb7;
+    color: var(--yt-spec-text-primary);
+}
