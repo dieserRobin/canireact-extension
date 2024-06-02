@@ -50,6 +50,22 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: any): Pr
             response.rules.stream.custom_rules.forEach((rule: string) => {
                 elements.push(createTextElement("p", "reaction-info-secondary", rule));
             });
+
+            if (response.source) {
+                if (response.source === "canireact") {
+                    const lightSrc = browser.runtime.getURL("images/canireact_source-light.svg");
+                    const darkSrc = browser.runtime.getURL("images/canireact_source.svg");
+
+                    elements.push(createImageElement(lightSrc, "Can I React?", "reaction-info-source light-version"));
+                    elements.push(createImageElement(darkSrc, "Can I React?", "reaction-info-source dark-version"));
+                } else if (response.source === "streamfinity") {
+                    const lightSrc = browser.runtime.getURL("images/streamfinity_source-light.svg");
+                    const darkSrc = browser.runtime.getURL("images/streamfinity_source.svg");
+
+                    elements.push(createImageElement(lightSrc, "Streamfinity", "reaction-info-source light-version"));
+                    elements.push(createImageElement(darkSrc, "Streamfinity", "reaction-info-source dark-version"));
+                }
+            }
         }
 
         // Stream reactions allowed after hours
