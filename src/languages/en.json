@@ -10,7 +10,7 @@
     "monetization_not_allowed": "You are not allowed to monetize the reaction",
     "credit_stream_chat": "Please link the video in your stream chat",
     "credit_video_description": "Please link the video in your video description",
-    "credit_stream_video": "Please link the video in your stream chat and in your video description",
+    "credit_stream_video": "Please link the video in the first 3 lines of your video description",
     "guidelines": "Learn more about the guidelines",
     "stream_reactions_allowed_after_hours": "The reaction on stream is only allowed after $hours hours",
     "video_reactions_allowed_after_hours": "The reaction on YouTube is only allowed after $hours hours",

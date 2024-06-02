@@ -9,7 +9,7 @@
     "monetization_allowed": "Du darfst die Reaktion monetarisieren",
     "monetization_not_allowed": "Du darfst die Reaktion nicht monetarisieren",
     "credit_stream_chat": "Bitte verlinke das Video in deinem Stream Chat",
-    "credit_video_description": "Bitte verlinke das Video in der Beschreibung deines Videos",
+    "credit_video_description": "Bitte verlinke das Video in den ersten 3 Zeilen der Beschreibung deines Videos",
     "credit_stream_video": "Bitte verlinke das Video in deinem Stream Chat und in der Beschreibung deines Videos",
     "guidelines": "Erfahre mehr über die Richtlinien",
     "stream_reactions_allowed_after_hours": "Die Reaktion im Stream ist erst nach $hours Stunden erlaubt",
