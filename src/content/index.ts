@@ -5,6 +5,7 @@ import { getChannelUrl } from './utils/youtube';
 import { addReactionInfo, removeInfo } from './components/reaction-info';
 import { removeAllThumbnailInfos } from './components/thumbnail-info';
 import { getLanguage } from './utils/language';
+import browser from "webextension-polyfill";
 
 export let API_URL = "https://api.canireact.com";
 export let hasProcessed = false;
@@ -18,9 +19,12 @@ async function main() {
     log("main.js loaded!");
     log(`environment: ${isProd ? "production" : "development"}`);
 
-    if (!isProd && typeof chrome !== "undefined") {
-        API_URL = "http://localhost:8787";
-    }
+    // if (!isProd && typeof chrome !== "undefined") {
+    //     API_URL = "http://localhost:8787";
+    // }
+
+    let port = browser.runtime.connect();
+    port.postMessage({ message: "hello" });
 
     await processCurrentPage();
     await registerThumbnailObserver();

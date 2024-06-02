@@ -25,6 +25,12 @@ const sendRequestToServer = (url: string, method: string, data?: any): Promise<a
         });
 };
 
+chrome.runtime.onConnect.addListener((port) => {
+    port.onMessage.addListener(msg => {
+        console.log(msg);
+    })
+});
+
 browser.runtime.onMessage.addListener((request: RequestMessage, sender: Runtime.MessageSender, sendResponse: (response?: any) => void) => {
     switch (request.message) {
         case "sendRequest":
