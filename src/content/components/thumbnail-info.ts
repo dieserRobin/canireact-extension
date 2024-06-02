@@ -1,7 +1,8 @@
+import { Guidelines } from "../utils/api";
 import { getLanguageString } from "../utils/language";
 import { getThumbnails, handledThumbnails } from "../utils/thumbnails";
 
-export async function addThumbnailReactionInfo(thumbnail: HTMLElement, response: any): Promise<void> {
+export async function addThumbnailReactionInfo(thumbnail: HTMLElement, response: Guidelines): Promise<void> {
     if (!thumbnail || !response) {
         return;
     }
@@ -21,8 +22,8 @@ export async function addThumbnailReactionInfo(thumbnail: HTMLElement, response:
 
     const reactionInfo = document.createElement("div");
     reactionInfo.id = "reaction-thumbnail-info";
-    reactionInfo.className = `reaction-thumbnail-info ${response.info_text ? "" : response.rules.stream.stream_reactions_allowed ? "reaction-info-success" : "reaction-info-error"}`;
-    reactionInfo.innerText = response.info_text ? "ℹ️" : response.rules.stream.stream_reactions_allowed ? `✔ ${await getLanguageString("short_stream_reactions_allowed")}` : `✘ ${await getLanguageString("short_stream_reactions_not_allowed")}`;
+    reactionInfo.className = `reaction-thumbnail-info ${response.info_text ? "" : response.rules?.stream.stream_reactions_allowed ? "reaction-info-success" : "reaction-info-error"}`;
+    reactionInfo.innerText = response.info_text ? "ℹ️" : response.rules?.stream.stream_reactions_allowed ? `✔ ${await getLanguageString("short_stream_reactions_allowed")}` : `✘ ${await getLanguageString("short_stream_reactions_not_allowed")}`;
 
     if (response.info_text) {
         reactionInfo.title = response.info_text;
