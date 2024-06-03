@@ -3,8 +3,7 @@
 #reaction-info {
     margin-top: 8px;
     margin-bottom: 8px;
-    padding: 8px;
-    padding-left: 16px;
+    padding: 8px 8px 8px 16px;
     /* Adjust padding to make space for the accent */
     background: linear-gradient(to right, rgba(76, 175, 80, 1) 8px, rgba(242, 242, 242, 0.5) 8px, rgba(242, 242, 242, 1));
     border-radius: 12px;
