@@ -1,17 +1,13 @@
 {
-  "$schema": "https://json.schemastore.org/chrome-manifest",
   "manifest_version": 3,
   "name": "Can I React?",
   "version": "0.7.3",
   "description": "Displays wether a YouTube channel allows reactions video and in what form.",
-  "permissions": [],
+  "permissions": ["storage"],
   "author": "robin.software",
-  "homepage_url": "https://github.com/dieserRobin/canireact",
+  "homepage_url": "https://github.com/dieserRobin/canireact-extension",
   "background": {
-    "service_worker": "background.bundle.js",
-    "scripts": [
-      "background.bundle.js"
-    ]
+    "service_worker": "background.bundle.js"
   },
   "host_permissions": [
     "https://www.youtube.com/*"
