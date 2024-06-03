@@ -71,7 +71,7 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
 
         // Stream reactions allowed after hours
         if (response.rules?.stream.stream_reaction_allowed_after_hours && response.rules?.stream.stream_reactions_allowed === false) {
-            elements.push(createTextElement("p", "reaction-info-secondary", (await getLanguageString("stream_reactions_allowed_after_hours")).replace("$hours", response.rules.stream.stream_reaction_allowed_after_hours + "")));
+            elements.push(createTextElement("p", "reaction-info-secondary font-bold", (await getLanguageString("stream_reactions_allowed_after_hours")).replace("$hours", response.rules.stream.stream_reaction_allowed_after_hours + "")));
         }
 
         if (response.rules?.stream.sponsor_skips_allowed === true) {
@@ -93,10 +93,10 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
         }
 
         if (response.rules?.video.video_reaction_allowed_after_hours && response.rules.video.video_reactions_allowed === false) {
-            elements.push(createTextElement("p", "reaction-info-secondary", (await getLanguageString("video_reactions_allowed_after_hours")).replace("$hours", response.rules.video.video_reaction_allowed_after_hours + "")));
+            elements.push(createTextElement("p", "reaction-info-secondary font-bold", (await getLanguageString("video_reactions_allowed_after_hours")).replace("$hours", response.rules.video.video_reaction_allowed_after_hours + "")));
         }
 
-        if (response.rules?.video.video_reactions_allowed === false) {
+        if (response.rules?.video.video_reactions_allowed === false && Number(response.rules?.video.video_reaction_allowed_after_hours) <= 0) {
             elements.push(createTextElement("p", "reaction-info-secondary", `✘ ${await getLanguageString("video_reactions_not_allowed")}`));
         }
 
