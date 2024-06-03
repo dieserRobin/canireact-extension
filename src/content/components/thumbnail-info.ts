@@ -1,3 +1,4 @@
+import { hasTimeElapsed } from "../utils";
 import { Guidelines } from "../utils/api";
 import { getLanguageString } from "../utils/language";
 import { getThumbnails, handledThumbnails } from "../utils/thumbnails";
@@ -18,6 +19,13 @@ export async function addThumbnailReactionInfo(thumbnail: HTMLElement, response:
 
     if (existingReactionInfo) {
         existingReactionInfo.remove();
+    }
+
+    if (response.rules?.stream.stream_reaction_allowed_after_hours && response.rules?.stream.stream_reactions_allowed === false && response.video) {
+        const timeElapsed = hasTimeElapsed(response.video.uploaded_at, response.rules.stream.stream_reaction_allowed_after_hours);
+        if (timeElapsed) {
+            response.rules.stream.stream_reactions_allowed = response.rules.stream.stream_reactions_generally_allowed;
+        }
     }
 
     const reactionInfo = document.createElement("div");

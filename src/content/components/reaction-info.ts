@@ -1,3 +1,4 @@
+import { hasTimeElapsed } from "../utils";
 import { Guidelines } from "../utils/api";
 import { getLanguageString } from "../utils/language";
 import { createImageElement, createTextElement } from "../utils/render";
@@ -49,6 +50,18 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
             }
         }
     } else {
+        if (response.video) {
+            if (response.rules?.video.video_reaction_allowed_after_hours && response.rules?.video.video_reactions_allowed === false) {
+                const timeElapsed = hasTimeElapsed(response.video.uploaded_at, response.rules.video.video_reaction_allowed_after_hours);
+                if (timeElapsed) response.rules.video.video_reactions_allowed = response.rules.video.video_reactions_generally_allowed;
+            }
+
+            if (response.rules?.stream.stream_reaction_allowed_after_hours && response.rules?.stream.stream_reactions_allowed === false) {
+                const timeElapsed = hasTimeElapsed(response.video.uploaded_at, response.rules.stream.stream_reaction_allowed_after_hours);
+                if (timeElapsed) response.rules.stream.stream_reactions_allowed = response.rules.stream.stream_reactions_generally_allowed;
+            }
+        }
+
         // Simple info about the general rules
         if (response.rules?.stream.stream_reactions_allowed === true && response.rules?.video.video_reactions_allowed === true) {
             reactionInfo.classList.add("green");
