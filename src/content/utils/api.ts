@@ -9,6 +9,7 @@ export type Guidelines = {
         rules_id: number;
         stream: {
             stream_reactions_allowed: boolean;
+            stream_reactions_generally_allowed: boolean;
             credit_stream_chat: boolean | null;
             sponsor_skips_allowed: boolean | null;
             stream_reaction_allowed_after_hours: number | null;
@@ -16,6 +17,7 @@ export type Guidelines = {
         };
         video: {
             video_reactions_allowed: boolean;
+            video_reactions_generally_allowed: boolean;
             monetization_allowed: boolean | null;
             sponsor_cut_allowed: boolean | null;
             reaction_video_splittling_allowed: boolean | null;
@@ -24,6 +26,9 @@ export type Guidelines = {
             reaction_video_includes_title: boolean | null;
             custom_rules: string[];
         };
+    } | null;
+    video: {
+        uploaded_at: string;
     } | null;
     info_text: string | null;
     source: string;
