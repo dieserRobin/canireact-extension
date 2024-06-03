@@ -23,7 +23,7 @@ export async function handleThumbnails(): Promise<void> {
 
             const thumbnailLinkElement: HTMLAnchorElement | null = thumbnail.querySelector("#content ytd-rich-grid-media #dismissible #details #meta #title, #video-title-link, #dismissible ytd-thumbnail #thumbnail");
 
-            const videoId = thumbnailLinkElement ? thumbnailLinkElement.href?.split("v=")[1].split("&")[0] : null;
+            const videoId = thumbnailLinkElement ? new URL(thumbnailLinkElement.href).searchParams.get("v") : null;
 
             if (videoId === null || channelUrl === null) {
                 log("video id or channel not found");

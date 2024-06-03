@@ -55,7 +55,11 @@ async function processCurrentPage(): Promise<void> {
         log("video detected!");
 
         // Get video id
-        const videoId = window.location.href.split("v=")[1].split("&")[0];
+        const videoId = new URL(window.location.href).searchParams.get("v");
+        if (!videoId) {
+            log("video id not found");
+            return;
+        }
         log("video id: " + videoId);
 
         // Wait for the bottom row to be available in the DOM
