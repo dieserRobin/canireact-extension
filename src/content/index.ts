@@ -19,10 +19,6 @@ async function main() {
     log("main.js loaded!");
     log(`environment: ${isProd ? "production" : "development"}`);
 
-    if (!isProd && typeof chrome !== "undefined") {
-        API_URL = "http://localhost:8787";
-    }
-
     let port = browser.runtime.connect();
     port.postMessage({ message: "hello" });
 
