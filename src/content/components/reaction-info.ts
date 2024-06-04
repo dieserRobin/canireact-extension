@@ -136,6 +136,9 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
             elements.push(createTextElement("p", "reaction-info-secondary", `✘ ${await getLanguageString("reaction_video_splittling_not_allowed")}`));
         }
 
+        // Disclaimer
+        elements.push(createTextElement("p", "reaction-info-secondary gray", await getLanguageString("guideline_disclaimer")));
+
         if (response.source) {
             if (response.source === "canireact") {
                 const lightSrc = browser.runtime.getURL("images/canireact_source-light.svg");

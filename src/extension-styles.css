@@ -146,6 +146,10 @@ html:not([dark]) .reaction-info-source.dark-version {
     font-size: 14px;
 }
 
+.reaction-info-secondary.gray {
+    opacity: .75;
+}
+
 #reaction-info-toggle {
     cursor: pointer;
     color: var(--yt-endpoint-color);
