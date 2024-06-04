@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Can I React?",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "description": "Displays wether a YouTube channel allows reactions video and in what form.",
   "permissions": [
     "storage"
