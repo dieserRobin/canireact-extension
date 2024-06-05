@@ -1,4 +1,4 @@
-import { hasTimeElapsed } from "../utils";
+import { hasTimeElapsed, isSponsorBlockInstalled } from "../utils";
 import { Guidelines } from "../utils/api";
 import { getLanguageString } from "../utils/language";
 import { createImageElement, createTextElement } from "../utils/render";
@@ -91,6 +91,9 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
             elements.push(createTextElement("p", "reaction-info-secondary", `✔ ${await getLanguageString("sponsor_skips_allowed")}`));
         } else if (response.rules?.stream.sponsor_skips_allowed === false) {
             elements.push(createTextElement("p", "reaction-info-secondary", `✘ ${await getLanguageString("sponsor_skips_not_allowed")}`));
+            if (isSponsorBlockInstalled()) {
+                elements.push(createTextElement("p", "reaction-info-secondary font-bold", await getLanguageString("sponsor_block_installed")));
+            }
         }
 
         if (response.rules?.stream.credit_stream_chat === true) {
@@ -137,7 +140,7 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
         }
 
         // Disclaimer
-        elements.push(createTextElement("p", "reaction-info-secondary gray", await getLanguageString("guideline_disclaimer")));
+        elements.push(createTextElement("p", "reaction-info-secondary gray mt-1", await getLanguageString("guideline_disclaimer")));
 
         if (response.source) {
             if (response.source === "canireact") {

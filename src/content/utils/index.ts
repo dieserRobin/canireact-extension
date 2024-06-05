@@ -16,3 +16,7 @@ export function hasTimeElapsed(uploadedAt: string, hours: number): boolean {
     const elapsedHours = (currentTime - uploadedTime) / 1000 / 60 / 60;
     return elapsedHours >= hours;
 }
+
+export function isSponsorBlockInstalled() {
+    return document.querySelector("#sponsorblock-document-script") !== null;
+}

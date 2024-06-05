@@ -23,5 +23,6 @@
     "sponsor_cut_not_allowed": "You are not allowed to cut out sponsor placements",
     "reaction_video_includes_title": "The name of the channel must be mentioned in the title of the reaction video",
     "reaction_video_splittling_not_allowed": "You are not allowed to split the reaction video into multiple parts",
-    "guideline_disclaimer": "The guidelines are not legally binding and are only a guideline; the channel owner can continue to enforce his rights."
+    "guideline_disclaimer": "The guidelines are not legally binding and are only a guideline; the channel owner can continue to enforce his rights.",
+    "sponsor_block_installed": "You've installed Sponsor Block, which automatically skips the placement. Please disable it for this video."
 }

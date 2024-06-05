@@ -150,6 +150,10 @@ html:not([dark]) .reaction-info-source.dark-version {
     opacity: .75;
 }
 
+.mt-1 {
+    margin-top: 8px;
+}
+
 #reaction-info-toggle {
     cursor: pointer;
     color: var(--yt-endpoint-color);

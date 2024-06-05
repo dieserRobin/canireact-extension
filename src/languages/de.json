@@ -23,5 +23,6 @@
     "sponsor_cut_not_allowed": "Du darfst Placements nicht aus dem Reaction Video rausschneiden",
     "reaction_video_includes_title": "Der Name des Kanals muss im Titel des Reaction Videos erwähnt werden",
     "reaction_video_splittling_not_allowed": "Du darfst das Reaction Video nicht in mehrere Teile aufteilen",
-    "guideline_disclaimer": "Die Richtlinien sind nicht rechtlich bindend und dienen nur als Leitfaden; der Kanalinhaber kann weiterhin seine Rechte durchsetzen."
+    "guideline_disclaimer": "Die Richtlinien sind nicht rechtlich bindend und dienen nur als Leitfaden; der Kanalinhaber kann weiterhin seine Rechte durchsetzen.",
+    "sponsor_block_installed": "Du hast Sponsor Block installiert, das automatisch das Placement überspringt. Bitte deaktiviere die Erweiterung für dieses Video."
 }
