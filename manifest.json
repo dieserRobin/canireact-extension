@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/chrome-manifest",
   "manifest_version": 3,
   "name": "Can I React?",
   "version": "0.7.4",
@@ -8,6 +9,7 @@
   ],
   "author": "robin.software",
   "homepage_url": "https://github.com/dieserRobin/canireact-extension",
+  "default_locale": "en",
   "background": {
     "service_worker": "background.bundle.js",
     "scripts": [

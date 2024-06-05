@@ -2,7 +2,7 @@ const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
-  mode: "development", // oder 'production', je nach Bedarf
+  mode: "development",
   entry: {
     background: "./src/background.ts",
     content: "./src/content/index.ts",
@@ -42,9 +42,9 @@ module.exports = {
         { from: "src/images", to: "images" },
         {
           from: "src/languages",
-          to: "languages",
+          to: "_locales",
           globOptions: { ignore: ["**/*.js"] },
-        }, // Kopiere nur JSON-Dateien
+        },
       ],
     }),
   ],

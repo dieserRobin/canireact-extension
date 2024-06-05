@@ -4,8 +4,8 @@ import { fetchVideoInfo } from './utils/api';
 import { getChannelUrl } from './utils/youtube';
 import { addReactionInfo, removeInfo } from './components/reaction-info';
 import { removeAllThumbnailInfos } from './components/thumbnail-info';
-import { getLanguage } from './utils/language';
 import browser from "webextension-polyfill";
+import { getLanguage } from './utils/language';
 
 export let API_URL = "https://api.canireact.com";
 export let hasProcessed = false;
