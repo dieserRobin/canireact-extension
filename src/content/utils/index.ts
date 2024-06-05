@@ -7,7 +7,7 @@ export function isProduction(): boolean {
 
 export function log(...args: any[]): void {
     const time = new Date().toLocaleTimeString();
-    console.log(`${time} [canireact]:`, ...args);
+    console.log(`${time} %c canireact `, 'background-color: red; font-weight: bold; text-transform: uppercase;', ...args);
 }
 
 export function hasTimeElapsed(uploadedAt: string, hours: number): boolean {
