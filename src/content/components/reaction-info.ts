@@ -1,14 +1,38 @@
-import { hasTimeElapsed, isSponsorBlockInstalled } from "../utils";
+import { hasTimeElapsed, isSponsorBlockInstalled, log } from "../utils";
 import { Guidelines } from "../utils/api";
 import { getLanguageString } from "../utils/language";
 import { createImageElement, createTextElement } from "../utils/render";
 import browser from "webextension-polyfill";
 
+let videoCountdownInterval: NodeJS.Timeout | null = null;
+let streamCountdownInterval: NodeJS.Timeout | null = null;
+
 export async function removeInfo(): Promise<void> {
     const reactionInfo = document.querySelector("#reaction-info");
+    videoCountdownInterval && clearInterval(videoCountdownInterval);
+    streamCountdownInterval && clearInterval(streamCountdownInterval);
     if (reactionInfo) {
         reactionInfo.remove();
     }
+}
+
+async function updateCountdown(element: HTMLElement, uploadedAt: string, hours: number, templateString: string): Promise<void> {
+    const uploadedTime = new Date(uploadedAt).getTime();
+    const currentTime = new Date().getTime();
+    const elapsedHours = (currentTime - uploadedTime) / 1000 / 60 / 60;
+    const remainingHours = hours - elapsedHours;
+
+    if (remainingHours <= 0) {
+        element.textContent = "0";
+        return;
+    }
+
+    const hoursLeft = Math.floor(remainingHours);
+    const minutesLeft = Math.floor((remainingHours - hoursLeft) * 60);
+    const secondsLeft = Math.floor(((remainingHours - hoursLeft) * 60 - minutesLeft) * 60);
+
+    const remaningTime = `${hoursLeft.toString().padStart(2, '0')}:${minutesLeft.toString().padStart(2, '0')}:${secondsLeft.toString().padStart(2, '0')}`;
+    element.textContent = templateString.replace("%time", remaningTime);
 }
 
 export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelines): Promise<void> {
@@ -29,6 +53,7 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
     detailedInfo.classList.add("reaction-info-detailed");
 
     let elements: HTMLElement[] = [];
+    removeInfo();
 
     if (response.info_text) {
         reactionInfo.classList.add("gray");
@@ -84,7 +109,11 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
 
         // Stream reactions allowed after hours
         if (response.rules?.stream.stream_reaction_allowed_after_hours && response.rules?.stream.stream_reactions_allowed === false) {
-            elements.push(createTextElement("p", "reaction-info-secondary font-bold", (await getLanguageString("stream_reactions_allowed_after_hours")).replace("$hours", response.rules.stream.stream_reaction_allowed_after_hours + "")));
+            const textWithHours = (await getLanguageString("stream_reactions_allowed_after_hours")).replace("%hours", response.rules.stream.stream_reaction_allowed_after_hours + "");
+            const streamReactionCountdown = createTextElement("p", "reaction-info-secondary font-bold", textWithHours);
+            elements.push(streamReactionCountdown);
+            updateCountdown(streamReactionCountdown, response.video!.uploaded_at, response.rules.stream.stream_reaction_allowed_after_hours, textWithHours);
+            streamCountdownInterval = setInterval(() => updateCountdown(streamReactionCountdown, response.video!.uploaded_at, response.rules!.stream.stream_reaction_allowed_after_hours!, textWithHours), 1000);
         }
 
         if (response.rules?.stream.sponsor_skips_allowed === true) {
@@ -109,7 +138,11 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
         }
 
         if (response.rules?.video.video_reaction_allowed_after_hours && response.rules.video.video_reactions_allowed === false) {
-            elements.push(createTextElement("p", "reaction-info-secondary font-bold", (await getLanguageString("video_reactions_allowed_after_hours")).replace("$hours", response.rules.video.video_reaction_allowed_after_hours + "")));
+            const textWithHours = (await getLanguageString("video_reactions_allowed_after_hours")).replace("%hours", response.rules.video.video_reaction_allowed_after_hours + "");
+            const videoReactionCountdown = createTextElement("p", "reaction-info-secondary font-bold", textWithHours);
+            elements.push(videoReactionCountdown);
+            updateCountdown(videoReactionCountdown, response.video!.uploaded_at, response.rules.video.video_reaction_allowed_after_hours, textWithHours);
+            videoCountdownInterval = setInterval(() => updateCountdown(videoReactionCountdown, response.video!.uploaded_at, response.rules!.video.video_reaction_allowed_after_hours!, textWithHours), 1000);
         }
 
         if (response.rules?.video.video_reactions_allowed === false && Number(response.rules?.video.video_reaction_allowed_after_hours) <= 0) {
@@ -163,7 +196,6 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
     innerReactionInfo.appendChild(detailedInfo);
     reactionInfo.appendChild(toggleButton);
     reactionInfo.appendChild(innerReactionInfo);
-    removeInfo();
     bottomRow.parentNode?.insertBefore(reactionInfo, bottomRow);
 
     toggleButton.addEventListener("click", () => {

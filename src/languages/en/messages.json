@@ -39,10 +39,10 @@
         "message": "Learn more about the guidelines"
     },
     "stream_reactions_allowed_after_hours": {
-        "message": "The reaction on stream is only allowed after $hours hours"
+        "message": "The reaction on stream is only allowed after %hours hours. (%time)"
     },
     "video_reactions_allowed_after_hours": {
-        "message": "The reaction on YouTube is only allowed after $hours hours"
+        "message": "The reaction on YouTube is only allowed after %hours hours. (%time)"
     },
     "short_stream_video_reactions_allowed": {
         "message": "Reaction + Video allowed"

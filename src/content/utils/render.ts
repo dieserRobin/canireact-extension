@@ -1,7 +1,8 @@
-export function createTextElement(tag: string, className: string, text: string): HTMLElement {
+export function createTextElement(tag: string, className: string, text: string, id?: string): HTMLElement {
     const element = document.createElement(tag);
     element.className = className;
     element.textContent = text;
+    id && (element.id = id);
     return element;
 }
 

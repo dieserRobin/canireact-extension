@@ -39,10 +39,10 @@
         "message": "Erfahre mehr über die Richtlinien"
     },
     "stream_reactions_allowed_after_hours": {
-        "message": "Die Reaktion im Stream ist erst nach $hours Stunden erlaubt"
+        "message": "Die Reaktion im Stream ist erst nach %hours Stunden erlaubt. (%time)"
     },
     "video_reactions_allowed_after_hours": {
-        "message": "Die Reaktion auf YouTube ist erst nach $hours Stunden erlaubt"
+        "message": "Die Reaktion auf YouTube ist erst nach %hours Stunden erlaubt. (%time)"
     },
     "short_stream_video_reactions_allowed": {
         "message": "Reaktion + Video erlaubt"
