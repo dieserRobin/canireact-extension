@@ -16,7 +16,7 @@ export async function removeInfo(): Promise<void> {
     }
 }
 
-async function updateCountdown(element: HTMLElement, uploadedAt: string, hours: number, templateString: string): Promise<void> {
+async function updateCountdown(element: HTMLElement, uploadedAt: string, hours: number, templateString: string, timeElapsedCallback?: () => void): Promise<void> {
     const uploadedTime = new Date(uploadedAt).getTime();
     const currentTime = new Date().getTime();
     const elapsedHours = (currentTime - uploadedTime) / 1000 / 60 / 60;
@@ -24,6 +24,7 @@ async function updateCountdown(element: HTMLElement, uploadedAt: string, hours: 
 
     if (remainingHours <= 0) {
         element.textContent = templateString.replace("%time", "00:00:00");
+        timeElapsedCallback && timeElapsedCallback();
         return;
     }
 
@@ -113,7 +114,10 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
             const streamReactionCountdown = createTextElement("p", "reaction-info-secondary font-bold", textWithHours);
             elements.push(streamReactionCountdown);
             updateCountdown(streamReactionCountdown, response.video!.uploaded_at, response.rules.stream.stream_reaction_allowed_after_hours, textWithHours);
-            streamCountdownInterval = setInterval(() => updateCountdown(streamReactionCountdown, response.video!.uploaded_at, response.rules!.stream.stream_reaction_allowed_after_hours!, textWithHours), 1000);
+            streamCountdownInterval = setInterval(() => updateCountdown(streamReactionCountdown, response.video!.uploaded_at, response.rules!.stream.stream_reaction_allowed_after_hours!, textWithHours, () => {
+                removeInfo();
+                addReactionInfo(bottomRow, response);
+            }), 1000);
         }
 
         if (response.rules?.stream.sponsor_skips_allowed === true) {
@@ -142,7 +146,10 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
             const videoReactionCountdown = createTextElement("p", "reaction-info-secondary font-bold", textWithHours);
             elements.push(videoReactionCountdown);
             updateCountdown(videoReactionCountdown, response.video!.uploaded_at, response.rules.video.video_reaction_allowed_after_hours, textWithHours);
-            videoCountdownInterval = setInterval(() => updateCountdown(videoReactionCountdown, response.video!.uploaded_at, response.rules!.video.video_reaction_allowed_after_hours!, textWithHours), 1000);
+            videoCountdownInterval = setInterval(() => updateCountdown(videoReactionCountdown, response.video!.uploaded_at, response.rules!.video.video_reaction_allowed_after_hours!, textWithHours, () => {
+                removeInfo();
+                addReactionInfo(bottomRow, response);
+            }), 1000);
         }
 
         if (response.rules?.video.video_reactions_allowed === false && Number(response.rules?.video.video_reaction_allowed_after_hours) <= 0) {
