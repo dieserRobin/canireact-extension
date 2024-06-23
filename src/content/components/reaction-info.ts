@@ -23,7 +23,7 @@ async function updateCountdown(element: HTMLElement, uploadedAt: string, hours: 
     const remainingHours = hours - elapsedHours;
 
     if (remainingHours <= 0) {
-        element.textContent = "0";
+        element.textContent = templateString.replace("%time", "00:00:00");
         return;
     }
 
