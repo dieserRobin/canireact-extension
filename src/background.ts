@@ -64,7 +64,7 @@ browser.runtime.onConnect.addListener((port) => {
 
 browser.runtime.onMessage.addListener((request: RequestMessage, sender: Runtime.MessageSender, sendResponse: (response?: any) => void) => {
     if (request.message === "sendRequest") {
-        const cacheKey = `cache_${request.url}`;
+        const cacheKey = request.url;
 
         getCachedData(cacheKey)
             .then(cachedData => {
