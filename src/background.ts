@@ -56,13 +56,24 @@ const setCachedData = async (cacheKey: string, data: any) => {
     }
 };
 
-browser.runtime.onConnect.addListener((port) => {
+browser.runtime.onConnect.addListener(async (port) => {
+    const { collapseState } = await browser.storage.local.get("collapseState")
+
+    if (collapseState !== undefined) {
+        port.postMessage({
+            message: "setCollapseState",
+            data: collapseState
+        })
+    }
+
     port.onMessage.addListener(msg => {
         console.log(msg);
     });
 });
 
 browser.runtime.onMessage.addListener((request: RequestMessage, sender: Runtime.MessageSender, sendResponse: (response?: any) => void) => {
+    console.log('Received message:', request);
+
     if (request.message === "sendRequest") {
         const cacheKey = request.url;
 
@@ -87,5 +98,7 @@ browser.runtime.onMessage.addListener((request: RequestMessage, sender: Runtime.
             });
 
         return true; // Keeps the message channel open for sendResponse
+    } else if (request.message === "setCollapseState") {
+        browser.storage.local.set({ "collapseState": request.data });
     }
 });

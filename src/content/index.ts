@@ -10,6 +10,7 @@ import { getLanguage } from './utils/language';
 export let API_URL = "https://api.canireact.com";
 export let hasProcessed = false;
 export let currentChannelUrl: string | null = null;
+export let collapseState: boolean = false;
 
 let currentChannelNameObserver: MutationObserver | null = null;
 let latestRequest: string | null = null;
@@ -21,6 +22,12 @@ async function main() {
 
     let port = browser.runtime.connect();
     port.postMessage({ message: "hello" });
+    port.onMessage.addListener((message) => {
+        log("message received", message);
+        if (message.message === "setCollapseState") {
+            collapseState = message.data;
+        }
+    });
 
     await processCurrentPage();
     await registerThumbnailObserver();

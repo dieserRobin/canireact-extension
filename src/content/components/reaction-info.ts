@@ -1,3 +1,4 @@
+import { collapseState } from "..";
 import { hasTimeElapsed, isSponsorBlockInstalled, log } from "../utils";
 import { Guidelines } from "../utils/api";
 import { getLanguageString } from "../utils/language";
@@ -205,7 +206,14 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
     reactionInfo.appendChild(innerReactionInfo);
     bottomRow.parentNode?.insertBefore(reactionInfo, bottomRow);
 
+    if (!collapseState) {
+        detailedInfo.style.display = "none";
+        toggleButton.textContent = "+";
+    }
+
     toggleButton.addEventListener("click", () => {
+        browser.runtime.sendMessage({ message: "setCollapseState", data: detailedInfo.style.display === "none" });
+
         if (detailedInfo.style.display === "none") {
             detailedInfo.style.display = "block";
             toggleButton.textContent = "-";
