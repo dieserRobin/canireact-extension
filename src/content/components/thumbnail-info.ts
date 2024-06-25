@@ -24,7 +24,7 @@ export async function addThumbnailReactionInfo(thumbnail: HTMLElement, response:
         existingReactionInfo.remove();
     }
 
-    if (response.rules) {
+    if (response.rules || response.info_text) {
         if (response.rules?.stream.stream_reaction_allowed_after_hours && response.rules?.stream.stream_reactions_allowed === false && response.video) {
             const timeElapsed = hasTimeElapsed(response.video.uploaded_at, response.rules.stream.stream_reaction_allowed_after_hours);
             if (timeElapsed) {
