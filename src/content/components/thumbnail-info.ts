@@ -63,7 +63,7 @@ export async function removeAllThumbnailInfos(): Promise<void> {
     const thumbnails = await getThumbnails();
 
     thumbnails.forEach(thumbnail => {
-        const reactionInfo = thumbnail.querySelector("#reaction-thumbnail-info");
+        const reactionInfo = thumbnail.querySelector(".reaction-thumbnail-info-container");
         if (reactionInfo) {
             reactionInfo.remove();
         }
