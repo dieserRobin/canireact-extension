@@ -1,9 +1,10 @@
 import { collapseState } from "..";
 import { hasTimeElapsed, isSponsorBlockInstalled, log } from "../utils";
-import { Guidelines } from "../utils/api";
+import { Guidelines, fetchVideoDetails } from "../utils/api";
 import { getLanguageString } from "../utils/language";
 import { createImageElement, createTextElement } from "../utils/render";
 import browser from "webextension-polyfill";
+import { getOriginalVideo } from "../utils/youtube";
 
 let videoCountdownInterval: NodeJS.Timeout | null = null;
 let streamCountdownInterval: NodeJS.Timeout | null = null;
@@ -181,6 +182,16 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
             elements.push(createTextElement("p", "reaction-info-secondary", `✘ ${await getLanguageString("reaction_video_splittling_not_allowed")}`));
         }
 
+        const originalVideo = await getOriginalVideo();
+        const originalVideoId = originalVideo?.split("v=")[1];
+
+        if (originalVideoId) {
+            elements.push(createTextElement("p", "reaction-info-secondary font-bold", "Original Video"));
+            const originalVideoElement = document.createElement("a");
+            elements.push(originalVideoElement);
+            displayOriginalVideo(originalVideoId, originalVideoElement);
+        }
+
         // Disclaimer
         elements.push(createTextElement("p", "reaction-info-secondary gray mt-1", await getLanguageString("guideline_disclaimer")));
 
@@ -223,4 +234,38 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
             toggleButton.textContent = "+";
         }
     });
+}
+
+async function displayOriginalVideo(originalVideoId: string, originalVideo: HTMLAnchorElement): Promise<void> {
+    const videoData = await fetchVideoDetails(originalVideoId);
+    log("Video data: ", videoData);
+
+    if (!videoData) return;
+
+    originalVideo.classList.add("reaction-info-original-video");
+
+    const thumbnailContainer = document.createElement("div");
+    thumbnailContainer.classList.add("reaction-info-original-video-thumbnail");
+    const thumbnail = document.createElement("img");
+    thumbnail.src = videoData.thumbnail;
+    thumbnail.alt = videoData.title;
+    thumbnailContainer.appendChild(thumbnail);
+
+    const textContainer = document.createElement("div");
+
+    const title = document.createElement("p");
+    title.textContent = videoData.title;
+    title.classList.add("reaction-info-original-video-title");
+
+    const channel = document.createElement("p");
+    channel.textContent = videoData.channelName;
+    channel.classList.add("reaction-info-original-video-channel");
+
+    textContainer.appendChild(title);
+    textContainer.appendChild(channel);
+
+    originalVideo.href = `https://www.youtube.com/watch?v=${originalVideoId}`;
+
+    originalVideo.appendChild(thumbnailContainer);
+    originalVideo.appendChild(textContainer);
 }

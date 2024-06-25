@@ -35,6 +35,13 @@ export type Guidelines = {
     source: string;
 }
 
+export type VideoDetails = {
+    title: string;
+    channelName: string;
+    publishedAt: string;
+    thumbnail: string;
+}
+
 export async function fetchVideoInfo(videoId: string, channelUrl: string | null = null, easyRequest: boolean = false, language?: string): Promise<any> {
     if (!videoId) {
         return null;
@@ -57,4 +64,24 @@ export async function fetchVideoInfo(videoId: string, channelUrl: string | null 
             log("Error fetching video info:", error)
             return null;
         });
+}
+
+export async function fetchVideoDetails(videoId: string) {
+    if (!videoId) return null;
+
+    return browser.runtime.sendMessage({
+        message: "sendRequest",
+        url: `${API_URL}/v1/video/${videoId}/details`,
+        method: "GET",
+        data: null,
+    }).then(response => {
+        if (response && response.success) {
+            return response.data as VideoDetails;
+        } else {
+            return null;
+        }
+    }).catch(error => {
+        log("Error fetching video details:", error);
+        return null;
+    });
 }

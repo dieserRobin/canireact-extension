@@ -182,3 +182,43 @@ html[dark] #reaction-info-toggle {
     background-color: #0f0f0fb7;
     color: var(--yt-spec-text-primary);
 }
+
+.reaction-info-original-video {
+    width: max-content;
+    height: auto;
+    padding: 8px;
+    border: rgb(72, 72, 72) 2px solid;
+    background-color: rgba(242, 242, 242, .25);
+    display: flex;
+    gap: 8px;
+    border-radius: 12px;
+    text-decoration: none;
+    margin-top: 4px;
+}
+
+.reaction-info-original-video-thumbnail {
+    width: 168px;
+    height: 94px;
+}
+
+.reaction-info-original-video-thumbnail img {
+    object-fit: cover;
+    border-radius: 8px;
+    width: 100%;
+    height: 100%;
+}
+
+.reaction-info-original-video-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 8px;
+    color: var(--yt-spec-text-primary);
+    text-decoration: none;
+}
+
+.reaction-info-original-video-channel {
+    font-size: 12px;
+    margin-top: 4px;
+    color: var(--yt-spec-text-secondary);
+    text-decoration: none;
+}
