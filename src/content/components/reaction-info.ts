@@ -79,8 +79,9 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
     } else {
         if (response.video) {
             if (response.rules?.video.video_reaction_allowed_after_hours && response.rules?.video.video_reactions_allowed === false) {
+                // The key was temporarily named stream_reaction_allowed_after_hours and those responses may be cached, so we need to check for both
                 const timeElapsed = hasTimeElapsed(response.video.uploaded_at, response.rules.video.video_reaction_allowed_after_hours);
-                if (timeElapsed) response.rules.video.video_reactions_allowed = response.rules.video.video_reactions_generally_allowed;
+                if (timeElapsed) response.rules.video.video_reactions_allowed = response.rules.video.stream_reactions_generally_allowed ?? response.rules.video.video_reactions_generally_allowed;
             }
 
             if (response.rules?.stream.stream_reaction_allowed_after_hours && response.rules?.stream.stream_reactions_allowed === false) {

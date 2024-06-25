@@ -18,6 +18,7 @@ export type Guidelines = {
         video: {
             video_reactions_allowed: boolean;
             video_reactions_generally_allowed: boolean;
+            stream_reactions_generally_allowed?: boolean;
             monetization_allowed: boolean | null;
             sponsor_cut_allowed: boolean | null;
             reaction_video_splittling_allowed: boolean | null;
