@@ -3,7 +3,7 @@ import { Guidelines } from "../utils/api";
 import { getLanguageString } from "../utils/language";
 import { getThumbnails, handledThumbnails } from "../utils/thumbnails";
 
-export async function addThumbnailReactionInfo(thumbnail: HTMLElement, response: Guidelines): Promise<void> {
+export async function addThumbnailReactionInfo(thumbnail: HTMLElement, response: Guidelines | null): Promise<void> {
     if (!thumbnail || !response) {
         return;
     }
@@ -24,23 +24,25 @@ export async function addThumbnailReactionInfo(thumbnail: HTMLElement, response:
         existingReactionInfo.remove();
     }
 
-    if (response.rules?.stream.stream_reaction_allowed_after_hours && response.rules?.stream.stream_reactions_allowed === false && response.video) {
-        const timeElapsed = hasTimeElapsed(response.video.uploaded_at, response.rules.stream.stream_reaction_allowed_after_hours);
-        if (timeElapsed) {
-            response.rules.stream.stream_reactions_allowed = response.rules.stream.stream_reactions_generally_allowed;
+    if (response.rules) {
+        if (response.rules?.stream.stream_reaction_allowed_after_hours && response.rules?.stream.stream_reactions_allowed === false && response.video) {
+            const timeElapsed = hasTimeElapsed(response.video.uploaded_at, response.rules.stream.stream_reaction_allowed_after_hours);
+            if (timeElapsed) {
+                response.rules.stream.stream_reactions_allowed = response.rules.stream.stream_reactions_generally_allowed;
+            }
         }
+
+        const reactionInfo = document.createElement("div");
+        reactionInfo.id = "reaction-thumbnail-info";
+        reactionInfo.className = `reaction-thumbnail-info ${response.info_text ? "" : response.rules?.stream.stream_reactions_allowed ? "reaction-info-success" : "reaction-info-error"}`;
+        reactionInfo.innerText = response.info_text ? "ℹ️" : response.rules?.stream.stream_reactions_allowed ? `✔ ${await getLanguageString("short_stream_reactions_allowed")}` : `✘ ${await getLanguageString("short_stream_reactions_not_allowed")}`;
+
+        if (response.info_text) {
+            reactionInfo.title = response.info_text;
+        }
+
+        container.appendChild(reactionInfo);
     }
-
-    const reactionInfo = document.createElement("div");
-    reactionInfo.id = "reaction-thumbnail-info";
-    reactionInfo.className = `reaction-thumbnail-info ${response.info_text ? "" : response.rules?.stream.stream_reactions_allowed ? "reaction-info-success" : "reaction-info-error"}`;
-    reactionInfo.innerText = response.info_text ? "ℹ️" : response.rules?.stream.stream_reactions_allowed ? `✔ ${await getLanguageString("short_stream_reactions_allowed")}` : `✘ ${await getLanguageString("short_stream_reactions_not_allowed")}`;
-
-    if (response.info_text) {
-        reactionInfo.title = response.info_text;
-    }
-
-    container.appendChild(reactionInfo);
 
     if (response.original_video) {
         // create a link to the original video beside the reaction info

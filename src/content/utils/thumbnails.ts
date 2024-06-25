@@ -32,7 +32,7 @@ export async function handleThumbnails(): Promise<void> {
 
             const response = await fetchVideoInfo(videoId, channelUrl, true);
 
-            if (response && (response.rules || response.info_text)) {
+            if (response) {
                 addThumbnailReactionInfo(thumbnail, response);
             }
         } catch (e) {

@@ -50,12 +50,12 @@ export async function fetchVideoInfo(videoId: string, channelUrl: string | null 
 
     return browser.runtime.sendMessage({
         message: "sendRequest",
-        url: `${API_URL}/v1/video/${videoId}?easy_request=${easyRequest ? "true" : "false"}${channelUrl ? `&channel_url=${encodeURIComponent(channelUrl)}` : ""}${language ? `&language=${encodeURIComponent(language)}` : ""}`,
+        url: `${API_URL}/v1/video/${videoId}?easy_request=${easyRequest ? "true" : "false"}&return_original=true${channelUrl ? `&channel_url=${encodeURIComponent(channelUrl)}` : ""}${language ? `&language=${encodeURIComponent(language)}` : ""}`,
         method: "GET",
         data: null,
     })
         .then(response => {
-            if (response && response.success) {
+            if (response) {
                 return response.data as Guidelines;
             } else {
                 return null;
