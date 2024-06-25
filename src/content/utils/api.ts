@@ -31,6 +31,7 @@ export type Guidelines = {
     video: {
         uploaded_at: string;
     } | null;
+    original_video?: string | null;
     info_text: string | null;
     source: string;
 }

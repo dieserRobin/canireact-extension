@@ -14,8 +14,11 @@ export async function addThumbnailReactionInfo(thumbnail: HTMLElement, response:
         return;
     }
 
+    const container = document.createElement("div");
+    container.classList.add("reaction-thumbnail-info-container");
+
     // remove existing info
-    const existingReactionInfo = thumbnail.querySelector("#reaction-thumbnail-info");
+    const existingReactionInfo = thumbnail.querySelector(".reaction-thumbnail-info-container");
 
     if (existingReactionInfo) {
         existingReactionInfo.remove();
@@ -37,7 +40,21 @@ export async function addThumbnailReactionInfo(thumbnail: HTMLElement, response:
         reactionInfo.title = response.info_text;
     }
 
-    metadata.appendChild(reactionInfo);
+    container.appendChild(reactionInfo);
+
+    if (response.original_video) {
+        // create a link to the original video beside the reaction info
+        const originalVideoLink = document.createElement("a");
+        originalVideoLink.href = response.original_video;
+        originalVideoLink.innerText = "🔗 Original video";
+        originalVideoLink.target = "_blank";
+        originalVideoLink.rel = "noopener noreferrer";
+        originalVideoLink.title = "Original video";
+        originalVideoLink.className = "reaction-thumbnail-info-link";
+        container.appendChild(originalVideoLink);
+    }
+
+    metadata.appendChild(container);
 }
 
 export async function removeAllThumbnailInfos(): Promise<void> {

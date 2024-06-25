@@ -93,8 +93,25 @@ html[dark] #reaction-info.orange {
     margin-top: 5px;
 }
 
+.reaction-thumbnail-info-container {
+    display: inline-flex;
+    align-items: center;
+}
+
 .reaction-thumbnail-info {
-    display: flex;
+    display: inline-flex;
+    align-items: center;
+    margin-left: 3px;
+    padding: 4px 8px;
+    border-radius: 40px;
+    background-color: var(--yt-spec-brand-background-primary);
+    width: max-content;
+}
+
+.reaction-thumbnail-info-link {
+    color: var(--yt-spec-text-primary);
+    text-decoration: none;
+    display: inline-flex;
     align-items: center;
     margin-left: 3px;
     padding: 4px 8px;

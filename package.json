@@ -1,6 +1,6 @@
 {
   "name": "can-i-react",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",
