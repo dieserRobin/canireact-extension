@@ -185,6 +185,7 @@ html[dark] #reaction-info-toggle {
 
 .reaction-info-original-video {
     width: max-content;
+    max-width: 50%;
     height: auto;
     padding: 8px;
     border: rgb(72, 72, 72) 2px solid;

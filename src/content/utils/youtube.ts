@@ -14,8 +14,8 @@ export async function getOriginalVideo(): Promise<string | null> {
 
     if (!description) return null;
 
-    // Match the link and check for "original" in the same line or the line before
-    const match = description.match(/(^|\n).*original.*\n?.*https:\/\/www\.youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/i);
+    // Match the link and check for "original", "video" or "@handle - " in the same line or the line before
+    const match = description.match(/(^|\n).*((original|video).*\n?.*|@[\w-]+ - ).*(https:\/\/www\.youtube\.com\/watch\?v=|https:\/\/youtu\.be\/)([a-zA-Z0-9_-]{11})/i);
 
-    return match ? `https://www.youtube.com/watch?v=${match[2]}` : null;
+    return match ? `https://www.youtube.com/watch?v=${match[5]}` : null;
 }

@@ -2,7 +2,7 @@ import { isProduction, log } from './utils';
 import { handleThumbnails } from './utils/thumbnails';
 import { fetchVideoInfo } from './utils/api';
 import { getChannelUrl } from './utils/youtube';
-import { addReactionInfo, removeInfo } from './components/reaction-info';
+import { addOriginalVideoOnly, addReactionInfo, removeInfo } from './components/reaction-info';
 import { removeAllThumbnailInfos } from './components/thumbnail-info';
 import browser from "webextension-polyfill";
 import { getLanguage } from './utils/language';
@@ -99,6 +99,7 @@ async function processCurrentPage(): Promise<void> {
                 } else {
                     log("no rules found for this video");
                     removeInfo();
+                    addOriginalVideoOnly(bottomRow);
                 }
 
                 obs.disconnect(); // Stop observing after the element is found and handled
@@ -140,6 +141,7 @@ async function observeChannelNameChange(videoId: string) {
             } else {
                 log("no rules found for this video");
                 removeInfo();
+                addOriginalVideoOnly(bottomRow);
             }
 
             obs.disconnect(); // Stop observing after the element is found and handled

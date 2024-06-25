@@ -269,3 +269,35 @@ async function displayOriginalVideo(originalVideoId: string, originalVideo: HTML
     originalVideo.appendChild(thumbnailContainer);
     originalVideo.appendChild(textContainer);
 }
+
+export async function addOriginalVideoOnly(bottomRow: HTMLElement) {
+    const originalVideo = await getOriginalVideo();
+    const originalVideoId = originalVideo?.split("v=")[1];
+    if (!originalVideoId) return;
+
+    const reactionInfo = document.createElement("div");
+    const detailedInfo = document.createElement("div");
+
+    const elements = [];
+
+    reactionInfo.id = "reaction-info";
+    reactionInfo.className = "item style-scope ytd-watch-metadata rounded-large";
+
+    reactionInfo.classList.add("gray");
+
+    elements.push(createTextElement("p", "reaction-info-secondary font-bold", "Original Video"));
+    const originalVideoElement = document.createElement("a");
+    await displayOriginalVideo(originalVideoId, originalVideoElement);
+    elements.push(originalVideoElement);
+
+    const lightSrc = browser.runtime.getURL("images/canireact_source-light.svg");
+    const darkSrc = browser.runtime.getURL("images/canireact_source.svg");
+
+    elements.push(createImageElement(lightSrc, "Can I React?", "reaction-info-source light-version"));
+    elements.push(createImageElement(darkSrc, "Can I React?", "reaction-info-source dark-version"));
+
+    elements.forEach(el => detailedInfo.appendChild(el));
+    reactionInfo.appendChild(detailedInfo);
+
+    bottomRow.parentNode?.insertBefore(reactionInfo, bottomRow);
+}
