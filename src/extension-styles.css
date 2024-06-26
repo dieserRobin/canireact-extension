@@ -245,3 +245,26 @@ html[dark] #reaction-info-toggle {
     color: var(--yt-spec-text-secondary);
     text-decoration: none;
 }
+
+.sponsor-info-container {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+
+    background-color: rgba(0, 0, 0, .75);
+    border: 2px solid rgba(244, 67, 54, .75);
+
+    padding: 8px;
+    border-radius: 12px;
+}
+
+.sponsor-info-container h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.sponsor-info-container p {
+    font-size: 14px;
+    color: rgb(255, 255, 255, .75);
+}

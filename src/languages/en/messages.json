@@ -76,5 +76,11 @@
     },
     "sponsor_block_installed": {
         "message": "You've installed Sponsor Block, which automatically skips the placement. Please disable it for this video."
+    },
+    "sponsor_segment_title": {
+        "message": "Sponsor segment"
+    },
+    "sponsor_segment_description": {
+        "message": "You are not allowed to skip this segment of the video."
     }
 }

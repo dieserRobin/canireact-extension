@@ -31,6 +31,7 @@ export type Guidelines = {
     video: {
         uploaded_at: string;
     } | null;
+    sponsor_segments?: [number, number][] | null;
     original_video?: string | null;
     info_text: string | null;
     source: string;
@@ -50,7 +51,7 @@ export async function fetchVideoInfo(videoId: string, channelUrl: string | null 
 
     return browser.runtime.sendMessage({
         message: "sendRequest",
-        url: `${API_URL}/v1/video/${videoId}?easy_request=${easyRequest ? "true" : "false"}&return_original=true${channelUrl ? `&channel_url=${encodeURIComponent(channelUrl)}` : ""}${language ? `&language=${encodeURIComponent(language)}` : ""}`,
+        url: `${API_URL}/v1/video/${videoId}?easy_request=${easyRequest ? "true" : "false"}&return_original=true&return_sponsor_segments=true${channelUrl ? `&channel_url=${encodeURIComponent(channelUrl)}` : ""}${language ? `&language=${encodeURIComponent(language)}` : ""}`,
         method: "GET",
         data: null,
     })

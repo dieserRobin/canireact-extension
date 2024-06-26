@@ -5,12 +5,14 @@ import { getLanguageString } from "../utils/language";
 import { createImageElement, createTextElement } from "../utils/render";
 import browser from "webextension-polyfill";
 import { getOriginalVideo } from "../utils/youtube";
+import { displaySponsorInfo, stopSponsorInfo } from "./sponsor-info";
 
 let videoCountdownInterval: NodeJS.Timeout | null = null;
 let streamCountdownInterval: NodeJS.Timeout | null = null;
 
 export async function removeInfo(): Promise<void> {
     const reactionInfo = document.querySelector("#reaction-info");
+    stopSponsorInfo();
     videoCountdownInterval && clearInterval(videoCountdownInterval);
     streamCountdownInterval && clearInterval(streamCountdownInterval);
     if (reactionInfo) {
@@ -198,6 +200,12 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
 
         // Disclaimer
         elements.push(createTextElement("p", "reaction-info-secondary gray mt-1", await getLanguageString("guideline_disclaimer")));
+
+        // sponsor info
+        if (response.rules?.stream.sponsor_skips_allowed === false && (response.sponsor_segments?.length ?? 0) > 0) {
+            displaySponsorInfo(response.sponsor_segments ?? []);
+            elements.push(createTextElement("p", "reaction-info-secondary gray", "Uses SponsorBlock data for sponsor segment detection licensed used under CC BY-NC-SA 4.0 from https://sponsor.ajay.app/"));
+        }
 
         if (response.source) {
             if (response.source === "canireact") {

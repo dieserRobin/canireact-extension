@@ -76,5 +76,11 @@
     },
     "sponsor_block_installed": {
         "message": "Du hast Sponsor Block installiert, das automatisch das Placement überspringt. Bitte deaktiviere die Erweiterung für dieses Video."
+    },
+    "sponsor_segment_title": {
+        "message": "Placement Segment"
+    },
+    "sponsor_segment_description": {
+        "message": "Du darfst diesen Teil des Videos nicht überspringen."
     }
 }
