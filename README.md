@@ -15,3 +15,5 @@
 Browser Extension which displays reaction guidelines for a video or channel to streamers.
 
 ![canireact-promo](https://github.com/dieserRobin/canireact-extension/assets/30075784/25123086-71f2-4d65-a6ed-a75323acd2a7)
+
+Uses SponsorBlock data licensed used under CC BY-NC-SA 4.0 from https://sponsor.ajay.app/.
