@@ -79,6 +79,11 @@ html[dark] #reaction-info.orange {
     z-index: 500;
 }
 
+.redesign .reaction-info-major {
+    border-radius: 12px !important;
+    padding: 4px !important;
+}
+
 .reaction-info-major {
     font-size: 16px;
     background-color: var(--yt-spec-brand-background-primary);

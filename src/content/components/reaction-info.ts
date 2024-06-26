@@ -38,7 +38,7 @@ async function updateCountdown(element: HTMLElement, uploadedAt: string, hours: 
     element.textContent = templateString.replace("%time", remaningTime);
 }
 
-export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelines): Promise<void> {
+export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelines, isRedesign?: boolean): Promise<void> {
     const reactionInfo = document.createElement("div");
     const innerReactionInfo = document.createElement("div");
     const detailedInfo = document.createElement("div");
@@ -48,6 +48,10 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
     reactionInfo.className = "item style-scope ytd-watch-metadata rounded-large";
     innerReactionInfo.id = "reaction-info-inner";
     innerReactionInfo.className = "style-scope ytd-watch-metadata";
+
+    if (isRedesign) {
+        reactionInfo.classList.add("redesign");
+    }
 
     toggleButton.id = "reaction-info-toggle";
     toggleButton.className = "style-scope ytd-watch-metadata";

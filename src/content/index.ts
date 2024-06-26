@@ -76,7 +76,9 @@ async function processCurrentPage(): Promise<void> {
                 return; // Exit if already processed
             }
 
-            const bottomRow: HTMLElement | null = document.querySelector("#bottom-row");
+            const bottomRows: NodeListOf<HTMLElement> = document.querySelectorAll("#bottom-row");
+            const bottomRow = bottomRows[bottomRows.length - 1];
+
             if (bottomRow && channelUrl) {
                 hasProcessed = true;
 
@@ -95,7 +97,7 @@ async function processCurrentPage(): Promise<void> {
                 }
 
                 if (response && (response.rules || response.info_text)) {
-                    addReactionInfo(bottomRow, response);
+                    addReactionInfo(bottomRow, response, bottomRows.length === 2);
                 } else {
                     log("no rules found for this video");
                     removeInfo();
