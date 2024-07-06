@@ -198,11 +198,17 @@ html:not([dark]) .reaction-info-source.dark-version {
     position: absolute;
     right: 6px;
     top: 6px;
+
+    transition: transform 0.2s ease;
 }
 
 html[dark] #reaction-info-toggle {
     background-color: #0f0f0fb7;
     color: var(--yt-spec-text-primary);
+}
+
+.redesign .reaction-info-original-video {
+    max-width: 100%;
 }
 
 .reaction-info-original-video {

@@ -5,17 +5,19 @@ interface RequestMessage {
     url: string;
     method: string;
     data?: any;
+    priority?: "high" | "low" | "auto";
 }
 
 const CACHE_EXPIRATION = 24 * 60 * 60 * 1000; // 24 hours
 
-const sendRequestToServer = (url: string, method: string, data?: any): Promise<any> => {
+const sendRequestToServer = (url: string, method: string, data?: any, priority?: "high" | "low" | "auto"): Promise<any> => {
     return fetch(url, {
         method: method,
         headers: {
             'Content-Type': 'application/json'
         },
-        body: data ? JSON.stringify(data) : null
+        body: data ? JSON.stringify(data) : null,
+        priority: priority ?? "auto"
     })
         .then(response => response.json())
         .then(responseData => {
@@ -84,7 +86,7 @@ browser.runtime.onMessage.addListener((request: RequestMessage, sender: Runtime.
                     sendResponse({ success: true, data: cachedData });
                 } else {
                     console.log('Fetching new data');
-                    sendRequestToServer(request.url, request.method, request.data)
+                    sendRequestToServer(request.url, request.method, request.data, request.priority)
                         .then(data => {
                             sendResponse({ success: true, data });
                         })

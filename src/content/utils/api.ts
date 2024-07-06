@@ -54,6 +54,7 @@ export async function fetchVideoInfo(videoId: string, channelUrl: string | null 
         url: `${API_URL}/v1/video/${videoId}?easy_request=${easyRequest ? "true" : "false"}&return_original=true&return_sponsor_segments=true${channelUrl ? `&channel_url=${encodeURIComponent(channelUrl)}` : ""}${language ? `&language=${encodeURIComponent(language)}` : ""}`,
         method: "GET",
         data: null,
+        priority: easyRequest ? "low" : "high"
     })
         .then(response => {
             if (response) {
