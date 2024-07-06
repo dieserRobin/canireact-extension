@@ -230,9 +230,11 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
     reactionInfo.appendChild(innerReactionInfo);
     bottomRow.parentNode?.insertBefore(reactionInfo, bottomRow);
 
+    toggleButton.textContent = "+";
+
     if (!collapseState) {
         detailedInfo.style.display = "none";
-        toggleButton.textContent = "+";
+        toggleButton.style.transform = "rotate(0deg)";
     }
 
     toggleButton.addEventListener("click", () => {
@@ -240,10 +242,10 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
 
         if (detailedInfo.style.display === "none") {
             detailedInfo.style.display = "block";
-            toggleButton.textContent = "-";
+            toggleButton.style.transform = "rotate(45deg)";
         } else {
             detailedInfo.style.display = "none";
-            toggleButton.textContent = "+";
+            toggleButton.style.transform = "rotate(0deg)";
         }
     });
 }
