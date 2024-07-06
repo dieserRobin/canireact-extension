@@ -54,8 +54,7 @@ async function main() {
             }
 
             const response = await fetch(
-                // `https://api.canireact.com/auth/twitch/code/${code}`,
-                `http://localhost:8787/auth/twitch/code/${code}`,
+                `https://api.canireact.com/auth/twitch/code/${code}`,
                 {
                     method: "POST",
                 }
