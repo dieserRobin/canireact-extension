@@ -60,11 +60,23 @@ const setCachedData = async (cacheKey: string, data: any) => {
 
 browser.runtime.onConnect.addListener(async (port) => {
     const { collapseState } = await browser.storage.local.get("collapseState")
+    const { display_name } = await browser.storage.local.get("display_name")
+    const { profile_image_url } = await browser.storage.local.get("profile_image_url")
 
     if (collapseState !== undefined) {
         port.postMessage({
             message: "setCollapseState",
             data: collapseState
+        })
+    }
+
+    if (display_name !== undefined && profile_image_url !== undefined) {
+        port.postMessage({
+            message: "setProfile",
+            data: {
+                display_name: display_name,
+                profile_image_url: profile_image_url
+            }
         })
     }
 

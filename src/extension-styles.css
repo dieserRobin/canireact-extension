@@ -176,33 +176,39 @@ html:not([dark]) .reaction-info-source.dark-version {
     margin-top: 8px;
 }
 
-#reaction-info-toggle {
+.cir-button {
     cursor: pointer;
     color: var(--yt-endpoint-color);
 
     background-color: #ffffffbb;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
     font-size: 16px;
 
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 12px;
 
     font-weight: bold;
 
     user-select: none;
     border: none;
 
-    position: absolute;
-    right: 6px;
-    top: 6px;
+    padding: 2px 8px;
 
     transition: transform 0.2s ease;
 }
 
-html[dark] #reaction-info-toggle {
+#reaction-info-toggle.cir-button {
+    position: absolute;
+    right: 6px;
+    top: 6px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    padding: unset;
+}
+
+html[dark] .cir-button {
     background-color: #0f0f0fb7;
     color: var(--yt-spec-text-primary);
 }
@@ -273,4 +279,18 @@ html[dark] #reaction-info-toggle {
 .sponsor-info-container p {
     font-size: 14px;
     color: rgb(255, 255, 255, .75);
+}
+
+.tos-editor {
+    background-color: #F2F2F2;
+    border: 2px solid #e0e0e0;
+    color: #000;
+    padding: 8px;
+    border-radius: 12px;
+}
+
+html[dark] .tos-editor {
+    background-color: #272727;
+    border: 2px solid #1a1a1a;
+    color: #fff;
 }

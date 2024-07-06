@@ -6,9 +6,11 @@ import { createImageElement, createTextElement } from "../utils/render";
 import browser from "webextension-polyfill";
 import { getOriginalVideo } from "../utils/youtube";
 import { displaySponsorInfo, stopSponsorInfo } from "./sponsor-info";
+import TosEditor from "./tos-segment-editor";
 
 let videoCountdownInterval: NodeJS.Timeout | null = null;
 let streamCountdownInterval: NodeJS.Timeout | null = null;
+let tosEditor: TosEditor;
 
 export async function removeInfo(): Promise<void> {
     const reactionInfo = document.querySelector("#reaction-info");
@@ -40,7 +42,27 @@ async function updateCountdown(element: HTMLElement, uploadedAt: string, hours: 
     element.textContent = templateString.replace("%time", remaningTime);
 }
 
-export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelines, isRedesign?: boolean): Promise<void> {
+async function showEditorButton(): Promise<HTMLButtonElement> {
+    const editorButton = document.createElement("button");
+    editorButton.id = "editor-button";
+    editorButton.className = "style-scope ytd-watch-metadata cir-button";
+    editorButton.textContent = await getLanguageString("editor_button");
+
+    editorButton.addEventListener("click", () => {
+        if (tosEditor) {
+            tosEditor.destroy();
+            tosEditor = null;
+        } else {
+            const container = document.querySelector("#secondary") as HTMLElement;
+            if (!container) return;
+            tosEditor = new TosEditor(container);
+        }
+    });
+
+    return editorButton;
+}
+
+export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelines, isRedesign?: boolean, isAuthenticated?: boolean): Promise<void> {
     const reactionInfo = document.createElement("div");
     const innerReactionInfo = document.createElement("div");
     const detailedInfo = document.createElement("div");
@@ -56,7 +78,7 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
     }
 
     toggleButton.id = "reaction-info-toggle";
-    toggleButton.className = "style-scope ytd-watch-metadata";
+    toggleButton.className = "style-scope ytd-watch-metadata cir-button";
     toggleButton.textContent = "-"; // Initially set to collapse
 
     detailedInfo.classList.add("reaction-info-detailed");
@@ -206,6 +228,8 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
             displaySponsorInfo(response.sponsor_segments ?? []);
             elements.push(createTextElement("p", "reaction-info-secondary gray", "Uses SponsorBlock data for sponsor segment detection licensed used under CC BY-NC-SA 4.0 from https://sponsor.ajay.app/"));
         }
+
+        elements.push(await showEditorButton());
 
         if (response.source) {
             if (response.source === "canireact") {

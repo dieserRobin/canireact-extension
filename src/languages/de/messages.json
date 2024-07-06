@@ -82,5 +82,8 @@
     },
     "sponsor_segment_description": {
         "message": "Du darfst diesen Teil des Videos nicht überspringen."
+    },
+    "editor_button": {
+        "message": "TOS Editor ein/ausblenden"
     }
 }

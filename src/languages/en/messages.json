@@ -82,5 +82,8 @@
     },
     "sponsor_segment_description": {
         "message": "You are not allowed to skip this segment of the video."
+    },
+    "editor_button": {
+        "message": "Toggle TOS Editor"
     }
 }

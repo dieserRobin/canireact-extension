@@ -14,6 +14,10 @@ export let collapseState: boolean = false;
 
 let currentChannelNameObserver: MutationObserver | null = null;
 let latestRequest: string | null = null;
+let currentProfile: {
+    name: string;
+    image: string;
+} | null = null;
 
 async function main() {
     const isProd = isProduction();
@@ -26,6 +30,11 @@ async function main() {
         log("message received", message);
         if (message.message === "setCollapseState") {
             collapseState = message.data;
+        } else if (message.message === "setProfile") {
+            currentProfile = {
+                name: message.data.display_name,
+                image: message.data.profile_image_url
+            };
         }
     });
 
@@ -97,7 +106,7 @@ async function processCurrentPage(): Promise<void> {
                 }
 
                 if (response && (response.rules || response.info_text)) {
-                    addReactionInfo(bottomRow, response, bottomRows.length === 2);
+                    addReactionInfo(bottomRow, response, bottomRows.length === 2, currentProfile !== null);
                 } else {
                     log("no rules found for this video");
                     removeInfo();
@@ -123,7 +132,9 @@ async function observeChannelNameChange(videoId: string) {
         currentChannelUrl = channelUrl;
         log("channel url: " + channelUrl, currentChannelUrl);
 
-        const bottomRow: HTMLElement | null = document.querySelector("#bottom-row");
+        const bottomRows: NodeListOf<HTMLElement> = document.querySelectorAll("#bottom-row");
+        const bottomRow = bottomRows[bottomRows.length - 1];
+
         if (bottomRow) {
             hasProcessed = true;
 
@@ -139,7 +150,7 @@ async function observeChannelNameChange(videoId: string) {
             }
 
             if (response && (response.rules || response.info_text)) {
-                addReactionInfo(bottomRow, response);
+                addReactionInfo(bottomRow, response, bottomRows.length === 2, currentProfile !== null);
             } else {
                 log("no rules found for this video");
                 removeInfo();

@@ -5,7 +5,8 @@
   "version": "0.8.7",
   "description": "Displays wether a YouTube channel allows reactions video and in what form.",
   "permissions": [
-    "storage"
+    "storage",
+    "identity"
   ],
   "author": "robin.software",
   "homepage_url": "https://github.com/dieserRobin/canireact-extension",
@@ -15,6 +16,9 @@
     "scripts": [
       "background.bundle.js"
     ]
+  },
+  "action": {
+    "default_popup": "popup.html"
   },
   "host_permissions": [
     "https://www.youtube.com/*"
