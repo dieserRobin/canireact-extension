@@ -1,5 +1,8 @@
 import browser from 'webextension-polyfill';
 
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
 export function isProduction(): boolean {
     const manifest = browser.runtime.getManifest();
     return 'update_url' in manifest;
@@ -19,4 +22,8 @@ export function hasTimeElapsed(uploadedAt: string, hours: number): boolean {
 
 export function isSponsorBlockInstalled() {
     return document.querySelector("#sponsorblock-document-script") !== null;
+}
+
+export function cn(...inputs: ClassValue[]) {
+    return twMerge(clsx(inputs))
 }

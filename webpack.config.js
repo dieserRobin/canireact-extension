@@ -36,6 +36,10 @@ module.exports = {
         exclude: /node_modules/,
         use: "ts-loader",
       },
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader", "postcss-loader"],
+      },
     ],
   },
   resolve: {
@@ -51,7 +55,6 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         { from: "manifest.json", to: "manifest.json" },
-        { from: "src/extension-styles.css", to: "extension-styles.css" },
         { from: "src/popup/popup.css", to: "popup.css" },
         { from: "src/images", to: "images" },
         {

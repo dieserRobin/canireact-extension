@@ -1,3 +1,5 @@
+import '../extension-styles.css';
+
 import { isProduction, log } from './utils';
 import { handleThumbnails } from './utils/thumbnails';
 import { fetchVideoInfo } from './utils/api';

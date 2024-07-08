@@ -1,3 +1,14 @@
+@tailwind components;
+@tailwind utilities;
+
+*,
+::before,
+::after {
+    border-width: 0;
+    border-style: solid;
+    border-color: theme('borderColor.DEFAULT', currentColor);
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
 
 #reaction-info {
@@ -268,6 +279,8 @@ html[dark] .cir-button {
 
     padding: 8px;
     border-radius: 12px;
+
+    font-family: 'Space Grotesk', sans-serif;
 }
 
 .sponsor-info-container h3 {
@@ -287,6 +300,7 @@ html[dark] .cir-button {
     color: #000;
     padding: 8px;
     border-radius: 12px;
+    font-family: 'Space Grotesk', sans-serif;
 }
 
 html[dark] .tos-editor {

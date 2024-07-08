@@ -44,6 +44,15 @@ export type VideoDetails = {
     thumbnail: string;
 }
 
+export type TosSegment = {
+    id: string;
+    videoId: string;
+    start: number;
+    end: number;
+    category?: string;
+    user: string;
+}
+
 export async function fetchVideoInfo(videoId: string, channelUrl: string | null = null, easyRequest: boolean = false, language?: string): Promise<any> {
     if (!videoId) {
         return null;

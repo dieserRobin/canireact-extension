@@ -12,9 +12,13 @@
       "jsx": "react",
       "noImplicitAny": false,
       "noImplicitThis": false,
-      "strictNullChecks": false
+      "strictNullChecks": false,
+      "baseUrl": ".",
+      "paths": {
+        "@/*": ["./src/*"]
+      }
     },
-    "include": ["src"],
+    "include": ["src", "tailwind.config.js"],
     "exclude": ["node_modules"]
   }
   

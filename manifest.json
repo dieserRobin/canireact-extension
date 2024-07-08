@@ -54,9 +54,6 @@
       ],
       "js": [
         "./content.bundle.js"
-      ],
-      "css": [
-        "./extension-styles.css"
       ]
     }
   ],
