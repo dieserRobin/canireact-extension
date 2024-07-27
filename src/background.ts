@@ -10,11 +10,14 @@ interface RequestMessage {
 
 const CACHE_EXPIRATION = 24 * 60 * 60 * 1000; // 24 hours
 
-const sendRequestToServer = (url: string, method: string, data?: any, priority?: "high" | "low" | "auto"): Promise<any> => {
+const sendRequestToServer = async (url: string, method: string, data?: any, priority?: "high" | "low" | "auto"): Promise<any> => {
+    const { token } = await browser.storage.local.get("token");
+
     return fetch(url, {
         method: method,
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
         body: data ? JSON.stringify(data) : null,
         priority: priority ?? "auto"

@@ -32,6 +32,7 @@ export type Guidelines = {
         uploaded_at: string;
     } | null;
     sponsor_segments?: [number, number][] | null;
+    tos_segments: TosSegment[];
     original_video?: string | null;
     info_text: string | null;
     source: string;
@@ -94,6 +95,66 @@ export async function fetchVideoDetails(videoId: string) {
         }
     }).catch(error => {
         log("Error fetching video details:", error);
+        return null;
+    });
+}
+
+export async function fetchSegments(videoId: string) {
+    if (!videoId) return null;
+
+    return browser.runtime.sendMessage({
+        message: "sendRequest",
+        url: `${API_URL}/v1/video/${videoId}/tos`,
+        method: "GET",
+        data: null,
+    }).then(response => {
+        if (response && response.success) {
+            return response.data as TosSegment[];
+        } else {
+            return null;
+        }
+    }).catch(error => {
+        log("Error fetching segments:", error);
+        return null;
+    });
+}
+
+export async function submitSegment(videoId: string, segment: { start: number, end: number, category: string }) {
+    if (!videoId) return null;
+
+    return browser.runtime.sendMessage({
+        message: "sendRequest",
+        url: `${API_URL}/v1/tos/video/${videoId}`,
+        method: "POST",
+        data: { start: segment.start, end: segment.end, category: segment.category },
+    }).then(response => {
+        if (response && response.success) {
+            return response.data as { success: boolean };
+        } else {
+            return null;
+        }
+    }).catch(error => {
+        log("Error submitting segments:", error);
+        return null;
+    });
+}
+
+export async function rateSegment(segmentId: string, type: "UPVOTE" | "DOWNVOTE") {
+    if (!segmentId) return null;
+
+    return browser.runtime.sendMessage({
+        message: "sendRequest",
+        url: `${API_URL}/v1/tos/segment/${segmentId}/rate`,
+        method: "POST",
+        data: { type },
+    }).then(response => {
+        if (response && response.success) {
+            return response.data as { success: boolean };
+        } else {
+            return null;
+        }
+    }).catch(error => {
+        log("Error rating segment:", error);
         return null;
     });
 }

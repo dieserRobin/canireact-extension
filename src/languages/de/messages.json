@@ -85,5 +85,11 @@
     },
     "editor_button": {
         "message": "TOS Editor ein/ausblenden"
+    },
+    "tos_segment_title": {
+        "message": "TOS Segment eingehend"
+    },
+    "tos_segment_description": {
+        "message": "Der folgende Abschnitt könnte gegen die Twitch-Nutzungsbedingungen verstoßen. Bitte sei vorsichtig."
     }
 }

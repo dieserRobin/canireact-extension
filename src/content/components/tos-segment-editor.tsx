@@ -1,15 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { createRoot, Root } from 'react-dom/client';
-import { formatTime, getCurrentTime } from '../utils/youtube';
+import { formatTime, getCurrentTime, getVideoId } from '../utils/youtube';
 import { Button } from './ui/button';
 import { TrashIcon } from "@radix-ui/react-icons";
+import { submitSegment, TosSegment } from '../utils/api';
+import { log } from '../utils';
 
-const TosSegmentEditor: React.FC = () => {
+type Props = {
+    defaultSegments: TosSegment[];
+}
+
+const TosSegmentEditor: React.FC<Props> = ({ defaultSegments }) => {
     const [segments, setSegments] = React.useState<[number, number][]>([]);
     const [startTimestamp, setStartTimestamp] = React.useState<number>(0);
     const [endTimestamp, setEndTimestamp] = React.useState<number>(0);
 
-    const [videoStatus, setVideoStatus] = React.useState<'safe' | 'tos' | 'mixed' | null>(null);
+    const [saving, setSaving] = useState(false);
 
     const deleteCurrent = () => {
         setStartTimestamp(0);
@@ -21,20 +27,27 @@ const TosSegmentEditor: React.FC = () => {
         deleteCurrent();
     }
 
-    const save = () => {
+    const save = async () => {
+        setSaving(true);
 
+        try {
+            for (const segment of segments) {
+                await submitSegment(await getVideoId(), {
+                    start: segment[0],
+                    end: segment[1],
+                    category: 'TOS'
+                });
+            }
+        } catch (e) {
+            log(e);
+        }
+
+        setSaving(false);
     }
 
     return (
         <div className='tos-editor'>
             <h1 className='cir-text-4xl cir-font-bold'>TOS Segment Editor</h1>
-
-            <h2 className='cir-text-2xl'>Video Status</h2>
-            <div className='cir-my-2 cir-flex cir-items-center cir-gap-2 cir-text-xl'>
-                <Button disabled={videoStatus === "safe"} onClick={() => setVideoStatus('safe')}>Safe</Button>
-                <Button disabled={videoStatus === "tos"} onClick={() => setVideoStatus('tos')}>TOS</Button>
-                <Button disabled={videoStatus === "mixed"} onClick={() => setVideoStatus('mixed')}>Mixed</Button>
-            </div>
 
             <div className=''>
                 <h2 className='cir-text-2xl'>Segments</h2>
@@ -58,8 +71,18 @@ const TosSegmentEditor: React.FC = () => {
                 </Button>
             </div>
 
-            <Button className='cir-mt-4' onClick={save}>Save</Button>
+            <Button className='cir-mt-4' disabled={saving} onClick={save}>Save</Button>
         </div >
+    );
+};
+
+const Segment: React.FC<{ start: number, end: number }> = ({ start, end }) => {
+    return (
+        <div className='cir-text-xl cir-font-medium cir-my-1'>
+            <span>{formatTime(start)}</span>
+            -
+            <span>{formatTime(end)}</span>
+        </div>
     );
 };
 
@@ -67,7 +90,7 @@ class TosEditor {
     container: HTMLElement;
     root: Root;
 
-    constructor(container: HTMLElement) {
+    constructor(container: HTMLElement, segments: TosSegment[]) {
         this.container = container;
 
         const element = document.createElement('div');
@@ -75,7 +98,7 @@ class TosEditor {
         this.container.insertBefore(element, this.container.firstChild);
 
         this.root = createRoot(element);
-        this.root.render(<TosSegmentEditor />);
+        this.root.render(<TosSegmentEditor defaultSegments={segments} />);
     }
 
     destroy() {

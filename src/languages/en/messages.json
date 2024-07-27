@@ -85,5 +85,11 @@
     },
     "editor_button": {
         "message": "Toggle TOS Editor"
+    },
+    "tos_segment_title": {
+        "message": "TOS Segment incoming"
+    },
+    "tos_segment_description": {
+        "message": "The following segment may be against Twitch's TOS. Please be careful."
     }
 }

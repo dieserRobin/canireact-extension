@@ -1,10 +1,10 @@
 import { collapseState } from "..";
 import { hasTimeElapsed, isSponsorBlockInstalled, log } from "../utils";
-import { Guidelines, fetchVideoDetails } from "../utils/api";
+import { Guidelines, TosSegment, fetchVideoDetails } from "../utils/api";
 import { getLanguageString } from "../utils/language";
 import { createImageElement, createTextElement } from "../utils/render";
 import browser from "webextension-polyfill";
-import { getOriginalVideo } from "../utils/youtube";
+import { getOriginalVideo, getProgressBar, getVideoId, getVideoLength } from "../utils/youtube";
 import { displaySponsorInfo, stopSponsorInfo } from "./sponsor-info";
 import TosEditor from "./tos-segment-editor";
 
@@ -42,7 +42,7 @@ async function updateCountdown(element: HTMLElement, uploadedAt: string, hours: 
     element.textContent = templateString.replace("%time", remaningTime);
 }
 
-async function showEditorButton(): Promise<HTMLButtonElement> {
+async function showEditorButton(tosSegments: TosSegment[]): Promise<HTMLButtonElement> {
     const editorButton = document.createElement("button");
     editorButton.id = "editor-button";
     editorButton.className = "style-scope ytd-watch-metadata cir-button";
@@ -55,7 +55,7 @@ async function showEditorButton(): Promise<HTMLButtonElement> {
         } else {
             const container = document.querySelector("#secondary") as HTMLElement;
             if (!container) return;
-            tosEditor = new TosEditor(container);
+            tosEditor = new TosEditor(container, tosSegments);
         }
     });
 
@@ -225,11 +225,13 @@ export async function addReactionInfo(bottomRow: HTMLElement, response: Guidelin
 
         // sponsor info
         if (response.rules?.stream.sponsor_skips_allowed === false && (response.sponsor_segments?.length ?? 0) > 0) {
-            displaySponsorInfo(response.sponsor_segments ?? []);
+            displaySponsorInfo(response.sponsor_segments ?? [], response.tos_segments.map((segment) => [segment.start, segment.end]) ?? []);
             elements.push(createTextElement("p", "reaction-info-secondary gray", "Uses SponsorBlock data for sponsor segment detection licensed used under CC BY-NC-SA 4.0 from https://sponsor.ajay.app/"));
         }
 
-        elements.push(await showEditorButton());
+        if (isAuthenticated) {
+            elements.push(await showEditorButton(response.tos_segments ?? []));
+        }
 
         if (response.source) {
             if (response.source === "canireact") {

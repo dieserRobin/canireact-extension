@@ -4,13 +4,15 @@ import { getCurrentTime, getYouTubePlayer } from "../utils/youtube";
 
 export let timeCheckInterval: NodeJS.Timeout | null = null;
 let showingInfo = false;
+let showingTosInfo = false;
 let shownSegments: [number, number][] = [];
 
-async function checkTime(segments: [number, number][]) {
+async function checkTime(segments: [number, number][], tosSegments: [number, number][]) {
     const currentTime = await getCurrentTime();
     if (!currentTime) return;
 
     let foundSegment = false;
+    let foundTosSegment = false;
 
     for (const segment of segments) {
         if (currentTime >= segment[0] && currentTime <= segment[1]) {
@@ -23,8 +25,31 @@ async function checkTime(segments: [number, number][]) {
         }
     }
 
+    for (const segment of tosSegments) {
+        if (currentTime >= (segment[0] - 10) && currentTime <= segment[1]) {
+            if (shownSegments.includes(segment)) return;
+            shownSegments.push(segment);
+
+            log("TOS segment detected");
+            foundTosSegment = true;
+            showTosInfo();
+        }
+    }
+
     if (!foundSegment && showingInfo) {
         removeInfo();
+    }
+
+    if (!foundTosSegment && showingTosInfo) {
+        removeTosInfo();
+    }
+}
+
+async function removeTosInfo() {
+    const info = document.getElementById("tos-info");
+    if (info) {
+        info.remove();
+        showingTosInfo = false;
     }
 }
 
@@ -36,9 +61,9 @@ async function removeInfo() {
     }
 }
 
-export async function displaySponsorInfo(segments: [number, number][]) {
+export async function displaySponsorInfo(segments: [number, number][], tosSegments: [number, number][]) {
     log("Starting sponsor info");
-    timeCheckInterval = setInterval(() => checkTime(segments), 1000);
+    timeCheckInterval = setInterval(() => checkTime(segments, tosSegments), 1000);
 }
 
 export async function stopSponsorInfo() {
@@ -49,6 +74,29 @@ export async function stopSponsorInfo() {
         clearInterval(timeCheckInterval);
         timeCheckInterval = null;
     }
+}
+
+async function showTosInfo() {
+    if (showingTosInfo) return;
+    showingTosInfo = true;
+
+    const player = await getYouTubePlayer();
+    if (!player) return;
+
+    const info = document.createElement("div");
+    info.id = "tos-info";
+    info.classList.add("sponsor-info-container");
+
+    const title = document.createElement("h3");
+    title.textContent = getLanguageString("tos_segment_title");
+
+    const description = document.createElement("p");
+    description.textContent = getLanguageString("tos_segment_description");
+
+    info.appendChild(title);
+    info.appendChild(description);
+
+    player.appendChild(info);
 }
 
 async function showInfo() {

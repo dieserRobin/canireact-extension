@@ -8,6 +8,7 @@ import { addOriginalVideoOnly, addReactionInfo, removeInfo } from './components/
 import { removeAllThumbnailInfos } from './components/thumbnail-info';
 import browser from "webextension-polyfill";
 import { getLanguage } from './utils/language';
+import { addTosSegments } from './components/tos-segments';
 
 export let API_URL = "https://api.canireact.com";
 export let hasProcessed = false;
@@ -75,6 +76,12 @@ async function processCurrentPage(): Promise<void> {
             return;
         }
         log("video id: " + videoId);
+
+        addTosSegments(videoId).then(() => {
+            log("tos segments added");
+        }).catch((e) => {
+            log("error adding tos segments: " + e);
+        });
 
         // Wait for the bottom row to be available in the DOM
         const observer = new MutationObserver(async (_, obs) => {

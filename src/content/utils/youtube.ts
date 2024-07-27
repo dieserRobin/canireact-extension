@@ -37,6 +37,23 @@ export async function getCurrentTime() {
     return seconds;
 }
 
+export async function getVideoLength() {
+    const videoDuration = document.querySelector(".ytp-time-duration");
+    if (!videoDuration) return null;
+
+    const duration = videoDuration.textContent;
+    const durationArray = duration?.split(":");
+    if (!durationArray) return null;
+
+    let seconds = 0;
+
+    for (let i = 0; i < durationArray.length; i++) {
+        seconds += parseInt(durationArray[i]) * Math.pow(60, durationArray.length - i - 1);
+    }
+
+    return seconds;
+}
+
 export function formatTime(seconds: number) {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -47,4 +64,21 @@ export function formatTime(seconds: number) {
 
 export async function getYouTubePlayer() {
     return document.querySelector(".ytd-player");
+}
+
+export async function getVideoId() {
+    if (window.location.pathname !== "/watch") {
+        return null;
+    }
+
+    const videoId = new URLSearchParams(window.location.search).get("v");
+    return videoId;
+}
+
+export async function getProgressBar() {
+    return document.querySelector(".ytp-progress-bar-container .ytp-progress-bar");
+}
+
+export async function getMoreDropdown() {
+    return document.querySelector("#items");
 }
