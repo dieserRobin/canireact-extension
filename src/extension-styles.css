@@ -1,276 +1,326 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
+@tailwind components;
+@tailwind utilities;
+
+*,
+::before,
+::after {
+  border-width: 0;
+  border-style: solid;
+  border-color: theme("borderColor.DEFAULT", currentColor);
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap");
 
 #reaction-info {
-    margin-top: 8px;
-    margin-bottom: 8px;
-    padding: 8px 8px 8px 16px;
-    /* Adjust padding to make space for the accent */
-    background: linear-gradient(to right, rgba(76, 175, 80, 1) 8px, rgba(242, 242, 242, 0.5) 8px, rgba(242, 242, 242, 1));
-    border-radius: 12px;
-    display: block;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    position: relative;
-    overflow: hidden;
-    /* Ensure content stays within bounds */
+  margin-top: 8px;
+  margin-bottom: 0px;
+  padding: 8px 8px 8px 16px;
+  /* Adjust padding to make space for the accent */
+  background: linear-gradient(
+    to right,
+    rgba(76, 175, 80, 1) 8px,
+    rgba(242, 242, 242, 0.5) 8px,
+    rgba(242, 242, 242, 1)
+  );
+  border-radius: 12px;
+  display: block;
+  justify-content: center;
+  align-items: center;
+  width: calc(100% - 2.5rem);
+  position: relative;
+  overflow: hidden;
+  /* Ensure content stays within bounds */
 
-    font-family: 'Space Grotesk', sans-serif;
+  font-family: "Space Grotesk", sans-serif;
 }
 
 html[dark] #reaction-info {
-    background: linear-gradient(to left, rgba(76, 175, 80, .75), rgba(39, 39, 39, 1));
+  background: linear-gradient(
+    to left,
+    rgba(76, 175, 80, 0.75),
+    rgba(39, 39, 39, 1)
+  );
 }
 
 #reaction-info.gray {
-    background: linear-gradient(to left, rgb(72, 72, 72, .75), rgba(242, 242, 242, 1));
-    border: 2px solid rgb(72, 72, 72);
+  background: linear-gradient(
+    to left,
+    rgb(72, 72, 72, 0.75),
+    rgba(242, 242, 242, 1)
+  );
+  border: 2px solid rgb(72, 72, 72);
 }
 
 html[dark] #reaction-info.gray {
-    background: linear-gradient(to left, rgb(0, 0, 0, .75), rgba(39, 39, 39, 1));
-    border: 2px solid rgb(0, 0, 0);
+  background: linear-gradient(to left, rgb(0, 0, 0, 0.75), rgba(39, 39, 39, 1));
+  border: 2px solid rgb(0, 0, 0);
 }
 
 #reaction-info.green {
-    background: linear-gradient(to left, rgba(76, 175, 80, .75), rgba(242, 242, 242, 1));
-    border: 2px solid rgba(76, 175, 80, 1);
+  background: linear-gradient(
+    to left,
+    rgba(76, 175, 80, 0.75),
+    rgba(242, 242, 242, 1)
+  );
+  border: 2px solid rgba(76, 175, 80, 1);
 }
 
 html[dark] #reaction-info.green {
-    background: linear-gradient(to left, rgba(76, 175, 80, .75), rgba(39, 39, 39, 1));
+  background: linear-gradient(
+    to left,
+    rgba(76, 175, 80, 0.75),
+    rgba(39, 39, 39, 1)
+  );
+  border: 2px solid rgba(76, 175, 80, 1);
 }
 
 #reaction-info.red {
-    background: linear-gradient(to left, rgba(244, 67, 54, .75), rgba(242, 242, 242, 1));
-    border: 2px solid rgba(244, 67, 54, 1);
+  background: linear-gradient(
+    to left,
+    rgba(244, 67, 54, 0.75),
+    rgba(242, 242, 242, 1)
+  );
+  border: 2px solid rgba(244, 67, 54, 1);
 }
 
 html[dark] #reaction-info.red {
-    background: linear-gradient(to left, rgba(244, 67, 54, .75), rgba(39, 39, 39, 1));
+  background: linear-gradient(
+    to left,
+    rgba(244, 67, 54, 0.75),
+    rgba(39, 39, 39, 1)
+  );
+  border: 2px solid rgba(244, 67, 54, 1);
 }
 
 #reaction-info.orange {
-    background: linear-gradient(to left, rgba(255, 152, 0, .75), rgba(242, 242, 242, 1));
-    border: 2px solid rgba(255, 152, 0, 1);
+  background: linear-gradient(
+    to left,
+    rgba(255, 152, 0, 0.75),
+    rgba(242, 242, 242, 1)
+  );
+  border: 2px solid rgba(255, 152, 0, 1);
 }
 
 html[dark] #reaction-info.orange {
-    background: linear-gradient(to left, rgba(255, 152, 0, .75), rgba(39, 39, 39, 1));
+  background: linear-gradient(
+    to left,
+    rgba(255, 152, 0, 0.75),
+    rgba(39, 39, 39, 1)
+  );
+  border: 2px solid rgba(255, 152, 0, 1);
 }
 
 #reaction-info-inner {
-    padding: 8px;
-    display: block;
+  padding: 8px;
+  display: block;
 }
 
 .reaction-info-preview {
-    position: "absolute";
-    top: 10px;
-    left: 18px;
-    margin-top: 8px;
-    font-size: 16px;
-    background-color: var(--yt-spec-brand-background-primary);
-    color: var(--yt-spec-text-primary);
-    padding: 4px 8px;
-    border-radius: 4px;
-    width: calc(var(--ytd-video-preview-width)-50px);
-    position: absolute;
-    z-index: 500;
+  position: "absolute";
+  top: 10px;
+  left: 18px;
+  margin-top: 8px;
+  font-size: 16px;
+  background-color: var(--yt-spec-brand-background-primary);
+  color: var(--yt-spec-text-primary);
+  padding: 4px 8px;
+  border-radius: 4px;
+  width: calc(var(--ytd-video-preview-width)-50px);
+  position: absolute;
+  z-index: 500;
 }
 
 .redesign .reaction-info-major {
-    border-radius: 12px !important;
-    padding: 4px !important;
+  border-radius: 12px !important;
+  padding: 4px !important;
 }
 
 .reaction-info-major {
-    font-size: 16px;
-    background-color: var(--yt-spec-brand-background-primary);
-    color: var(--yt-spec-text-primary);
-    padding: 4px 8px;
-    border-radius: 40px;
-    width: fit-content;
-    font-weight: 600;
+  font-size: 16px;
+  background-color: var(--yt-spec-brand-background-primary);
+  color: var(--yt-spec-text-primary);
+  padding: 4px 8px;
+  border-radius: 40px;
+  width: fit-content;
+  font-weight: 600;
 }
 
 .reaction-info-detailed {
-    margin-top: 5px;
+  margin-top: 5px;
 }
 
 .reaction-thumbnail-info-container {
-    display: inline-flex;
-    align-items: center;
+  display: inline-flex;
+  align-items: center;
 }
 
 .reaction-thumbnail-info {
-    display: inline-flex;
-    align-items: center;
-    margin-left: 3px;
-    padding: 4px 8px;
-    border-radius: 40px;
-    background-color: var(--yt-spec-brand-background-primary);
-    width: max-content;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 3px;
+  padding: 4px 8px;
+  border-radius: 40px;
+  background-color: var(--yt-spec-brand-background-primary);
+  width: max-content;
 }
 
 .reaction-thumbnail-info-link {
-    color: var(--yt-spec-text-primary);
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    margin-left: 3px;
-    padding: 4px 8px;
-    border-radius: 40px;
-    background-color: var(--yt-spec-brand-background-primary);
-    width: max-content;
-}
-
-.reaction-source {
-    margin-top: 10px;
+  color: var(--yt-spec-text-primary);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 3px;
+  padding: 4px 8px;
+  border-radius: 40px;
+  background-color: var(--yt-spec-brand-background-primary);
+  width: max-content;
 }
 
 .reaction-info-source {
-    margin-top: 5px;
-    max-height: 25px;
+  max-height: 25px;
 }
 
 html[dark] .reaction-info-source.light-version {
-    display: none;
+  display: none;
 }
 
 html[dark] .reaction-info-source.dark-version {
-    display: block;
+  display: block;
 }
 
 html:not([dark]) .reaction-info-source.light-version {
-    display: block;
+  display: block;
 }
 
 html:not([dark]) .reaction-info-source.dark-version {
-    display: none;
+  display: none;
 }
 
 .reaction-info-success {
-    background-color: #4CAF50;
+  background-color: #4caf50;
 }
 
 .reaction-info-error {
-    background-color: #f44336;
+  background-color: #f44336;
 }
 
 .font-bold {
-    font-weight: bold;
-    margin-top: 6px;
+  font-weight: bold;
+  margin-top: 6px;
 }
 
 .reaction-info-secondary {
-    color: var(--yt-endpoint-color);
-    font-size: 14px;
+  color: var(--yt-endpoint-color);
+  font-size: 14px;
 }
 
 .reaction-info-secondary.gray {
-    opacity: .75;
+  opacity: 0.75;
 }
 
 .mt-1 {
-    margin-top: 8px;
+  margin-top: 8px;
 }
 
 #reaction-info-toggle {
-    cursor: pointer;
-    color: var(--yt-endpoint-color);
+  cursor: pointer;
+  color: var(--yt-endpoint-color);
 
-    background-color: #ffffffbb;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    font-size: 16px;
+  background-color: #ffffffbb;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    font-weight: bold;
+  font-weight: bold;
 
-    user-select: none;
-    border: none;
+  user-select: none;
+  border: none;
 
-    position: absolute;
-    right: 6px;
-    top: 6px;
+  position: absolute;
+  right: 6px;
+  top: 6px;
 
-    transition: transform 0.2s ease;
+  transition: transform 0.2s ease;
 }
 
 html[dark] #reaction-info-toggle {
-    background-color: #0f0f0fb7;
-    color: var(--yt-spec-text-primary);
+  background-color: #0f0f0fb7;
+  color: var(--yt-spec-text-primary);
 }
 
 .redesign .reaction-info-original-video {
-    max-width: 100%;
+  max-width: 100%;
 }
 
 .reaction-info-original-video {
-    width: max-content;
-    max-width: 50%;
-    height: auto;
-    padding: 8px;
-    border: rgb(72, 72, 72) 2px solid;
-    background-color: rgba(242, 242, 242, .25);
-    display: flex;
-    gap: 8px;
-    border-radius: 12px;
-    text-decoration: none;
-    margin-top: 4px;
+  width: max-content;
+  max-width: 50%;
+  height: auto;
+  padding: 8px;
+  border: rgb(72, 72, 72) 2px solid;
+  background-color: rgba(242, 242, 242, 0.25);
+  display: flex;
+  gap: 8px;
+  border-radius: 12px;
+  text-decoration: none;
+  margin-top: 4px;
 }
 
 .reaction-info-original-video-thumbnail {
-    width: 168px;
-    height: 94px;
+  width: 168px;
+  height: 94px;
 }
 
 .reaction-info-original-video-thumbnail img {
-    object-fit: cover;
-    border-radius: 8px;
-    width: 100%;
-    height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  width: 100%;
+  height: 100%;
 }
 
 .reaction-info-original-video-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin-top: 8px;
-    color: var(--yt-spec-text-primary);
-    text-decoration: none;
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 8px;
+  color: var(--yt-spec-text-primary);
+  text-decoration: none;
 }
 
 .reaction-info-original-video-channel {
-    font-size: 12px;
-    margin-top: 4px;
-    color: var(--yt-spec-text-secondary);
-    text-decoration: none;
+  font-size: 12px;
+  margin-top: 4px;
+  color: var(--yt-spec-text-secondary);
+  text-decoration: none;
 }
 
 .sponsor-info-container {
-    position: absolute;
-    top: 12px;
-    right: 12px;
+  position: absolute;
+  top: 12px;
+  right: 12px;
 
-    background-color: rgba(0, 0, 0, .75);
-    border: 2px solid rgba(244, 67, 54, .75);
+  background-color: rgba(0, 0, 0, 0.75);
+  border: 2px solid rgba(244, 67, 54, 0.75);
 
-    padding: 8px;
-    border-radius: 12px;
+  padding: 8px;
+  border-radius: 12px;
 }
 
 .sponsor-info-container h3 {
-    font-size: 16px;
-    font-weight: 600;
-    color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
 }
 
 .sponsor-info-container p {
-    font-size: 14px;
-    color: rgb(255, 255, 255, .75);
+  font-size: 14px;
+  color: rgb(255, 255, 255, 0.75);
+}
+
+button.closed {
+  transform: rotate(45deg);
 }

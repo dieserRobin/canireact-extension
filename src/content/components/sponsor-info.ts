@@ -4,76 +4,71 @@ import { getCurrentTime, getYouTubePlayer } from "../utils/youtube";
 
 export let timeCheckInterval: NodeJS.Timeout | null = null;
 let showingInfo = false;
-let shownSegments: [number, number][] = [];
 
 async function checkTime(segments: [number, number][]) {
-    const currentTime = await getCurrentTime();
-    if (!currentTime) return;
+  const currentTime = await getCurrentTime();
+  if (!currentTime) return;
 
-    let foundSegment = false;
+  let foundSegment = false;
 
-    for (const segment of segments) {
-        if (currentTime >= segment[0] && currentTime <= segment[1]) {
-            if (shownSegments.includes(segment)) return;
-
-            shownSegments.push(segment);
-            log("Sponsor segment detected");
-            foundSegment = true;
-            showInfo();
-        }
+  for (const segment of segments) {
+    if (currentTime >= segment[0] && currentTime <= segment[1]) {
+      log("Sponsor segment detected");
+      foundSegment = true;
+      showInfo();
     }
+  }
 
-    if (!foundSegment && showingInfo) {
-        removeInfo();
-    }
+  if (!foundSegment && showingInfo) {
+    removeInfo();
+  }
 }
 
 async function removeInfo() {
-    const info = document.getElementById("sponsor-info");
-    if (info) {
-        info.remove();
-        showingInfo = false;
-    }
+  const info = document.getElementById("sponsor-info");
+  if (info) {
+    info.remove();
+    showingInfo = false;
+  }
 }
 
 export async function displaySponsorInfo(segments: [number, number][]) {
-    log("Starting sponsor info");
-    timeCheckInterval = setInterval(() => checkTime(segments), 1000);
+  log("Starting sponsor info");
+  timeCheckInterval = setInterval(() => checkTime(segments), 1000);
 }
 
 export async function stopSponsorInfo() {
-    log("Stopping sponsor info");
-    shownSegments = [];
-    removeInfo();
-    if (timeCheckInterval) {
-        clearInterval(timeCheckInterval);
-        timeCheckInterval = null;
-    }
+  log("Stopping sponsor info");
+  removeInfo();
+  if (timeCheckInterval) {
+    clearInterval(timeCheckInterval);
+    timeCheckInterval = null;
+  }
 }
 
 async function showInfo() {
-    if (showingInfo) return;
-    showingInfo = true;
+  if (showingInfo) return;
+  showingInfo = true;
 
-    const player = await getYouTubePlayer();
-    if (!player) return;
+  const player = await getYouTubePlayer();
+  if (!player) return;
 
-    const info = document.createElement("div");
-    info.id = "sponsor-info";
-    info.classList.add("sponsor-info-container");
+  const info = document.createElement("div");
+  info.id = "sponsor-info";
+  info.classList.add("sponsor-info-container");
 
-    const title = document.createElement("h3");
-    title.textContent = getLanguageString("sponsor_segment_title");
+  const title = document.createElement("h3");
+  title.textContent = getLanguageString("sponsor_segment_title");
 
-    const description = document.createElement("p");
-    description.textContent = getLanguageString("sponsor_segment_description");
+  const description = document.createElement("p");
+  description.textContent = getLanguageString("sponsor_segment_description");
 
-    info.appendChild(title);
-    info.appendChild(description);
+  info.appendChild(title);
+  info.appendChild(description);
 
-    player.appendChild(info);
+  player.appendChild(info);
 
-    setTimeout(() => {
-        removeInfo();
-    }, 10_000);
+  setTimeout(() => {
+    removeInfo();
+  }, 10_000);
 }

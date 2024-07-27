@@ -4,38 +4,23 @@
   "name": "Can I React?",
   "version": "0.8.7",
   "description": "Displays wether a YouTube channel allows reactions video and in what form.",
-  "permissions": [
-    "storage"
-  ],
+  "permissions": ["storage"],
   "author": "robin.software",
   "homepage_url": "https://github.com/dieserRobin/canireact-extension",
   "default_locale": "en",
   "background": {
     "service_worker": "background.bundle.js",
-    "scripts": [
-      "background.bundle.js"
-    ]
+    "scripts": ["background.bundle.js"]
   },
-  "host_permissions": [
-    "https://www.youtube.com/*"
-  ],
+  "host_permissions": ["https://www.youtube.com/*"],
   "web_accessible_resources": [
     {
-      "matches": [
-        "https://www.youtube.com/*"
-      ],
-      "resources": [
-        "languages/*.json"
-      ]
+      "matches": ["https://www.youtube.com/*"],
+      "resources": ["languages/*.json"]
     },
     {
-      "matches": [
-        "https://www.youtube.com/*"
-      ],
-      "resources": [
-        "images/*.svg",
-        "images/*.png"
-      ]
+      "matches": ["https://www.youtube.com/*"],
+      "resources": ["images/*.svg", "images/*.png"]
     }
   ],
   "content_scripts": [
@@ -45,15 +30,8 @@
         "*://www.youtube.com/*",
         "*://m.youtube.com/*"
       ],
-      "exclude_matches": [
-        "*://*.music.youtube.com/*"
-      ],
-      "js": [
-        "./content.bundle.js"
-      ],
-      "css": [
-        "./extension-styles.css"
-      ]
+      "exclude_matches": ["*://*.music.youtube.com/*"],
+      "js": ["./content.bundle.js"]
     }
   ],
   "short_name": "canireact",

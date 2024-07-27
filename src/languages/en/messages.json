@@ -1,86 +1,92 @@
 {
-    "stream_reactions_allowed": {
-        "message": "You are allowed to watch this video on stream"
-    },
-    "stream_reactions_not_allowed": {
-        "message": "You are not allowed to watch this video on stream"
-    },
-    "sponsor_skips_allowed": {
-        "message": "You can skip placements"
-    },
-    "sponsor_skips_not_allowed": {
-        "message": "You are not allowed to skip placements"
-    },
-    "video_reactions_allowed": {
-        "message": "You are allowed to upload a reaction to this video on YouTube"
-    },
-    "video_reactions_not_allowed": {
-        "message": "You are not allowed to upload a reaction to this video on YouTube"
-    },
-    "stream_video_reactions_allowed": {
-        "message": "You are allowed to watch this video on stream and upload the reaction to YouTube"
-    },
-    "monetization_allowed": {
-        "message": "You are allowed to monetize the reaction"
-    },
-    "monetization_not_allowed": {
-        "message": "You are not allowed to monetize the reaction"
-    },
-    "credit_stream_chat": {
-        "message": "Please link the video in your stream chat"
-    },
-    "credit_video_description": {
-        "message": "Please link the video in your video description"
-    },
-    "credit_stream_video": {
-        "message": "Please link the video in the first 3 lines of your video description"
-    },
-    "guidelines": {
-        "message": "Learn more about the guidelines"
-    },
-    "stream_reactions_allowed_after_hours": {
-        "message": "The reaction on stream is only allowed after %hours hours. (%time)"
-    },
-    "video_reactions_allowed_after_hours": {
-        "message": "The reaction on YouTube is only allowed after %hours hours. (%time)"
-    },
-    "short_stream_video_reactions_allowed": {
-        "message": "Reaction + Video allowed"
-    },
-    "short_stream_reactions_allowed": {
-        "message": "Reaction allowed"
-    },
-    "short_video_reactions_allowed": {
-        "message": "Video allowed"
-    },
-    "short_stream_reactions_not_allowed": {
-        "message": "Reaction not allowed"
-    },
-    "short_video_reactions_not_allowed": {
-        "message": "Video not allowed"
-    },
-    "sponsor_cut_allowed": {
-        "message": "You are allowed to cut out sponsor placements"
-    },
-    "sponsor_cut_not_allowed": {
-        "message": "You are not allowed to cut out sponsor placements"
-    },
-    "reaction_video_includes_title": {
-        "message": "The name of the channel must be mentioned in the title of the reaction video"
-    },
-    "reaction_video_splittling_not_allowed": {
-        "message": "You are not allowed to split the reaction video into multiple parts"
-    },
-    "guideline_disclaimer": {
-        "message": "The guidelines are not legally binding and are only a guideline; the channel owner can continue to enforce his rights."
-    },
-    "sponsor_block_installed": {
-        "message": "You've installed Sponsor Block, which automatically skips the placement. Please disable it for this video."
-    },
-    "sponsor_segment_title": {
-        "message": "Sponsor segment"
-    },
-    "sponsor_segment_description": {
-        "message": "You are not allowed to skip this segment of the video."
-    }
+  "no_restrictions": {
+    "message": "No restrictions"
+  },
+  "restrictions": {
+    "message": "Observe restrictions"
+  },
+  "stream_reactions_allowed": {
+    "message": "Stream reaction allowed"
+  },
+  "stream_reactions_not_allowed": {
+    "message": "Stream reaction not allowed"
+  },
+  "sponsor_skips_allowed": {
+    "message": "You can skip placements"
+  },
+  "sponsor_skips_not_allowed": {
+    "message": "You are not allowed to skip placements"
+  },
+  "video_reactions_allowed": {
+    "message": "Reaction-video allowed"
+  },
+  "video_reactions_not_allowed": {
+    "message": "Reaction video not allowed"
+  },
+  "stream_video_reactions_allowed": {
+    "message": "You are allowed to watch this video on stream and upload the reaction to YouTube"
+  },
+  "monetization_allowed": {
+    "message": "You are allowed to monetize the reaction"
+  },
+  "monetization_not_allowed": {
+    "message": "You are not allowed to monetize the reaction"
+  },
+  "credit_stream_chat": {
+    "message": "Please link the video in your stream chat"
+  },
+  "credit_video_description": {
+    "message": "Please link the video in your video description"
+  },
+  "credit_stream_video": {
+    "message": "Please link the video in the first 3 lines of your video description"
+  },
+  "guidelines": {
+    "message": "Learn more about the guidelines"
+  },
+  "stream_reactions_allowed_after_hours": {
+    "message": "Stream reaction allowed in: "
+  },
+  "video_reactions_allowed_after_hours": {
+    "message": "Reaction-video allowed in: "
+  },
+  "short_stream_video_reactions_allowed": {
+    "message": "Reaction + Video allowed"
+  },
+  "short_stream_reactions_allowed": {
+    "message": "Reaction allowed"
+  },
+  "short_video_reactions_allowed": {
+    "message": "Video allowed"
+  },
+  "short_stream_reactions_not_allowed": {
+    "message": "Reaction not allowed"
+  },
+  "short_video_reactions_not_allowed": {
+    "message": "Video not allowed"
+  },
+  "sponsor_cut_allowed": {
+    "message": "You are allowed to cut out sponsor placements"
+  },
+  "sponsor_cut_not_allowed": {
+    "message": "You are not allowed to cut out sponsor placements"
+  },
+  "reaction_video_includes_title": {
+    "message": "The name of the channel must be mentioned in the title of the reaction video"
+  },
+  "reaction_video_splittling_not_allowed": {
+    "message": "You are not allowed to split the reaction video into multiple parts"
+  },
+  "guideline_disclaimer": {
+    "message": "The guidelines are not legally binding and are only a guideline; the channel owner can continue to enforce his rights."
+  },
+  "sponsor_block_installed": {
+    "message": "You've installed Sponsor Block, which automatically skips the placement. Please disable it for this video."
+  },
+  "sponsor_segment_title": {
+    "message": "Sponsor segment"
+  },
+  "sponsor_segment_description": {
+    "message": "You are not allowed to skip this segment of the video."
+  }
 }
