@@ -50,6 +50,9 @@
   "video_reactions_allowed_after_hours": {
     "message": "Reaction-Video erst erlaubt in: "
   },
+  "short_stream_reactions_soon_allowed": {
+    "message": "Reaktion bald erlaubt"
+  },
   "short_stream_video_reactions_allowed": {
     "message": "Reaktion + Video erlaubt"
   },

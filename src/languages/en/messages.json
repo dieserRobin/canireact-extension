@@ -53,6 +53,9 @@
   "short_stream_video_reactions_allowed": {
     "message": "Reaction + Video allowed"
   },
+  "short_stream_reactions_soon_allowed": {
+    "message": "Reaction is allowed soon"
+  },
   "short_stream_reactions_allowed": {
     "message": "Reaction allowed"
   },
