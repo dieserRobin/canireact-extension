@@ -4,6 +4,7 @@ import { getCurrentTime, getYouTubePlayer } from "../utils/youtube";
 
 export let timeCheckInterval: NodeJS.Timeout | null = null;
 let showingInfo = false;
+let shownSegments: [number, number][] = [];
 
 async function checkTime(segments: [number, number][]) {
   const currentTime = await getCurrentTime();
@@ -13,6 +14,8 @@ async function checkTime(segments: [number, number][]) {
 
   for (const segment of segments) {
     if (currentTime >= segment[0] && currentTime <= segment[1]) {
+      if (shownSegments.includes(segment)) return;
+
       log("Sponsor segment detected");
       foundSegment = true;
       showInfo();
