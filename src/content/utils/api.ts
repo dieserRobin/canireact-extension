@@ -50,7 +50,7 @@ export async function fetchVideoInfo(
   easyRequest: boolean = false,
   language?: string
 ): Promise<any> {
-  if (!videoId) {
+  if (!videoId || !channelUrl) {
     return null;
   }
 
