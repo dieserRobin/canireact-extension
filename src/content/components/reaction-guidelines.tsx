@@ -295,7 +295,7 @@ const ReactionInfoComponent: React.FC<Props> = ({
 
           {originalVideoMetadata.data && (
             <a
-              className="cir-text-2xl cir-mt-4 cir-bg-white/25 cir-p-3 cir-px-4 cir-border-2 cir-rounded-lg cir-flex cir-gap-4 cir-min-w-96 cir-w-max cir-border-green cir-no-underline cir-text-white"
+              className="cir-text-2xl cir-max-w-full cir-mt-4 cir-bg-white/25 cir-p-3 cir-px-4 cir-border-2 cir-rounded-lg cir-flex cir-gap-4 cir-min-w-96 cir-w-max cir-border-green cir-no-underline cir-text-white"
               href={guidelines.original_video}
             >
               <img
