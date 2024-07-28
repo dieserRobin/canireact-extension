@@ -24,34 +24,6 @@ export async function removeInfo(): Promise<void> {
   }
 }
 
-async function updateCountdown(
-  element: HTMLElement,
-  uploadedAt: string,
-  hours: number,
-  templateString: string,
-  timeElapsedCallback?: () => void
-): Promise<void> {
-  const uploadedTime = new Date(uploadedAt).getTime();
-  const currentTime = new Date().getTime();
-  const elapsedHours = (currentTime - uploadedTime) / 1000 / 60 / 60;
-  const remainingHours = hours - elapsedHours;
-
-  if (remainingHours <= 0) {
-    element.textContent = templateString.replace("%time", "00:00:00");
-    timeElapsedCallback && timeElapsedCallback();
-    return;
-  }
-
-  const hoursLeft = Math.floor(remainingHours);
-  const minutesLeft = Math.floor((remainingHours - hoursLeft) * 60);
-  const secondsLeft = Math.floor(
-    ((remainingHours - hoursLeft) * 60 - minutesLeft) * 60
-  );
-
-  const remaningTime = `${hoursLeft.toString().padStart(2, "0")}:${minutesLeft.toString().padStart(2, "0")}:${secondsLeft.toString().padStart(2, "0")}`;
-  element.textContent = templateString.replace("%time", remaningTime);
-}
-
 export async function addReactionInfo(
   bottomRow: HTMLElement,
   response: Guidelines,
@@ -145,7 +117,8 @@ export async function addOriginalVideoOnly(bottomRow: HTMLElement) {
   const elements = [];
 
   reactionInfo.id = "reaction-info";
-  reactionInfo.className = "item style-scope ytd-watch-metadata rounded-large";
+  reactionInfo.className =
+    "item style-scope ytd-watch-metadata rounded-large full-w";
 
   reactionInfo.classList.add("gray");
 
@@ -156,6 +129,7 @@ export async function addOriginalVideoOnly(bottomRow: HTMLElement) {
       "Original Video"
     )
   );
+
   const originalVideoElement = document.createElement("a");
   await displayOriginalVideo(originalVideoId, originalVideoElement);
   elements.push(originalVideoElement);

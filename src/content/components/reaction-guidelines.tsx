@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { createRoot, Root } from "react-dom/client";
-import { type Guidelines } from "../utils/api";
+import { fetchVideoDetails, type Guidelines } from "../utils/api";
 import { cn } from "../utils";
 import {
   Check,
@@ -21,6 +21,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from "@tanstack/react-query";
+import { getVideoId } from "../utils/youtube";
 
 type Props = {
   guidelines: Guidelines;
@@ -32,6 +38,11 @@ const ReactionInfoComponent: React.FC<Props> = ({
   guidelines,
 }) => {
   const [open, setOpen] = useState(defaultOpen);
+  const originalVideoMetadata = useQuery({
+    queryKey: ["videoDetails", guidelines.original_video],
+    enabled: !!guidelines.original_video,
+    queryFn: () => fetchVideoDetails(getVideoId(guidelines.original_video)),
+  });
 
   const streamReactionCountdownEnd = useMemo(
     () =>
@@ -189,15 +200,15 @@ const ReactionInfoComponent: React.FC<Props> = ({
             )}
 
             {guidelines.rules.stream.sponsor_skips_allowed !== null &&
-            guidelines.rules.stream.sponsor_skips_allowed ? (
-              <li className="cir-mb-2">
-                {getLanguageString("sponsor_skips_allowed")}
-              </li>
-            ) : (
-              <li className="cir-mb-2">
-                {getLanguageString("sponsor_skips_not_allowed")}
-              </li>
-            )}
+              (guidelines.rules.stream.sponsor_skips_allowed ? (
+                <li className="cir-mb-2">
+                  {getLanguageString("sponsor_skips_allowed")}
+                </li>
+              ) : (
+                <li className="cir-mb-2">
+                  {getLanguageString("sponsor_skips_not_allowed")}
+                </li>
+              ))}
 
             {guidelines.rules.stream.credit_stream_chat && (
               <li className="cir-mb-2">
@@ -227,15 +238,15 @@ const ReactionInfoComponent: React.FC<Props> = ({
             )}
 
             {guidelines.rules.video.sponsor_cut_allowed !== null &&
-            guidelines.rules.video.sponsor_cut_allowed ? (
-              <li className="cir-mb-2">
-                {getLanguageString("sponsor_cut_allowed")}
-              </li>
-            ) : (
-              <li className="cir-mb-2">
-                {getLanguageString("sponsor_cut_not_allowed")}
-              </li>
-            )}
+              (guidelines.rules.video.sponsor_cut_allowed ? (
+                <li className="cir-mb-2">
+                  {getLanguageString("sponsor_cut_allowed")}
+                </li>
+              ) : (
+                <li className="cir-mb-2">
+                  {getLanguageString("sponsor_cut_not_allowed")}
+                </li>
+              ))}
 
             {guidelines.rules.video.credit_video_description && (
               <li className="cir-mb-2">
@@ -250,28 +261,28 @@ const ReactionInfoComponent: React.FC<Props> = ({
             )}
 
             {guidelines.rules.video.monetization_allowed !== null &&
-            guidelines.rules.video.monetization_allowed === false ? (
-              <li className="cir-mb-2">
-                {getLanguageString("monetization_not_allowed")}
-              </li>
-            ) : (
-              <li className="cir-mb-2">
-                {getLanguageString("monetization_allowed")}
-              </li>
-            )}
+              (guidelines.rules.video.monetization_allowed === false ? (
+                <li className="cir-mb-2">
+                  {getLanguageString("monetization_not_allowed")}
+                </li>
+              ) : (
+                <li className="cir-mb-2">
+                  {getLanguageString("monetization_allowed")}
+                </li>
+              ))}
 
             {guidelines.rules.video.reaction_video_splittling_allowed !==
               null &&
-            guidelines.rules.video.reaction_video_splittling_allowed ===
+              (guidelines.rules.video.reaction_video_splittling_allowed ===
               false ? (
-              <li className="cir-mb-2">
-                {getLanguageString("reaction_video_splittling_not_allowed")}
-              </li>
-            ) : (
-              <li className="cir-mb-2">
-                {getLanguageString("reaction_video_splittling_allowed")}
-              </li>
-            )}
+                <li className="cir-mb-2">
+                  {getLanguageString("reaction_video_splittling_not_allowed")}
+                </li>
+              ) : (
+                <li className="cir-mb-2">
+                  {getLanguageString("reaction_video_splittling_allowed")}
+                </li>
+              ))}
 
             {guidelines.rules.video.custom_rules
               .filter((r) => r)
@@ -281,6 +292,29 @@ const ReactionInfoComponent: React.FC<Props> = ({
                 </li>
               ))}
           </div>
+
+          {originalVideoMetadata.data && (
+            <a
+              className="cir-text-2xl cir-mt-4 cir-bg-white/25 cir-p-3 cir-px-4 cir-border-2 cir-rounded-lg cir-flex cir-gap-4 cir-min-w-96 cir-w-max cir-border-green cir-no-underline cir-text-white"
+              href={guidelines.original_video}
+            >
+              <img
+                src={originalVideoMetadata.data.thumbnail}
+                alt={originalVideoMetadata.data.title}
+                className="cir-w-64 cir-aspect-video cir-rounded-md cir-border cir-border-border"
+              />
+
+              <div>
+                <p className="cir-text-4xl cir-mt-2 cir-font-bold">
+                  {originalVideoMetadata.data.title}
+                </p>
+
+                <p className="cir-text-2xl cir-text-white/75">
+                  {originalVideoMetadata.data.channelName}
+                </p>
+              </div>
+            </a>
+          )}
 
           {guidelines.sponsor_segments &&
             guidelines.sponsor_segments.length > 0 && (
@@ -353,14 +387,18 @@ class ReactionInfo {
     element.id = "cir-reaction-info-parent";
     this.container.parentNode?.insertBefore(element, this.container);
 
+    const queryClient = new QueryClient();
+
     this.root = createRoot(element);
     this.root.render(
-      <TooltipProvider>
-        <ReactionInfoComponent
-          defaultOpen={defaultOpen}
-          guidelines={guidelines}
-        />
-      </TooltipProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <ReactionInfoComponent
+            defaultOpen={defaultOpen}
+            guidelines={guidelines}
+          />
+        </TooltipProvider>
+      </QueryClientProvider>
     );
   }
 
