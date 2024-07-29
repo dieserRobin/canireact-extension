@@ -1,7 +1,7 @@
 import "../extension-styles.css";
 
 import { isProduction, log } from "./utils";
-import { handleThumbnails } from "./utils/thumbnails";
+import { handleThumbnails, startThumbnailObserver } from "./utils/thumbnails";
 import { fetchVideoInfo } from "./utils/api";
 import { getChannelUrl } from "./utils/youtube";
 import {
@@ -70,6 +70,7 @@ async function main() {
 async function registerThumbnailObserver(): Promise<void> {
   window.addEventListener("updateui", handleThumbnails);
   window.addEventListener("state-navigateend", handleThumbnails);
+  startThumbnailObserver();
 
   setInterval(async () => {
     handleThumbnails();

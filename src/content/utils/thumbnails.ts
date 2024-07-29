@@ -3,11 +3,29 @@ import { addThumbnailReactionInfo } from "../components/thumbnail-info";
 import { fetchVideoInfo } from "./api";
 
 export const handledThumbnails = new Set<HTMLElement>();
+export let thumbnailObserver: MutationObserver | null = null;
 
 export async function getThumbnails(): Promise<NodeListOf<HTMLElement>> {
   return document.querySelectorAll(
     "ytd-rich-item-renderer.style-scope.ytd-rich-grid-row, ytd-video-renderer.style-scope"
   );
+}
+
+export async function startThumbnailObserver(): Promise<void> {
+  const observer = new MutationObserver(() => {
+    handleThumbnails();
+  });
+
+  observer.observe(document.querySelector("ytd-rich-grid-renderer"), {
+    childList: true,
+    subtree: true,
+  });
+
+  thumbnailObserver = observer;
+}
+
+export async function stopThumbnailObserver(): Promise<void> {
+  thumbnailObserver?.disconnect();
 }
 
 export async function handleThumbnails(): Promise<void> {
@@ -19,6 +37,14 @@ export async function handleThumbnails(): Promise<void> {
     }
     try {
       handledThumbnails.add(thumbnail);
+
+      const liveBadge = thumbnail.querySelector(
+        "#content ytd-rich-grid-media #dismissible #details #meta #badges ytd-badge-supported-renderer #live-badge"
+      );
+
+      if (liveBadge) {
+        return;
+      }
 
       const channelLinkElement: HTMLAnchorElement | null =
         thumbnail.querySelector(
