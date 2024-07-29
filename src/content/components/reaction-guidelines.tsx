@@ -1,6 +1,10 @@
 import React, { useMemo, useState } from "react";
 import { createRoot, Root } from "react-dom/client";
-import { fetchVideoDetails, type Guidelines } from "../utils/api";
+import {
+  fetchSegments,
+  fetchVideoDetails,
+  type Guidelines,
+} from "../utils/api";
 import { cn } from "../utils";
 import {
   Check,
@@ -40,6 +44,13 @@ const ReactionInfoComponent: React.FC<Props> = ({
     queryKey: ["videoDetails", guidelines.original_video],
     enabled: !!guidelines.original_video,
     queryFn: () => fetchVideoDetails(getVideoId(guidelines.original_video)),
+  });
+
+  const segmentsQuery = useQuery({
+    queryKey: ["segments", getVideoId(window.location.href)],
+    queryFn: async () => {
+      return fetchSegments(getVideoId(window.location.href));
+    },
   });
 
   const streamReactionCountdownEnd = useMemo(
@@ -192,6 +203,14 @@ const ReactionInfoComponent: React.FC<Props> = ({
             {getLanguageString("restrictions")}
           </div>
         )}
+
+        {segmentsQuery.data &&
+          segmentsQuery.data.filter((t) => t.votes >= 5).length > 0 && (
+            <div className="cir-bg-red-500 border cir-border-red-600 cir-px-2 cir-py-1 cir-rounded-full cir-text-2xl cir-flex cir-gap-2 cir-items-center cir-pr-3 cir-font-bold cir-text-black">
+              <OctagonAlert />
+              {getLanguageString("tos_segments")}
+            </div>
+          )}
       </div>
 
       {open && (

@@ -1,4 +1,7 @@
 {
+  "tos_segments": {
+    "message": "Includes TOS segments"
+  },
   "editor_button": {
     "message": "Toggle TOS Editor"
   },

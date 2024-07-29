@@ -358,3 +358,28 @@ button.cir-guideline-red {
 button.cir-guideline-orange {
   border: 2px solid #ff9800;
 }
+
+.reaction-info-tos-segment {
+  height: 100%;
+  background-color: #f1f436;
+  opacity: 0.7;
+  position: absolute;
+  z-index: 42;
+  top: 0;
+}
+
+.tos-editor {
+  background-color: rgba(242, 242, 242, 0.75);
+  border: 2px solid #e0e0e0;
+  color: #000;
+  padding: 8px;
+  border-radius: 12px;
+  font-family: "Space Grotesk", sans-serif;
+  margin-bottom: 12px;
+}
+
+html[dark] .tos-editor {
+  background-color: rgba(0, 0, 0, 0.25);
+  border: 2px solid #1a1a1a;
+  color: #fff;
+}

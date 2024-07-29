@@ -1,7 +1,6 @@
 import browser from "webextension-polyfill";
 import { API_URL } from "..";
 import { log } from ".";
-import { channel } from "diagnostics_channel";
 
 export type Guidelines = {
   id: string;
@@ -53,6 +52,7 @@ export type TosSegment = {
   end: number;
   category?: string;
   user: string;
+  votes: number;
 };
 
 export async function fetchVideoInfo(
@@ -61,7 +61,7 @@ export async function fetchVideoInfo(
   easyRequest: boolean = false,
   language?: string
 ): Promise<any> {
-  if (!videoId || !channel) {
+  if (!videoId || !channelUrl) {
     return null;
   }
 
@@ -111,7 +111,9 @@ export async function fetchVideoDetails(
     });
 }
 
-export async function fetchSegments(videoId: string) {
+export async function fetchSegments(
+  videoId: string
+): Promise<TosSegment[] | null> {
   if (!videoId) return null;
 
   return browser.runtime
@@ -151,8 +153,9 @@ export async function submitSegment(
         category: segment.category,
       },
     })
-    .then((response) => {
+    .then(async (response) => {
       if (response && response.success) {
+        await invalidateCache(`${API_URL}/v1/video/${videoId}/tos`);
         return response.data as { success: boolean };
       } else {
         return null;
@@ -173,11 +176,11 @@ export async function rateSegment(
   return browser.runtime
     .sendMessage({
       message: "sendRequest",
-      url: `${API_URL}/v1/tos/segment/${segmentId}/rate`,
+      url: `${API_URL}/v1/tos/segment/${segmentId}/${type.toLowerCase()}`,
       method: "POST",
       data: { type },
     })
-    .then((response) => {
+    .then(async (response) => {
       if (response && response.success) {
         return response.data as { success: boolean };
       } else {
@@ -188,4 +191,13 @@ export async function rateSegment(
       log("Error rating segment:", error);
       return null;
     });
+}
+
+export async function invalidateCache(url: string) {
+  if (!url) return null;
+
+  return browser.runtime.sendMessage({
+    message: "invalidateCache",
+    url,
+  });
 }

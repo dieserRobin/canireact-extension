@@ -1,15 +1,9 @@
 import { collapseState, reactionInfoMinimized } from "..";
-import { hasTimeElapsed, isSponsorBlockInstalled, log } from "../utils";
-import { Guidelines, TosSegment, fetchVideoDetails } from "../utils/api";
-import { getLanguageString } from "../utils/language";
+import { hasTimeElapsed, log } from "../utils";
+import { Guidelines, fetchSegments, fetchVideoDetails } from "../utils/api";
 import { createImageElement, createTextElement } from "../utils/render";
 import browser from "webextension-polyfill";
-import {
-  getOriginalVideo,
-  getProgressBar,
-  getVideoId,
-  getVideoLength,
-} from "../utils/youtube";
+import { getOriginalVideo, getVideoId } from "../utils/youtube";
 import { displaySponsorInfo, stopSponsorInfo } from "./sponsor-info";
 import ReactionInfo from "./reaction-guidelines";
 
@@ -94,15 +88,14 @@ export async function addReactionInfo(
     }
   }
 
-  if (
-    response.rules?.stream.sponsor_skips_allowed === false &&
-    (response.sponsor_segments?.length ?? 0) > 0
-  ) {
-    displaySponsorInfo(
-      response.sponsor_segments ?? [],
-      response.tos_segments.map((t) => [t.start, t.end]) ?? []
-    );
-  }
+  const tosSegments = await fetchSegments(getVideoId(window.location.href));
+
+  displaySponsorInfo(
+    response.rules.stream.sponsor_skips_allowed === false
+      ? response.sponsor_segments ?? []
+      : [],
+    tosSegments?.filter((t) => t.votes >= 5).map((t) => [t.start, t.end]) ?? []
+  );
 
   reactionInfoComponent = new ReactionInfo(bottomRow, response, collapseState);
 }

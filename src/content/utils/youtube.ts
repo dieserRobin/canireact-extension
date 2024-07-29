@@ -36,21 +36,13 @@ export async function getOriginalVideo(): Promise<string | null> {
   return match ? `https://www.youtube.com/watch?v=${match[5]}` : null;
 }
 
+export function getVideo(): HTMLVideoElement | null {
+  return document.querySelector(".html5-main-video");
+}
+
 export async function getCurrentTime() {
-  const currentTime = document.querySelector(".ytp-time-current");
-  if (!currentTime) return null;
-
-  const time = currentTime.textContent;
-  const timeArray = time?.split(":");
-  if (!timeArray) return null;
-
-  let seconds = 0;
-
-  for (let i = 0; i < timeArray.length; i++) {
-    seconds += parseInt(timeArray[i]) * Math.pow(60, timeArray.length - i - 1);
-  }
-
-  return seconds;
+  const video = getVideo();
+  return video ? video.currentTime : null;
 }
 
 export async function getVideoLength() {

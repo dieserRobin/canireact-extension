@@ -30,12 +30,20 @@ async function checkTime(
 
   for (const segment of tosSegments) {
     if (currentTime >= segment[0] - 10 && currentTime <= segment[1]) {
+      foundTosSegment = true;
       if (shownSegments.includes(segment)) return;
       shownSegments.push(segment);
 
       log("TOS segment detected");
-      foundTosSegment = true;
       showTosInfo();
+    }
+  }
+
+  for (const shownSegment of shownSegments) {
+    if (shownSegment[1] + 5 > currentTime) {
+      shownSegments = shownSegments.filter(
+        (segment) => segment !== shownSegment
+      );
     }
   }
 

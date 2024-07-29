@@ -1,110 +1,300 @@
-import React, { useState } from 'react';
-import { createRoot, Root } from 'react-dom/client';
-import { formatTime, getCurrentTime, getVideoId } from '../utils/youtube';
-import { Button } from './ui/button';
+import React, { useState } from "react";
+import { createRoot, Root } from "react-dom/client";
+import { formatTime, getCurrentTime, getVideoId } from "../utils/youtube";
+import { Button } from "./ui/button";
 import { TrashIcon } from "@radix-ui/react-icons";
-import { submitSegment, TosSegment } from '../utils/api';
-import { log } from '../utils';
+import {
+  fetchSegments,
+  rateSegment,
+  submitSegment,
+  TosSegment,
+} from "../utils/api";
+import { cn, log } from "../utils";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useMutation,
+  useQueries,
+  useQuery,
+} from "@tanstack/react-query";
+import browser from "webextension-polyfill";
+import { ThumbsDown, ThumbsUp, XIcon } from "lucide-react";
+import { closeTosEditor } from "./settings";
+import { Toaster } from "./ui/sonner";
+import { toast } from "sonner";
+import { currentProfile } from "..";
 
-type Props = {
-    defaultSegments: TosSegment[];
-}
+const TosSegmentEditor: React.FC = () => {
+  const videoId = getVideoId(window.location.href);
 
-const TosSegmentEditor: React.FC<Props> = ({ defaultSegments }) => {
-    const [segments, setSegments] = React.useState<[number, number][]>([]);
-    const [startTimestamp, setStartTimestamp] = React.useState<number>(0);
-    const [endTimestamp, setEndTimestamp] = React.useState<number>(0);
+  const [loggedIn, setLoggedIn] = useState(!!currentProfile);
 
-    const [saving, setSaving] = useState(false);
+  const segmentsQuery = useQuery({
+    queryKey: ["segments", videoId],
+    queryFn: async () => {
+      return fetchSegments(videoId);
+    },
+  });
 
-    const deleteCurrent = () => {
-        setStartTimestamp(0);
-        setEndTimestamp(0);
-    }
+  const voteMutation = useMutation({
+    mutationKey: ["rate", videoId],
+    mutationFn: async ({
+      segment,
+      vote,
+    }: {
+      segment: TosSegment;
+      vote: "up" | "down";
+    }) => {
+      return rateSegment(segment.id, vote === "up" ? "UPVOTE" : "DOWNVOTE");
+    },
+  });
 
-    const addCurrent = () => {
-        setSegments([...segments, [startTimestamp, endTimestamp]]);
-        deleteCurrent();
-    }
+  const [segments, setSegments] = React.useState<[number, number][]>([]);
+  const [startTimestamp, setStartTimestamp] = React.useState<number>(0);
+  const [endTimestamp, setEndTimestamp] = React.useState<number>(0);
 
-    const save = async () => {
-        setSaving(true);
+  const [saving, setSaving] = useState(false);
 
-        try {
-            for (const segment of segments) {
-                await submitSegment(await getVideoId(), {
-                    start: segment[0],
-                    end: segment[1],
-                    category: 'TOS'
-                });
-            }
-        } catch (e) {
-            log(e);
+  const deleteCurrent = () => {
+    setStartTimestamp(0);
+    setEndTimestamp(0);
+  };
+
+  const addCurrent = () => {
+    setSegments([...segments, [startTimestamp, endTimestamp]]);
+    deleteCurrent();
+  };
+
+  const save = async () => {
+    setSaving(true);
+
+    const saveAll = async () => {
+      try {
+        for (const segment of segments) {
+          await submitSegment(videoId, {
+            start: segment[0],
+            end: segment[1],
+            category: "TOS",
+          });
         }
+      } catch (e) {
+        log(e);
+      }
+    };
 
-        setSaving(false);
-    }
+    const promise = saveAll();
 
-    return (
-        <div className='tos-editor'>
-            <h1 className='cir-text-4xl cir-font-bold'>TOS Segment Editor</h1>
+    toast.promise(promise, {
+      loading: "Saving segments...",
+      success: "Segments saved!",
+      error: "Error saving segments",
+    });
 
-            <div className=''>
-                <h2 className='cir-text-2xl'>Segments</h2>
-                <div className='tos-editor__segments__list'>
-                    {segments.map(([start, end], index) => (
-                        <div key={index} className='cir-text-xl cir-font-medium cir-my-1'>
-                            <span>{formatTime(start)}</span>
-                            -
-                            <span>{formatTime(end)}</span>
-                        </div>
-                    ))}
-                </div>
+    await promise;
+
+    setSegments([]);
+    await segmentsQuery.refetch();
+    setSaving(false);
+  };
+
+  const handleVote = async (segment: TosSegment, vote: "up" | "down") => {
+    const promise = voteMutation.mutateAsync({ segment, vote });
+
+    toast.promise(promise, {
+      loading: "Submitting vote...",
+      success: "Vote submitted!",
+      error: "Error submitting vote",
+    });
+
+    await promise;
+  };
+
+  const toggleOpen = () => {
+    closeTosEditor();
+  };
+
+  const cirIconSrc = browser.runtime.getURL("images/round-icon.svg");
+
+  const handleLogin = () => {
+    browser.runtime
+      .sendMessage({ message: "openLogin" })
+      .then(() => {
+        setLoggedIn(true);
+        toast.success("Logged in successfully");
+      })
+      .catch((error) => {
+        toast.error("Error logging in");
+        setLoggedIn(false);
+      });
+  };
+
+  return (
+    <div className="tos-editor cir-font-sans cir-relative cir-overflow-hidden">
+      <div className="cir-flex cir-items-center">
+        <img
+          src={cirIconSrc}
+          alt="can i react"
+          className="cir-icon cir-size-12 cir-mr-2"
+        />
+        <h1 className="cir-text-4xl cir-font-bold">TOS Segment Editor</h1>
+      </div>
+
+      <button
+        className={cn(
+          "cir-absolute cir-right-12 cir-top-3 cir-p-0 cir-bg-black/25 cir-rounded-full cir-aspect-square cir-size-12 cir-text-white cir-transition-transform cir-cursor-pointer cir-flex cir-justify-center cir-items-center",
+          !open && "closed"
+        )}
+        onClick={toggleOpen}
+      >
+        <XIcon size={20} />
+      </button>
+
+      {!loggedIn ? (
+        <div className="cir-my-6">
+          <h2 className="cir-text-2xl cir-my-1">
+            You need to login to use this feature.
+          </h2>
+
+          <Button onClick={handleLogin}>Login</Button>
+        </div>
+      ) : (
+        <>
+          <div className="">
+            <h2 className="cir-text-4xl cir-my-1">Segments</h2>
+            <div className="tos-editor__segments__list">
+              <h3 className="cir-text-2xl cir-my-1">Saved Segments</h3>
+              {segmentsQuery.data?.map((segment) => (
+                <Segment
+                  key={segment.id}
+                  start={segment.start}
+                  end={segment.end}
+                  vote={(vote) => handleVote(segment, vote)}
+                  stored
+                />
+              ))}
+
+              <hr className="cir-my-4 cir-border-neutral-500" />
+
+              {segments.map(([start, end], index) => (
+                <Segment
+                  key={index}
+                  start={start}
+                  end={end}
+                  remove={() => {
+                    const newSegments = segments.filter((_, i) => i !== index);
+                    setSegments(newSegments);
+                  }}
+                />
+              ))}
             </div>
+          </div>
 
-            <div className='cir-mt-2 cir-flex cir-items-center cir-gap-2 cir-text-xl'>
-                <Button disabled={startTimestamp > 0} onClick={async () => setStartTimestamp(await getCurrentTime())}>Start</Button>
-                <Button disabled={endTimestamp > 0} onClick={async () => setEndTimestamp(await getCurrentTime())}>Stop</Button>
-                <Button disabled={startTimestamp === 0 && endTimestamp === 0} onClick={addCurrent}>Add</Button>
-                <Button disabled={segments.length === 0} onClick={deleteCurrent}>
-                    <TrashIcon />
-                </Button>
-            </div>
+          <div className="cir-mt-2 cir-flex cir-items-center cir-gap-2 cir-text-xl">
+            <Button
+              disabled={startTimestamp > 0}
+              onClick={async () => setStartTimestamp(await getCurrentTime())}
+            >
+              Start
+            </Button>
+            <Button
+              disabled={endTimestamp > 0}
+              onClick={async () => setEndTimestamp(await getCurrentTime())}
+            >
+              Stop
+            </Button>
+            <Button
+              disabled={startTimestamp === 0 && endTimestamp === 0}
+              onClick={addCurrent}
+            >
+              Add
+            </Button>
+            <Button disabled={segments.length === 0} onClick={deleteCurrent}>
+              <TrashIcon />
+            </Button>
+          </div>
 
-            <Button className='cir-mt-4' disabled={saving} onClick={save}>Save</Button>
-        </div >
-    );
+          <Button className="cir-mt-4" disabled={saving} onClick={save}>
+            Save
+          </Button>
+        </>
+      )}
+    </div>
+  );
 };
 
-const Segment: React.FC<{ start: number, end: number }> = ({ start, end }) => {
-    return (
-        <div className='cir-text-xl cir-font-medium cir-my-1'>
-            <span>{formatTime(start)}</span>
-            -
-            <span>{formatTime(end)}</span>
+const Segment: React.FC<{
+  start: number;
+  end: number;
+  stored?: boolean;
+  remove?: () => void;
+  vote?: (vote: "up" | "down") => void;
+}> = ({ start, end, stored, remove, vote }) => {
+  return (
+    <div className="cir-text-2xl cir-font-medium cir-my-1 cir-p-2 cir-border-2 cir-border-neutral-700 cir-px-2 cir-rounded-xl cir-flex cir-items-center cir-justify-between">
+      <div>
+        <span>{formatTime(start)}</span>-<span>{formatTime(end)}</span>
+      </div>
+      {stored ? (
+        <div className="cir-flex cir-gap-2 cir-items-center">
+          <button
+            onClick={() => vote && vote("up")}
+            className="cir-bg-neutral-800 hover:cir-bg-neutral-700 cir-h-[36px] cir-w-auto cir-aspect-square cir-rounded-full cir-p-3 cir-flex cir-items-center cir-justify-center cir-outline-none focus-visible:cir-ring-2 cir-ring-black dark:cir-ring-white focus-visible:cir-bg-neutral-950 cir-cursor-pointer cir-text-white"
+          >
+            <ThumbsUp />
+          </button>
+
+          <button
+            onClick={() => vote && vote("down")}
+            className="cir-bg-neutral-800 hover:cir-bg-neutral-700 cir-h-[36px] cir-w-auto cir-aspect-square cir-rounded-full cir-p-3 cir-flex cir-items-center cir-justify-center cir-outline-none focus-visible:cir-ring-2 cir-ring-black dark:cir-ring-white focus-visible:cir-bg-neutral-950 cir-cursor-pointer cir-text-white"
+          >
+            <ThumbsDown />
+          </button>
         </div>
-    );
+      ) : (
+        <div>
+          <button
+            onClick={() => remove && remove()}
+            disabled={!remove}
+            className="cir-bg-neutral-800 hover:cir-bg-neutral-700 cir-h-[36px] cir-w-auto cir-aspect-square cir-rounded-full cir-p-3 cir-flex cir-items-center cir-justify-center cir-outline-none focus-visible:cir-ring-2 cir-ring-black dark:cir-ring-white focus-visible:cir-bg-neutral-950 cir-cursor-pointer cir-text-white"
+          >
+            <TrashIcon />
+          </button>
+        </div>
+      )}
+    </div>
+  );
 };
 
 class TosEditor {
-    container: HTMLElement;
-    root: Root;
+  container: HTMLElement;
+  root: Root;
 
-    constructor(container: HTMLElement, segments: TosSegment[]) {
-        this.container = container;
+  constructor() {
+    log("Creating TosEditor");
+    this.container = document.querySelector(
+      ".watch-root-element #secondary"
+    ) as HTMLElement;
+    log(this.container);
 
-        const element = document.createElement('div');
-        element.id = 'tos-segment-editor';
-        this.container.insertBefore(element, this.container.firstChild);
+    const queryClient = new QueryClient();
 
-        this.root = createRoot(element);
-        this.root.render(<TosSegmentEditor defaultSegments={segments} />);
-    }
+    const element = document.createElement("div");
+    element.id = "tos-segment-editor";
+    this.container.insertBefore(element, this.container.firstChild);
 
-    destroy() {
-        this.root.unmount();
-        document.getElementById('tos-segment-editor')?.remove();
-    }
+    this.root = createRoot(element);
+    this.root.render(
+      <QueryClientProvider client={queryClient}>
+        <TosSegmentEditor />
+        <Toaster />
+      </QueryClientProvider>
+    );
+  }
+
+  destroy() {
+    this.root.unmount();
+    document.getElementById("tos-segment-editor")?.remove();
+  }
 }
 
 export default TosEditor;

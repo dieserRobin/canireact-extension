@@ -6,9 +6,11 @@ interface RequestMessage {
   method: string;
   data?: any;
   priority?: "high" | "low" | "auto";
+  ignoreCache?: boolean;
 }
 
 const CACHE_EXPIRATION = 24 * 60 * 60 * 1000; // 24 hours
+const TOS_CACHE_EXPIRATION = 60 * 1000 * 5; // 1 minutes
 
 const sendRequestToServer = async (
   url: string,
@@ -26,19 +28,32 @@ const sendRequestToServer = async (
     },
     body: data ? JSON.stringify(data) : null,
     priority: priority ?? "auto",
-  }).catch((error) => {
-    console.error(error);
-    throw error;
-  });
+  })
+    .then((response) => response.json())
+    .then((responseData) => {
+      if (method === "GET") setCachedData(url, responseData);
+      return responseData;
+    })
+    .catch((error) => {
+      console.error(error);
+      throw error;
+    });
 };
 
-const getCachedData = async (cacheKey: string) => {
+const getCachedData = async (cacheKey: string, ignoreCache = false) => {
+  if (ignoreCache) return null;
+
   try {
     const result = await browser.storage.local.get(cacheKey);
     const cachedData = result[cacheKey];
     if (cachedData) {
       const { data, timestamp } = cachedData;
-      if (new Date().getTime() - timestamp < CACHE_EXPIRATION) {
+      if (
+        new Date().getTime() - timestamp <
+        (cacheKey.toLowerCase().includes("tos")
+          ? TOS_CACHE_EXPIRATION
+          : CACHE_EXPIRATION)
+      ) {
         return data;
       }
       await browser.storage.local.remove(cacheKey);
@@ -58,6 +73,47 @@ const setCachedData = async (cacheKey: string, data: any) => {
   } catch (error) {
     console.error("Error setting cache:", error);
   }
+};
+
+const login = async () => {
+  const redirectUrl = browser.identity.getRedirectURL();
+  console.log(redirectUrl);
+
+  if (!redirectUrl) {
+    return;
+  }
+
+  const responseUrl = await browser.identity.launchWebAuthFlow({
+    url: `https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=tqj580q6bs92pt112t5v6tljgx0oyu&redirect_uri=${encodeURIComponent(
+      redirectUrl
+    )}&scope=user:read:email`,
+    interactive: true,
+  });
+
+  const code = new URL(responseUrl).searchParams.get("code");
+
+  if (!code) {
+    return;
+  }
+
+  const response = await fetch(
+    `https://api.canireact.com/auth/twitch/code/${code}`,
+    {
+      method: "POST",
+    }
+  );
+
+  if (response.status !== 200) {
+    return;
+  }
+
+  const { token, display_name, profile_image_url } = await response.json();
+
+  browser.storage.local.set({
+    token,
+    display_name,
+    profile_image_url,
+  });
 };
 
 browser.runtime.onConnect.addListener(async (port) => {
@@ -117,7 +173,7 @@ browser.runtime.onMessage.addListener(
     if (request.message === "sendRequest") {
       const cacheKey = request.url;
 
-      getCachedData(cacheKey)
+      getCachedData(cacheKey, request.ignoreCache)
         .then((cachedData) => {
           if (cachedData) {
             console.log("Using cached data");
@@ -149,6 +205,18 @@ browser.runtime.onMessage.addListener(
       browser.storage.local.set({ minimizedState: request.data });
     } else if (request.message === "setSponsorRemindersActive") {
       browser.storage.local.set({ sponsorRemindersActive: request.data });
+    } else if (request.message === "openLogin") {
+      login()
+        .then(() => {
+          sendResponse({ success: true });
+        })
+        .catch((error) => {
+          sendResponse({ success: false, error: error.toString() });
+        });
+
+      return true;
+    } else if (request.message === "invalidateCache") {
+      browser.storage.local.remove(request.url);
     }
   }
 );

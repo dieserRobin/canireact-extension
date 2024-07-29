@@ -25,7 +25,7 @@ export let sponsorRemindersActive = true;
 
 let currentChannelNameObserver: MutationObserver | null = null;
 let latestRequest: string | null = null;
-let currentProfile: {
+export let currentProfile: {
   name: string;
   image: string;
 } | null = null;
@@ -89,14 +89,6 @@ async function processCurrentPage(): Promise<void> {
     }
     log("video id: " + videoId);
 
-    addTosSegments(videoId)
-      .then(() => {
-        log("tos segments added");
-      })
-      .catch((e) => {
-        log("error adding tos segments: " + e);
-      });
-
     // Wait for the bottom row to be available in the DOM
     const observer = new MutationObserver(async (_, obs) => {
       const channelUrl = await getChannelUrl();
@@ -107,6 +99,14 @@ async function processCurrentPage(): Promise<void> {
         obs.disconnect();
         return; // Exit if already processed
       }
+
+      addTosSegments(videoId)
+        .then(() => {
+          log("tos segments added");
+        })
+        .catch((e) => {
+          log("error adding tos segments: " + e);
+        });
 
       settingsDropdown && settingsDropdown.destroy();
       settingsDropdown = new Settings();
@@ -219,6 +219,10 @@ async function observeChannelNameChange(videoId: string) {
     const channelUrl = await getChannelUrl();
     currentChannelUrl = channelUrl;
     log("channel url: " + channelUrl, currentChannelUrl);
+
+    if (!settingsDropdown) {
+      settingsDropdown = new Settings();
+    }
 
     const bottomRow: HTMLElement | null = document.querySelector("#bottom-row");
     if (bottomRow) {
