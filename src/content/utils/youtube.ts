@@ -1,84 +1,94 @@
+export function getVideoId(url: string) {
+  const videoId = url.match(
+    /https:\/\/(www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})|https:\/\/youtu\.be\/([a-zA-Z0-9_-]{11})/i
+  );
+  return videoId ? videoId[2] || videoId[3] : null;
+}
+
 export async function getChannelUrl(): Promise<string | null> {
-    const channelLink = document.querySelector<HTMLAnchorElement>('#above-the-fold ytd-channel-name yt-formatted-string a')
-        || document.querySelector<HTMLAnchorElement>('span[itemprop="name"] link[itemprop="url"]');
-    return channelLink ? channelLink.href : null;
+  const channelLink =
+    document.querySelector<HTMLAnchorElement>(
+      "#above-the-fold ytd-channel-name yt-formatted-string a"
+    ) ||
+    document.querySelector<HTMLAnchorElement>(
+      'span[itemprop="name"] link[itemprop="url"]'
+    );
+  return channelLink ? channelLink.href : null;
 }
 
 export async function getOriginalVideo(): Promise<string | null> {
-    const context = document.querySelector("#microformat > player-microformat-renderer > script");
-    if (!context) return null;
+  const context = document.querySelector(
+    "#microformat > player-microformat-renderer > script"
+  );
+  if (!context) return null;
 
-    // context is a script tag with JSON data
-    const data = JSON.parse(context.innerHTML);
-    const description = data.description;
+  // context is a script tag with JSON data
+  const data = JSON.parse(context.innerHTML);
+  const description = data.description;
 
-    if (!description) return null;
+  if (!description) return null;
 
-    // Match the link and check for "original", "video" or "@handle - " in the same line or the line before
-    const match = description.match(/(^|\n).*((original|video).*\n?.*|@[\w-]+ -?).*(https:\/\/www\.youtube\.com\/watch\?v=|https:\/\/youtu\.be\/)([a-zA-Z0-9_-]{11})/i);
+  // Match the link and check for "original", "video" or "@handle - " in the same line or the line before
+  const match = description.match(
+    /(^|\n).*((original|video).*\n?.*|@[\w-]+ -?).*(https:\/\/www\.youtube\.com\/watch\?v=|https:\/\/youtu\.be\/)([a-zA-Z0-9_-]{11})/i
+  );
 
-    return match ? `https://www.youtube.com/watch?v=${match[5]}` : null;
+  return match ? `https://www.youtube.com/watch?v=${match[5]}` : null;
 }
 
 export async function getCurrentTime() {
-    const currentTime = document.querySelector(".ytp-time-current");
-    if (!currentTime) return null;
+  const currentTime = document.querySelector(".ytp-time-current");
+  if (!currentTime) return null;
 
-    const time = currentTime.textContent;
-    const timeArray = time?.split(":");
-    if (!timeArray) return null;
+  const time = currentTime.textContent;
+  const timeArray = time?.split(":");
+  if (!timeArray) return null;
 
-    let seconds = 0;
+  let seconds = 0;
 
-    for (let i = 0; i < timeArray.length; i++) {
-        seconds += parseInt(timeArray[i]) * Math.pow(60, timeArray.length - i - 1);
-    }
+  for (let i = 0; i < timeArray.length; i++) {
+    seconds += parseInt(timeArray[i]) * Math.pow(60, timeArray.length - i - 1);
+  }
 
-    return seconds;
+  return seconds;
 }
 
 export async function getVideoLength() {
-    const videoDuration = document.querySelector(".ytp-time-duration");
-    if (!videoDuration) return null;
+  const videoDuration = document.querySelector(".ytp-time-duration");
+  if (!videoDuration) return null;
 
-    const duration = videoDuration.textContent;
-    const durationArray = duration?.split(":");
-    if (!durationArray) return null;
+  const duration = videoDuration.textContent;
+  const durationArray = duration?.split(":");
+  if (!durationArray) return null;
 
-    let seconds = 0;
+  let seconds = 0;
 
-    for (let i = 0; i < durationArray.length; i++) {
-        seconds += parseInt(durationArray[i]) * Math.pow(60, durationArray.length - i - 1);
-    }
+  for (let i = 0; i < durationArray.length; i++) {
+    seconds +=
+      parseInt(durationArray[i]) * Math.pow(60, durationArray.length - i - 1);
+  }
 
-    return seconds;
+  return seconds;
 }
 
 export function formatTime(seconds: number) {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = Math.floor(seconds % 60);
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
 
-    return `${hours > 0 ? hours + ":" : ""}${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
+  return `${hours > 0 ? hours + ":" : ""}${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
 }
 
 export async function getYouTubePlayer() {
-    return document.querySelector(".ytd-player");
-}
-
-export async function getVideoId() {
-    if (window.location.pathname !== "/watch") {
-        return null;
-    }
-
-    const videoId = new URLSearchParams(window.location.search).get("v");
-    return videoId;
+  return document.querySelector(".ytd-player");
 }
 
 export async function getProgressBar() {
-    return document.querySelector(".ytp-progress-bar-container .ytp-progress-bar");
+  return document.querySelector(
+    ".ytp-progress-bar-container .ytp-progress-bar"
+  );
 }
 
 export async function getMoreDropdown() {
-    return document.querySelector("#items");
+  return document.querySelector("#items");
 }

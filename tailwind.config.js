@@ -1,9 +1,18 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: ["class"],
+  darkMode: ["selector", "html[dark]"],
   content: ["./src/**/*.{ts,tsx}"],
   prefix: "cir-",
   theme: {
+    fontSize: {
+      sm: "1.25rem",
+      base: "1.25rem",
+      xl: "1.25rem",
+      "2xl": "1.563rem",
+      "3xl": "1.953rem",
+      "4xl": "2.441rem",
+      "5xl": "3.052rem",
+    },
     container: {
       center: true,
       padding: "2rem",
@@ -18,6 +27,15 @@ module.exports = {
         ring: "hsl(215, 20.2%, 65.1%)",
         background: "hsl(0, 0%, 100%)",
         foreground: "hsl(222.2, 47.4%, 11.2%)",
+        green: {
+          DEFAULT: "#4CAF50",
+        },
+        orange: {
+          DEFAULT: "#AF814C",
+        },
+        red: {
+          DEFAULT: "#AF4C4C",
+        },
         primary: {
           DEFAULT: "hsl(222.2, 47.4%, 11.2%)",
           foreground: "hsl(210, 40%, 98%)",

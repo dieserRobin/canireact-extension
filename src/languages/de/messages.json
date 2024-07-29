@@ -1,95 +1,104 @@
 {
-    "stream_reactions_allowed": {
-        "message": "Du darfst auf dieses Video im Stream reagieren"
-    },
-    "stream_reactions_not_allowed": {
-        "message": "Du darfst auf dieses Video im Stream nicht reagieren"
-    },
-    "sponsor_skips_allowed": {
-        "message": "Du darfst Placements überspringen"
-    },
-    "sponsor_skips_not_allowed": {
-        "message": "Du darfst Placements nicht überspringen"
-    },
-    "video_reactions_allowed": {
-        "message": "Du darfst eine Reaktion zu dem Video auf YouTube hochladen"
-    },
-    "video_reactions_not_allowed": {
-        "message": "Du darfst keine Reaktion zu dem Video auf YouTube hochladen"
-    },
-    "stream_video_reactions_allowed": {
-        "message": "Du darfst auf dieses Video im Stream reagieren und die Reaktion auf YouTube hochladen"
-    },
-    "monetization_allowed": {
-        "message": "Du darfst die Reaktion monetarisieren"
-    },
-    "monetization_not_allowed": {
-        "message": "Du darfst die Reaktion nicht monetarisieren"
-    },
-    "credit_stream_chat": {
-        "message": "Bitte verlinke das Video in deinem Stream Chat"
-    },
-    "credit_video_description": {
-        "message": "Bitte verlinke das Video in den ersten 3 Zeilen der Beschreibung deines Videos"
-    },
-    "credit_stream_video": {
-        "message": "Bitte verlinke das Video in deinem Stream Chat und in der Beschreibung deines Videos"
-    },
-    "guidelines": {
-        "message": "Erfahre mehr über die Richtlinien"
-    },
-    "stream_reactions_allowed_after_hours": {
-        "message": "Die Reaktion im Stream ist erst nach %hours Stunden erlaubt. (%time)"
-    },
-    "video_reactions_allowed_after_hours": {
-        "message": "Die Reaktion auf YouTube ist erst nach %hours Stunden erlaubt. (%time)"
-    },
-    "short_stream_video_reactions_allowed": {
-        "message": "Reaktion + Video erlaubt"
-    },
-    "short_stream_reactions_allowed": {
-        "message": "Reaktion erlaubt"
-    },
-    "short_video_reactions_allowed": {
-        "message": "Video erlaubt"
-    },
-    "short_stream_reactions_not_allowed": {
-        "message": "Reaktion nicht erlaubt"
-    },
-    "short_video_reactions_not_allowed": {
-        "message": "Video nicht erlaubt"
-    },
-    "sponsor_cut_allowed": {
-        "message": "Du darfst Placements aus dem Reaction Video rausschneiden"
-    },
-    "sponsor_cut_not_allowed": {
-        "message": "Du darfst Placements nicht aus dem Reaction Video rausschneiden"
-    },
-    "reaction_video_includes_title": {
-        "message": "Der Name des Kanals muss im Titel des Reaction Videos erwähnt werden"
-    },
-    "reaction_video_splittling_not_allowed": {
-        "message": "Du darfst das Reaction Video nicht in mehrere Teile aufteilen"
-    },
-    "guideline_disclaimer": {
-        "message": "Die Richtlinien sind nicht rechtlich bindend und dienen nur als Leitfaden; der Kanalinhaber kann weiterhin seine Rechte durchsetzen."
-    },
-    "sponsor_block_installed": {
-        "message": "Du hast Sponsor Block installiert, das automatisch das Placement überspringt. Bitte deaktiviere die Erweiterung für dieses Video."
-    },
-    "sponsor_segment_title": {
-        "message": "Placement Segment"
-    },
-    "sponsor_segment_description": {
-        "message": "Du darfst diesen Teil des Videos nicht überspringen."
-    },
-    "editor_button": {
-        "message": "TOS Editor ein/ausblenden"
-    },
-    "tos_segment_title": {
-        "message": "TOS Segment eingehend"
-    },
-    "tos_segment_description": {
-        "message": "Der folgende Abschnitt könnte gegen die Twitch-Nutzungsbedingungen verstoßen. Bitte sei vorsichtig."
-    }
+  "editor_button": {
+    "message": "TOS Editor ein/ausblenden"
+  },
+  "tos_segment_title": {
+    "message": "TOS Segment eingehend"
+  },
+  "tos_segment_description": {
+    "message": "Der folgende Abschnitt könnte gegen die Twitch-Nutzungsbedingungen verstoßen. Bitte sei vorsichtig."
+  },
+  "no_restrictions": {
+    "message": "Keine Einschränkungen"
+  },
+  "restrictions": {
+    "message": "Einschränkungen beachten"
+  },
+  "stream_reactions_allowed": {
+    "message": "Stream Reaction erlaubt"
+  },
+  "stream_reactions_not_allowed": {
+    "message": "Stream Reaction nicht erlaubt"
+  },
+  "sponsor_skips_allowed": {
+    "message": "Du darfst Placements überspringen"
+  },
+  "sponsor_skips_not_allowed": {
+    "message": "Du darfst Placements nicht überspringen"
+  },
+  "video_reactions_allowed": {
+    "message": "Reaction-Video erlaubt"
+  },
+  "video_reactions_not_allowed": {
+    "message": "Reaction-Video nicht erlaubt"
+  },
+  "stream_video_reactions_allowed": {
+    "message": "Du darfst auf dieses Video im Stream reagieren und die Reaktion auf YouTube hochladen"
+  },
+  "monetization_allowed": {
+    "message": "Du darfst die Reaktion monetarisieren"
+  },
+  "monetization_not_allowed": {
+    "message": "Du darfst die Reaktion nicht monetarisieren"
+  },
+  "credit_stream_chat": {
+    "message": "Bitte verlinke das Video in deinem Stream Chat"
+  },
+  "credit_video_description": {
+    "message": "Bitte verlinke das Video in den ersten 3 Zeilen der Beschreibung deines Videos"
+  },
+  "credit_stream_video": {
+    "message": "Bitte verlinke das Video in deinem Stream Chat und in der Beschreibung deines Videos"
+  },
+  "guidelines": {
+    "message": "Erfahre mehr über die Richtlinien"
+  },
+  "stream_reactions_allowed_after_hours": {
+    "message": "Stream Reaction erst erlaubt in: "
+  },
+  "video_reactions_allowed_after_hours": {
+    "message": "Reaction-Video erst erlaubt in: "
+  },
+  "short_stream_reactions_soon_allowed": {
+    "message": "Reaktion bald erlaubt"
+  },
+  "short_stream_video_reactions_allowed": {
+    "message": "Reaktion + Video erlaubt"
+  },
+  "short_stream_reactions_allowed": {
+    "message": "Reaktion erlaubt"
+  },
+  "short_video_reactions_allowed": {
+    "message": "Video erlaubt"
+  },
+  "short_stream_reactions_not_allowed": {
+    "message": "Reaktion nicht erlaubt"
+  },
+  "short_video_reactions_not_allowed": {
+    "message": "Video nicht erlaubt"
+  },
+  "sponsor_cut_allowed": {
+    "message": "Du darfst Placements aus dem Reaction Video rausschneiden"
+  },
+  "sponsor_cut_not_allowed": {
+    "message": "Du darfst Placements nicht aus dem Reaction Video rausschneiden"
+  },
+  "reaction_video_includes_title": {
+    "message": "Der Name des Kanals muss im Titel des Reaction Videos erwähnt werden"
+  },
+  "reaction_video_splittling_not_allowed": {
+    "message": "Du darfst das Reaction Video nicht in mehrere Teile aufteilen"
+  },
+  "guideline_disclaimer": {
+    "message": "Die Richtlinien sind nicht rechtlich bindend und dienen nur als Leitfaden; der Kanalinhaber kann weiterhin seine Rechte durchsetzen."
+  },
+  "sponsor_block_installed": {
+    "message": "Du hast Sponsor Block installiert, das automatisch das Placement überspringt. Bitte deaktiviere die Erweiterung für dieses Video."
+  },
+  "sponsor_segment_title": {
+    "message": "Placement Segment"
+  },
+  "sponsor_segment_description": {
+    "message": "Du darfst diesen Teil des Videos nicht überspringen."
+  }
 }

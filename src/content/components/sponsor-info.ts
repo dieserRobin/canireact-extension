@@ -1,3 +1,4 @@
+import { sponsorRemindersActive } from "..";
 import { log } from "../utils";
 import { getLanguageString } from "../utils/language";
 import { getCurrentTime, getYouTubePlayer } from "../utils/youtube";
@@ -7,121 +8,126 @@ let showingInfo = false;
 let showingTosInfo = false;
 let shownSegments: [number, number][] = [];
 
-async function checkTime(segments: [number, number][], tosSegments: [number, number][]) {
-    const currentTime = await getCurrentTime();
-    if (!currentTime) return;
+async function checkTime(
+  segments: [number, number][],
+  tosSegments: [number, number][]
+) {
+  const currentTime = await getCurrentTime();
+  if (!currentTime) return;
 
-    let foundSegment = false;
-    let foundTosSegment = false;
+  let foundSegment = false;
+  let foundTosSegment = false;
 
-    for (const segment of segments) {
-        if (currentTime >= segment[0] && currentTime <= segment[1]) {
-            if (shownSegments.includes(segment)) return;
+  for (const segment of segments) {
+    if (currentTime >= segment[0] && currentTime <= segment[1]) {
+      if (shownSegments.includes(segment)) return;
 
-            shownSegments.push(segment);
-            log("Sponsor segment detected");
-            foundSegment = true;
-            showInfo();
-        }
+      log("Sponsor segment detected");
+      foundSegment = true;
+      showInfo();
     }
+  }
 
-    for (const segment of tosSegments) {
-        if (currentTime >= (segment[0] - 10) && currentTime <= segment[1]) {
-            if (shownSegments.includes(segment)) return;
-            shownSegments.push(segment);
+  for (const segment of tosSegments) {
+    if (currentTime >= segment[0] - 10 && currentTime <= segment[1]) {
+      if (shownSegments.includes(segment)) return;
+      shownSegments.push(segment);
 
-            log("TOS segment detected");
-            foundTosSegment = true;
-            showTosInfo();
-        }
+      log("TOS segment detected");
+      foundTosSegment = true;
+      showTosInfo();
     }
+  }
 
-    if (!foundSegment && showingInfo) {
-        removeInfo();
-    }
+  if (!foundSegment && showingInfo) {
+    removeInfo();
+  }
 
-    if (!foundTosSegment && showingTosInfo) {
-        removeTosInfo();
-    }
+  if (!foundTosSegment && showingTosInfo) {
+    removeTosInfo();
+  }
 }
 
 async function removeTosInfo() {
-    const info = document.getElementById("tos-info");
-    if (info) {
-        info.remove();
-        showingTosInfo = false;
-    }
+  const info = document.getElementById("tos-info");
+  if (info) {
+    info.remove();
+    showingTosInfo = false;
+  }
 }
 
 async function removeInfo() {
-    const info = document.getElementById("sponsor-info");
-    if (info) {
-        info.remove();
-        showingInfo = false;
-    }
+  const info = document.getElementById("sponsor-info");
+  if (info) {
+    info.remove();
+    showingInfo = false;
+  }
 }
 
-export async function displaySponsorInfo(segments: [number, number][], tosSegments: [number, number][]) {
-    log("Starting sponsor info");
-    timeCheckInterval = setInterval(() => checkTime(segments, tosSegments), 1000);
+export async function displaySponsorInfo(
+  segments: [number, number][],
+  tosSegments: [number, number][]
+) {
+  if (!sponsorRemindersActive) return;
+  log("Starting sponsor info");
+  timeCheckInterval = setInterval(() => checkTime(segments, tosSegments), 1000);
 }
 
 export async function stopSponsorInfo() {
-    log("Stopping sponsor info");
-    shownSegments = [];
-    removeInfo();
-    if (timeCheckInterval) {
-        clearInterval(timeCheckInterval);
-        timeCheckInterval = null;
-    }
+  log("Stopping sponsor info");
+  removeInfo();
+  if (timeCheckInterval) {
+    clearInterval(timeCheckInterval);
+    timeCheckInterval = null;
+  }
 }
 
 async function showTosInfo() {
-    if (showingTosInfo) return;
-    showingTosInfo = true;
+  if (showingTosInfo) return;
+  showingTosInfo = true;
 
-    const player = await getYouTubePlayer();
-    if (!player) return;
+  const player = await getYouTubePlayer();
+  if (!player) return;
 
-    const info = document.createElement("div");
-    info.id = "tos-info";
-    info.classList.add("sponsor-info-container");
+  const info = document.createElement("div");
+  info.id = "tos-info";
+  info.classList.add("sponsor-info-container");
 
-    const title = document.createElement("h3");
-    title.textContent = getLanguageString("tos_segment_title");
+  const title = document.createElement("h3");
+  title.textContent = getLanguageString("tos_segment_title");
 
-    const description = document.createElement("p");
-    description.textContent = getLanguageString("tos_segment_description");
+  const description = document.createElement("p");
+  description.textContent = getLanguageString("tos_segment_description");
 
-    info.appendChild(title);
-    info.appendChild(description);
+  info.appendChild(title);
+  info.appendChild(description);
 
-    player.appendChild(info);
+  player.appendChild(info);
 }
 
 async function showInfo() {
-    if (showingInfo) return;
-    showingInfo = true;
+  if (showingInfo) return;
+  showingInfo = true;
 
-    const player = await getYouTubePlayer();
-    if (!player) return;
+  const player = await getYouTubePlayer();
+  if (!player) return;
 
-    const info = document.createElement("div");
-    info.id = "sponsor-info";
-    info.classList.add("sponsor-info-container");
+  const info = document.createElement("div");
+  info.id = "sponsor-info";
+  info.classList.add("sponsor-info-container");
 
-    const title = document.createElement("h3");
-    title.textContent = getLanguageString("sponsor_segment_title");
+  const title = document.createElement("h3");
+  title.textContent = getLanguageString("sponsor_segment_title");
 
-    const description = document.createElement("p");
-    description.textContent = getLanguageString("sponsor_segment_description");
+  const description = document.createElement("p");
+  description.textContent = getLanguageString("sponsor_segment_description");
 
-    info.appendChild(title);
-    info.appendChild(description);
+  info.appendChild(title);
+  info.appendChild(description);
 
-    player.appendChild(info);
+  player.appendChild(info);
 
-    setTimeout(() => {
-        removeInfo();
-    }, 10_000);
+  setTimeout(() => {
+    removeInfo();
+  }, 10_000);
 }
