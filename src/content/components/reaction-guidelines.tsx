@@ -4,13 +4,11 @@ import { fetchVideoDetails, type Guidelines } from "../utils/api";
 import { cn } from "../utils";
 import {
   Check,
-  Clock,
   Info,
   OctagonAlert,
   RadioTower,
   Video,
   XIcon,
-  Youtube,
 } from "lucide-react";
 import { getLanguageString } from "../utils/language";
 import Countdown from "./countdown";
@@ -92,6 +90,8 @@ const ReactionInfoComponent: React.FC<Props> = ({
         ? "orange"
         : "red";
 
+  const cirIconSrc = browser.runtime.getURL("images/round-icon.svg");
+
   const lightStreamfinitySrc = browser.runtime.getURL(
     "images/streamfinity_source-light.svg"
   );
@@ -124,7 +124,7 @@ const ReactionInfoComponent: React.FC<Props> = ({
     >
       <button
         className={cn(
-          "cir-absolute cir-right-2 cir-top-2.5 cir-p-0 cir-bg-black/25 cir-rounded-full cir-aspect-square cir-size-12 cir-text-white cir-transition-transform cir-cursor-pointer cir-flex cir-justify-center cir-items-center",
+          "cir-absolute cir-right-2 cir-top-3 cir-p-0 cir-bg-black/25 cir-rounded-full cir-aspect-square cir-size-12 cir-text-white cir-transition-transform cir-cursor-pointer cir-flex cir-justify-center cir-items-center",
           !open && "closed"
         )}
         onClick={toggleOpen}
@@ -133,14 +133,21 @@ const ReactionInfoComponent: React.FC<Props> = ({
       </button>
 
       <div className="cir-flex cir-gap-2 cir-items-center cir-flex-wrap cir-w-[90%]">
+        <img
+          src={cirIconSrc}
+          alt="Can I React?"
+          className="cir-w-14"
+          draggable={false}
+        />
+
         {guidelines.rules.stream.stream_reactions_allowed ? (
-          <div className="cir-bg-green-500 border cir-border-green-600 cir-px-2 cir-py-1 cir-rounded-full cir-text-2xl cir-flex cir-gap-2 cir-items-center cir-pr-3 cir-font-bold">
+          <div className="cir-bg-green-500 border cir-border-green-600 cir-px-2 cir-py-1 cir-rounded-full cir-text-2xl cir-flex cir-gap-2 cir-items-center cir-pr-3 cir-font-bold cir-text-black">
             <Check />
             {getLanguageString("stream_reactions_allowed")}
           </div>
         ) : guidelines.rules.stream.stream_reaction_allowed_after_hours ? (
           <>
-            <div className="cir-bg-orange-500 border cir-border-orange-600 cir-px-2 cir-py-1 cir-rounded-full cir-text-2xl cir-flex cir-gap-2 cir-items-center cir-pr-3 cir-font-bold">
+            <div className="cir-bg-orange-500 border cir-border-orange-600 cir-px-2 cir-py-1 cir-rounded-full cir-text-2xl cir-flex cir-gap-2 cir-items-center cir-pr-3 cir-font-bold cir-text-black">
               <OctagonAlert />
               {getLanguageString("stream_reactions_allowed_after_hours")}
               <Countdown countdownEnd={streamReactionCountdownEnd} />
@@ -150,20 +157,20 @@ const ReactionInfoComponent: React.FC<Props> = ({
             </div>
           </>
         ) : (
-          <div className="cir-bg-red-500 border cir-border-red-600 cir-px-2 cir-py-1 cir-rounded-full cir-text-2xl cir-flex cir-gap-2 cir-items-center cir-pr-3 cir-font-bol">
+          <div className="cir-bg-red-500 border cir-border-red-600 cir-px-2 cir-py-1 cir-rounded-full cir-text-2xl cir-flex cir-gap-2 cir-items-center cir-pr-3 cir-font-bold cir-text-black">
             <XIcon />
             {getLanguageString("stream_reactions_not_allowed")}
           </div>
         )}
 
         {guidelines.rules.video.video_reactions_allowed ? (
-          <div className="cir-bg-green-500 border cir-border-green-600 cir-px-2 cir-py-1 cir-rounded-full cir-text-2xl cir-flex cir-gap-2 cir-items-center cir-pr-3 cir-font-bold">
+          <div className="cir-bg-green-500 border cir-border-green-600 cir-px-2 cir-py-1 cir-rounded-full cir-text-2xl cir-flex cir-gap-2 cir-items-center cir-pr-3 cir-font-bold cir-text-black">
             <Check />
             {getLanguageString("video_reactions_allowed")}
           </div>
         ) : guidelines.rules.video.video_reaction_allowed_after_hours ? (
           <>
-            <div className="cir-bg-orange-500 border cir-border-orange-600 cir-px-2 cir-py-1 cir-rounded-full cir-text-2xl cir-flex cir-gap-2 cir-items-center cir-pr-3 cir-font-bold">
+            <div className="cir-bg-orange-500 border cir-border-orange-600 cir-px-2 cir-py-1 cir-rounded-full cir-text-2xl cir-flex cir-gap-2 cir-items-center cir-pr-3 cir-font-bold cir-text-black">
               <OctagonAlert />
               {getLanguageString("video_reactions_allowed_after_hours")}
               <Countdown countdownEnd={videoReactionCountdownEnd} />
@@ -173,14 +180,14 @@ const ReactionInfoComponent: React.FC<Props> = ({
             </div>
           </>
         ) : (
-          <div className="cir-bg-red-500 border cir-border-red-600 cir-px-2 cir-py-1 cir-rounded-full cir-text-2xl cir-flex cir-gap-2 cir-items-center cir-pr-3 cir-font-bold">
+          <div className="cir-bg-red-500 border cir-border-red-600 cir-px-2 cir-py-1 cir-rounded-full cir-text-2xl cir-flex cir-gap-2 cir-items-center cir-pr-3 cir-font-bold cir-text-black">
             <XIcon />
             {getLanguageString("video_reactions_not_allowed")}
           </div>
         )}
 
         {hasRestrictions && (
-          <div className="cir-bg-orange-500 border cir-border-orange-600 cir-px-2 cir-py-1 cir-rounded-full cir-text-2xl cir-flex cir-gap-2 cir-items-center cir-pr-3 cir-font-bold">
+          <div className="cir-bg-orange-500 border cir-border-orange-600 cir-px-2 cir-py-1 cir-rounded-full cir-text-2xl cir-flex cir-gap-2 cir-items-center cir-pr-3 cir-font-bold cir-text-black">
             <OctagonAlert />
             {getLanguageString("restrictions")}
           </div>
@@ -194,7 +201,7 @@ const ReactionInfoComponent: React.FC<Props> = ({
             On-Stream
           </h2>
 
-          <div className="cir-text-xl cir-text-white/75">
+          <div className="cir-text-xl dark:cir-text-white/75 text-black/7 cir-ml-3">
             {!hasStreamRestrictions && (
               <p>{getLanguageString("no_restrictions")}</p>
             )}
@@ -230,7 +237,7 @@ const ReactionInfoComponent: React.FC<Props> = ({
             Reaction Video
           </h2>
 
-          <div className="cir-text-xl cir-text-white/75">
+          <div className="cir-text-xl dark:cir-text-white/75 text-black/75 cir-ml-3">
             {!hasVideoRestrictions && (
               <p className="cir-text-lg cir-mb-2">
                 {getLanguageString("no_restrictions")}

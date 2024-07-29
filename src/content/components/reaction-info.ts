@@ -1,4 +1,4 @@
-import { collapseState } from "..";
+import { collapseState, reactionInfoMinimized } from "..";
 import { hasTimeElapsed, isSponsorBlockInstalled, log } from "../utils";
 import { Guidelines, fetchVideoDetails } from "../utils/api";
 import { getLanguageString } from "../utils/language";
@@ -24,11 +24,41 @@ export async function removeInfo(): Promise<void> {
   }
 }
 
+async function adjustSettingsBorder(theme: "green" | "orange" | "red") {
+  const button = document.querySelector("#cir-settings-button");
+  if (!button) return;
+
+  switch (theme) {
+    case "green":
+      button.classList.add("cir-guideline-green");
+      break;
+    case "orange":
+      button.classList.add("cir-guideline-orange");
+      break;
+    case "red":
+      button.classList.add("cir-guideline-red");
+      break;
+    default:
+      break;
+  }
+}
+
 export async function addReactionInfo(
   bottomRow: HTMLElement,
   response: Guidelines,
   isRedesign?: boolean
 ): Promise<void> {
+  adjustSettingsBorder(
+    response.rules.stream.stream_reactions_allowed &&
+      response.rules.video.video_reactions_allowed
+      ? "green"
+      : response.rules.stream.stream_reactions_allowed
+        ? "orange"
+        : "red"
+  );
+
+  if (reactionInfoMinimized) return;
+
   if (response.video) {
     if (
       response.rules?.video.video_reaction_allowed_after_hours &&

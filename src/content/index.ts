@@ -12,11 +12,15 @@ import {
 import { removeAllThumbnailInfos } from "./components/thumbnail-info";
 import browser from "webextension-polyfill";
 import { getLanguage } from "./utils/language";
+import Settings from "./components/settings";
 
 export let API_URL = "https://api.canireact.com";
 export let hasProcessed = false;
 export let currentChannelUrl: string | null = null;
 export let collapseState: boolean = false;
+export let settingsDropdown: Settings | null = null;
+export let reactionInfoMinimized: boolean = false;
+export let sponsorRemindersActive = true;
 
 let currentChannelNameObserver: MutationObserver | null = null;
 let latestRequest: string | null = null;
@@ -32,15 +36,15 @@ async function main() {
     log("message received", message);
     if (message.message === "setCollapseState") {
       collapseState = message.data;
+    } else if (message.message === "setReactionInfoMinimized") {
+      reactionInfoMinimized = message.data;
+    } else if (message.message === "setSponsorRemindersActive") {
+      sponsorRemindersActive = message.data;
     }
   });
 
   await processCurrentPage();
   await registerThumbnailObserver();
-
-  if (document.documentElement.hasAttribute("dark")) {
-    document.body.classList.add("dark");
-  }
 
   document.addEventListener("yt-navigate-finish", async function () {
     log("switched page, processing...");
@@ -86,6 +90,9 @@ async function processCurrentPage(): Promise<void> {
         return; // Exit if already processed
       }
 
+      settingsDropdown && settingsDropdown.destroy();
+      settingsDropdown = new Settings();
+
       const bottomRows: NodeListOf<HTMLElement> =
         document.querySelectorAll("#bottom-row");
       const bottomRow = bottomRows[bottomRows.length - 1];
@@ -128,6 +135,62 @@ async function processCurrentPage(): Promise<void> {
       childList: true,
       subtree: true,
     });
+  }
+}
+
+export async function toggleSponsorReminders() {
+  sponsorRemindersActive = !sponsorRemindersActive;
+  log("sponsor reminders active: " + sponsorRemindersActive);
+  await browser.runtime.sendMessage({
+    message: "setSponsorRemindersActive",
+    data: sponsorRemindersActive,
+  });
+}
+
+export async function toggleMinimize() {
+  reactionInfoMinimized = !reactionInfoMinimized;
+  log("minimized: " + reactionInfoMinimized);
+  await browser.runtime.sendMessage({
+    message: "setReactionInfoMinimized",
+    data: reactionInfoMinimized,
+  });
+
+  if (reactionInfoMinimized) {
+    removeInfo();
+  } else {
+    fetchAndAddReactionInfo();
+  }
+}
+
+export async function fetchAndAddReactionInfo() {
+  const videoId = new URL(window.location.href).searchParams.get("v");
+  if (!videoId) {
+    log("video id not found");
+    return;
+  }
+
+  const bottomRow: HTMLElement | null = document.querySelector("#bottom-row");
+
+  if (!bottomRow) {
+    return;
+  }
+
+  const channelUrl = await getChannelUrl();
+
+  if (!channelUrl) {
+    return;
+  }
+
+  // Fetch video info
+  const response = await fetchVideoInfo(videoId, channelUrl);
+  log(`video info: ${JSON.stringify(response)}`);
+
+  if (response && (response.rules || response.info_text)) {
+    addReactionInfo(bottomRow, response);
+  } else {
+    log("no rules found for this video");
+    removeInfo();
+    addOriginalVideoOnly(bottomRow);
   }
 }
 

@@ -328,3 +328,23 @@ html[dark] #reaction-info-toggle {
 button.closed {
   transform: rotate(45deg);
 }
+
+.themed-stroke {
+  stroke: #000;
+}
+
+html[dark] .themed-stroke {
+  stroke: #fff;
+}
+
+button.cir-guideline-green {
+  border: 2px solid #4caf50;
+}
+
+button.cir-guideline-red {
+  border: 2px solid #f44336;
+}
+
+button.cir-guideline-orange {
+  border: 2px solid #ff9800;
+}

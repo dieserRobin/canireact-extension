@@ -1,3 +1,4 @@
+import { sponsorRemindersActive } from "..";
 import { log } from "../utils";
 import { getLanguageString } from "../utils/language";
 import { getCurrentTime, getYouTubePlayer } from "../utils/youtube";
@@ -36,6 +37,7 @@ async function removeInfo() {
 }
 
 export async function displaySponsorInfo(segments: [number, number][]) {
+  if (!sponsorRemindersActive) return;
   log("Starting sponsor info");
   timeCheckInterval = setInterval(() => checkTime(segments), 1000);
 }
