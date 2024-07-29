@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { createRoot, Root } from "react-dom/client";
-import { formatTime, getCurrentTime, getVideoId } from "../utils/youtube";
+import {
+  formatTime,
+  getCurrentTime,
+  getVideoId,
+  skipTo,
+} from "../utils/youtube";
 import { Button } from "./ui/button";
 import { TrashIcon } from "@radix-ui/react-icons";
 import {
@@ -18,11 +23,12 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import browser from "webextension-polyfill";
-import { ThumbsDown, ThumbsUp, XIcon } from "lucide-react";
+import { Play, ThumbsDown, ThumbsUp, XIcon } from "lucide-react";
 import { closeTosEditor } from "./settings";
 import { Toaster } from "./ui/sonner";
 import { toast } from "sonner";
 import { currentProfile } from "..";
+import { getLanguageString } from "../utils/language";
 
 const TosSegmentEditor: React.FC = () => {
   const videoId = getVideoId(window.location.href);
@@ -141,7 +147,7 @@ const TosSegmentEditor: React.FC = () => {
 
       <button
         className={cn(
-          "cir-absolute cir-right-12 cir-top-3 cir-p-0 cir-bg-black/25 cir-rounded-full cir-aspect-square cir-size-12 cir-text-white cir-transition-transform cir-cursor-pointer cir-flex cir-justify-center cir-items-center",
+          "cir-absolute cir-right-4 cir-top-3 cir-p-0 cir-bg-black/25 cir-rounded-full cir-aspect-square cir-size-12 cir-text-white cir-transition-transform cir-cursor-pointer cir-flex cir-justify-center cir-items-center",
           !open && "closed"
         )}
         onClick={toggleOpen}
@@ -155,14 +161,20 @@ const TosSegmentEditor: React.FC = () => {
             You need to login to use this feature.
           </h2>
 
-          <Button onClick={handleLogin}>Login</Button>
+          <Button onClick={handleLogin}>Login with Twitch</Button>
         </div>
       ) : (
         <>
           <div className="">
-            <h2 className="cir-text-4xl cir-my-1">Segments</h2>
             <div className="tos-editor__segments__list">
+              <p className="cir-text-xl cir-text-white/75 cir-my-2">
+                {getLanguageString(
+                  "tos_segment_editor_saved_segments_description"
+                )}
+              </p>
+
               <h3 className="cir-text-2xl cir-my-1">Saved Segments</h3>
+
               {segmentsQuery.data?.map((segment) => (
                 <Segment
                   key={segment.id}
@@ -213,7 +225,11 @@ const TosSegmentEditor: React.FC = () => {
             </Button>
           </div>
 
-          <Button className="cir-mt-4" disabled={saving} onClick={save}>
+          <Button
+            className="cir-mt-4"
+            disabled={saving || segments.length === 0}
+            onClick={save}
+          >
             Save
           </Button>
         </>
@@ -237,15 +253,22 @@ const Segment: React.FC<{
       {stored ? (
         <div className="cir-flex cir-gap-2 cir-items-center">
           <button
+            onClick={() => skipTo(start)}
+            className="cir-bg-neutral-800 hover:cir-bg-neutral-700 cir-h-[25px] cir-w-auto cir-aspect-square cir-rounded-full cir-p-2 cir-flex cir-items-center cir-justify-center cir-outline-none focus-visible:cir-ring-2 cir-ring-black dark:cir-ring-white focus-visible:cir-bg-neutral-950 cir-cursor-pointer cir-text-white"
+          >
+            <Play />
+          </button>
+
+          <button
             onClick={() => vote && vote("up")}
-            className="cir-bg-neutral-800 hover:cir-bg-neutral-700 cir-h-[36px] cir-w-auto cir-aspect-square cir-rounded-full cir-p-3 cir-flex cir-items-center cir-justify-center cir-outline-none focus-visible:cir-ring-2 cir-ring-black dark:cir-ring-white focus-visible:cir-bg-neutral-950 cir-cursor-pointer cir-text-white"
+            className="cir-bg-neutral-800 hover:cir-bg-neutral-700 cir-h-[25px] cir-w-auto cir-aspect-square cir-rounded-full cir-p-2 cir-flex cir-items-center cir-justify-center cir-outline-none focus-visible:cir-ring-2 cir-ring-black dark:cir-ring-white focus-visible:cir-bg-neutral-950 cir-cursor-pointer cir-text-white"
           >
             <ThumbsUp />
           </button>
 
           <button
             onClick={() => vote && vote("down")}
-            className="cir-bg-neutral-800 hover:cir-bg-neutral-700 cir-h-[36px] cir-w-auto cir-aspect-square cir-rounded-full cir-p-3 cir-flex cir-items-center cir-justify-center cir-outline-none focus-visible:cir-ring-2 cir-ring-black dark:cir-ring-white focus-visible:cir-bg-neutral-950 cir-cursor-pointer cir-text-white"
+            className="cir-bg-neutral-800 hover:cir-bg-neutral-700 cir-h-[25px] cir-w-auto cir-aspect-square cir-rounded-full cir-p-2 cir-flex cir-items-center cir-justify-center cir-outline-none focus-visible:cir-ring-2 cir-ring-black dark:cir-ring-white focus-visible:cir-bg-neutral-950 cir-cursor-pointer cir-text-white"
           >
             <ThumbsDown />
           </button>
@@ -255,7 +278,7 @@ const Segment: React.FC<{
           <button
             onClick={() => remove && remove()}
             disabled={!remove}
-            className="cir-bg-neutral-800 hover:cir-bg-neutral-700 cir-h-[36px] cir-w-auto cir-aspect-square cir-rounded-full cir-p-3 cir-flex cir-items-center cir-justify-center cir-outline-none focus-visible:cir-ring-2 cir-ring-black dark:cir-ring-white focus-visible:cir-bg-neutral-950 cir-cursor-pointer cir-text-white"
+            className="cir-bg-neutral-800 hover:cir-bg-neutral-700 cir-h-[25px] cir-w-auto cir-aspect-square cir-rounded-full cir-p-2 cir-flex cir-items-center cir-justify-center cir-outline-none focus-visible:cir-ring-2 cir-ring-black dark:cir-ring-white focus-visible:cir-bg-neutral-950 cir-cursor-pointer cir-text-white"
           >
             <TrashIcon />
           </button>

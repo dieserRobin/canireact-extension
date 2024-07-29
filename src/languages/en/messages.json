@@ -1,4 +1,7 @@
 {
+  "tos_segment_editor_saved_segments_description": {
+    "message": "Rate already created TOS segments from other users or create your own."
+  },
   "tos_segments": {
     "message": "Includes TOS segments"
   },

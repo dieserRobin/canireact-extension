@@ -40,6 +40,11 @@ export function getVideo(): HTMLVideoElement | null {
   return document.querySelector(".html5-main-video");
 }
 
+export function skipTo(time: number) {
+  const video = getVideo();
+  if (video) video.currentTime = time;
+}
+
 export async function getCurrentTime() {
   const video = getVideo();
   return video ? video.currentTime : null;

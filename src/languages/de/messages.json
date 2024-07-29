@@ -1,4 +1,7 @@
 {
+  "tos_segment_editor_saved_segments_description": {
+    "message": "Bewerte bereits angelegte TOS Segmente von anderen Nutzer*innen oder erstelle eigene."
+  },
   "tos_segments": {
     "message": "Enthält TOS Segmente"
   },

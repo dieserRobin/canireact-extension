@@ -84,6 +84,7 @@ export async function displaySponsorInfo(
 export async function stopSponsorInfo() {
   log("Stopping sponsor info");
   removeInfo();
+  removeTosInfo();
   if (timeCheckInterval) {
     clearInterval(timeCheckInterval);
     timeCheckInterval = null;
@@ -106,6 +107,10 @@ async function showTosInfo() {
 
   const description = document.createElement("p");
   description.textContent = getLanguageString("tos_segment_description");
+
+  info.onclick = () => {
+    info.style.display = "none";
+  };
 
   info.appendChild(title);
   info.appendChild(description);
@@ -132,6 +137,10 @@ async function showInfo() {
 
   info.appendChild(title);
   info.appendChild(description);
+
+  info.onclick = () => {
+    info.style.display = "none";
+  };
 
   player.appendChild(info);
 

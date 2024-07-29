@@ -63,7 +63,7 @@ const ReactionInfoComponent: React.FC<Props> = ({}) => {
       <DropdownMenuTrigger asChild>
         <button
           id="cir-settings-button"
-          className="cir-bg-neutral-800 hover:cir-bg-neutral-700 cir-h-[36px] cir-w-auto cir-aspect-square cir-rounded-full cir-p-3 cir-ml-4 cir-flex cir-items-center cir-justify-center cir-outline-none focus-visible:cir-ring-2 cir-ring-black dark:cir-ring-white focus-visible:cir-bg-neutral-950 cir-cursor-pointer"
+          className="cir-bg-neutral-200 hover:cir-bg-neutral-300 dark:cir-bg-neutral-800 dark:hover:cir-bg-neutral-700 cir-h-[36px] cir-w-auto cir-aspect-square cir-rounded-full cir-p-3 cir-ml-4 cir-flex cir-items-center cir-justify-center cir-outline-none focus-visible:cir-ring-2 cir-ring-black dark:cir-ring-white focus-visible:cir-bg-neutral-200 dark:focus-visible:cir-bg-neutral-950 cir-cursor-pointer"
         >
           <svg
             viewBox="0 0 486 373"
@@ -100,6 +100,9 @@ const ReactionInfoComponent: React.FC<Props> = ({}) => {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="cir-font-sans">
+        <span className="cir-text-neutral-900 dark:cir-text-neutral-200 cir-font-bold cir-text-lg cir-p-5 cir-uppercase">
+          Can I React?
+        </span>
         <DropdownMenuItem onClick={handleReactionInfoToggle}>
           {minimized ? "Show" : "Hide"} Reaction Info
         </DropdownMenuItem>
