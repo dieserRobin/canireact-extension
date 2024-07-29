@@ -131,10 +131,6 @@ class Settings {
 
     this.container = container as HTMLElement;
 
-    if (!this.container) {
-      throw new Error("Container not found");
-    }
-
     const element = document.createElement("div");
     element.id = "cir-settings";
 

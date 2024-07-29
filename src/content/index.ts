@@ -1,7 +1,7 @@
 import "../extension-styles.css";
 
 import { isProduction, log } from "./utils";
-import { handleThumbnails, startThumbnailObserver } from "./utils/thumbnails";
+import { handleThumbnails } from "./utils/thumbnails";
 import { fetchVideoInfo } from "./utils/api";
 import { getChannelUrl } from "./utils/youtube";
 import {
@@ -60,9 +60,9 @@ async function main() {
     log("switched page, processing...");
 
     await removeInfo();
+    await removeAllThumbnailInfos();
     currentChannelNameObserver?.disconnect();
     await processCurrentPage();
-    await removeAllThumbnailInfos();
     hasProcessed = false;
   });
 }
@@ -70,7 +70,6 @@ async function main() {
 async function registerThumbnailObserver(): Promise<void> {
   window.addEventListener("updateui", handleThumbnails);
   window.addEventListener("state-navigateend", handleThumbnails);
-  startThumbnailObserver();
 
   setInterval(async () => {
     handleThumbnails();
@@ -220,10 +219,6 @@ async function observeChannelNameChange(videoId: string) {
     const channelUrl = await getChannelUrl();
     currentChannelUrl = channelUrl;
     log("channel url: " + channelUrl, currentChannelUrl);
-
-    if (!settingsDropdown) {
-      settingsDropdown = new Settings();
-    }
 
     const bottomRow: HTMLElement | null = document.querySelector("#bottom-row");
     if (bottomRow) {

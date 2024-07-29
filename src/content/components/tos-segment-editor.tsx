@@ -175,6 +175,16 @@ const TosSegmentEditor: React.FC = () => {
 
               <h3 className="cir-text-2xl cir-my-1">Saved Segments</h3>
 
+              {segmentsQuery.isLoading && <p>Loading...</p>}
+
+              {segmentsQuery.isError && (
+                <p>Error fetching segments: {segmentsQuery.error.message}</p>
+              )}
+
+              {segmentsQuery.data?.length === 0 && (
+                <p>No segments found for this video</p>
+              )}
+
               {segmentsQuery.data?.map((segment) => (
                 <Segment
                   key={segment.id}

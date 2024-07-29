@@ -11,23 +11,6 @@ export async function getThumbnails(): Promise<NodeListOf<HTMLElement>> {
   );
 }
 
-export async function startThumbnailObserver(): Promise<void> {
-  const observer = new MutationObserver(() => {
-    handleThumbnails();
-  });
-
-  observer.observe(document.querySelector("ytd-rich-grid-renderer"), {
-    childList: true,
-    subtree: true,
-  });
-
-  thumbnailObserver = observer;
-}
-
-export async function stopThumbnailObserver(): Promise<void> {
-  thumbnailObserver?.disconnect();
-}
-
 export async function handleThumbnails(): Promise<void> {
   const thumbnails = await getThumbnails();
 
