@@ -2,9 +2,6 @@ import browser from "webextension-polyfill";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
-
 export function isProduction(): boolean {
   const manifest = browser.runtime.getManifest();
   return "update_url" in manifest;
