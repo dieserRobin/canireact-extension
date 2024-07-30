@@ -125,16 +125,19 @@ class Settings {
   root: Root;
 
   constructor() {
+    log("Settings component created");
     let container = document.querySelector(
       "#above-the-fold #top-row #actions #actions-inner #menu #top-level-buttons-computed"
     );
+    log("upper row: ", container);
 
     this.container = container as HTMLElement;
 
     const element = document.createElement("div");
     element.id = "cir-settings";
 
-    this.container.appendChild(element);
+    this.container && this.container.appendChild(element);
+    log("Settings component appended", this.container !== null);
 
     const queryClient = new QueryClient();
 
@@ -149,6 +152,7 @@ class Settings {
   }
 
   destroy() {
+    log("Settings component destroyed");
     this.root.unmount();
     tosEditor?.destroy();
     tosEditor = undefined;
