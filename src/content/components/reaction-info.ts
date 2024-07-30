@@ -23,6 +23,14 @@ export async function removeInfo(): Promise<void> {
   }
 }
 
+function calculateRemainingTime(upload: string, hours: number) {
+  const uploadDate = new Date(upload);
+  const currentDate = new Date();
+  const timeElapsed = currentDate.getTime() - uploadDate.getTime();
+  const remainingTime = hours * 3600000 - timeElapsed;
+  return remainingTime;
+}
+
 async function adjustSettingsBorder(theme: "green" | "orange" | "red") {
   const button = document.querySelector("#cir-settings-button");
   if (!button) return;
@@ -98,6 +106,46 @@ export async function addReactionInfo(
   );
 
   reactionInfoComponent = new ReactionInfo(bottomRow, response, collapseState);
+
+  if (
+    response.rules.stream.stream_reaction_allowed_after_hours &&
+    !response.rules.stream.stream_reactions_allowed
+  ) {
+    const remainingTime = calculateRemainingTime(
+      response.video.uploaded_at,
+      response.rules.stream.stream_reaction_allowed_after_hours
+    );
+    streamCountdownInterval = setTimeout(async () => {
+      response.rules.stream.stream_reactions_allowed =
+        response.rules.stream.stream_reactions_generally_allowed;
+      reactionInfoComponent?.destroy();
+      reactionInfoComponent = new ReactionInfo(
+        bottomRow,
+        response,
+        collapseState
+      );
+    }, remainingTime);
+  }
+
+  if (
+    response.rules.video.video_reaction_allowed_after_hours &&
+    !response.rules.video.video_reactions_allowed
+  ) {
+    const remainingTime = calculateRemainingTime(
+      response.video.uploaded_at,
+      response.rules.video.video_reaction_allowed_after_hours
+    );
+    videoCountdownInterval = setTimeout(async () => {
+      response.rules.video.video_reactions_allowed =
+        response.rules.video.video_reactions_generally_allowed;
+      reactionInfoComponent?.destroy();
+      reactionInfoComponent = new ReactionInfo(
+        bottomRow,
+        response,
+        collapseState
+      );
+    }, remainingTime);
+  }
 }
 
 async function displayOriginalVideo(
