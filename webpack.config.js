@@ -7,6 +7,7 @@ module.exports = {
   entry: {
     background: "./src/background.ts",
     content: "./src/content/index.ts",
+    popup: "./src/popup/index.ts",
   },
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -45,9 +46,16 @@ module.exports = {
     extensions: [".ts", ".js", ".tsx"],
   },
   plugins: [
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, "src", "popup", "index.html"),
+      filename: "popup.html",
+      chunks: ["popup"],
+      cache: false,
+    }),
     new CopyWebpackPlugin({
       patterns: [
         { from: "manifest.json", to: "manifest.json" },
+        { from: "src/popup/popup.css", to: "popup.css" },
         { from: "src/images", to: "images" },
         {
           from: "src/languages",

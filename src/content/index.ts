@@ -13,6 +13,7 @@ import { removeAllThumbnailInfos } from "./components/thumbnail-info";
 import browser from "webextension-polyfill";
 import { getLanguage } from "./utils/language";
 import Settings from "./components/settings";
+import { addTosSegments } from "./components/tos-segments";
 
 export let API_URL = "https://api.canireact.com";
 export let hasProcessed = false;
@@ -24,6 +25,10 @@ export let sponsorRemindersActive = true;
 
 let currentChannelNameObserver: MutationObserver | null = null;
 let latestRequest: string | null = null;
+export let currentProfile: {
+  name: string;
+  image: string;
+} | null = null;
 
 async function main() {
   const isProd = isProduction();
@@ -32,6 +37,14 @@ async function main() {
 
   let port = browser.runtime.connect();
   port.postMessage({ message: "hello" });
+
+  setInterval(
+    () => {
+      port.postMessage({ message: "keepAlive" });
+    },
+    1000 * 60 * 5
+  );
+
   port.onMessage.addListener((message) => {
     log("message received", message);
     if (message.message === "setCollapseState") {
@@ -40,6 +53,11 @@ async function main() {
       reactionInfoMinimized = message.data;
     } else if (message.message === "setSponsorRemindersActive") {
       sponsorRemindersActive = message.data;
+    } else if (message.message === "setProfile") {
+      currentProfile = {
+        name: message.data.display_name,
+        image: message.data.profile_image_url,
+      };
     }
   });
 
@@ -50,9 +68,9 @@ async function main() {
     log("switched page, processing...");
 
     await removeInfo();
+    await removeAllThumbnailInfos();
     currentChannelNameObserver?.disconnect();
     await processCurrentPage();
-    await removeAllThumbnailInfos();
     hasProcessed = false;
   });
 }
@@ -79,19 +97,46 @@ async function processCurrentPage(): Promise<void> {
     }
     log("video id: " + videoId);
 
+    const upperRowObserver = new MutationObserver(async (_, obs) => {
+      const upperRow = document.querySelector(
+        "#above-the-fold #top-row #actions #actions-inner #menu #top-level-buttons-computed"
+      );
+      log("upper row: " + upperRow);
+      if (upperRow) {
+        obs.disconnect();
+        settingsDropdown && settingsDropdown.destroy();
+        settingsDropdown = new Settings();
+      }
+    });
+
+    upperRowObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
     // Wait for the bottom row to be available in the DOM
     const observer = new MutationObserver(async (_, obs) => {
       const channelUrl = await getChannelUrl();
       currentChannelUrl = channelUrl;
       log("channel url: " + channelUrl);
 
+      setTimeout(() => {
+        settingsDropdown && settingsDropdown.destroy();
+        settingsDropdown = new Settings();
+      }, 500);
+
       if (hasProcessed && currentChannelUrl === channelUrl) {
         obs.disconnect();
         return; // Exit if already processed
       }
 
-      settingsDropdown && settingsDropdown.destroy();
-      settingsDropdown = new Settings();
+      addTosSegments(videoId)
+        .then(() => {
+          log("tos segments added");
+        })
+        .catch((e) => {
+          log("error adding tos segments: " + e);
+        });
 
       const bottomRows: NodeListOf<HTMLElement> =
         document.querySelectorAll("#bottom-row");

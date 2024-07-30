@@ -1,10 +1,9 @@
 import { collapseState, reactionInfoMinimized } from "..";
-import { hasTimeElapsed, isSponsorBlockInstalled, log } from "../utils";
-import { Guidelines, fetchVideoDetails } from "../utils/api";
-import { getLanguageString } from "../utils/language";
+import { hasTimeElapsed, log } from "../utils";
+import { Guidelines, fetchSegments, fetchVideoDetails } from "../utils/api";
 import { createImageElement, createTextElement } from "../utils/render";
 import browser from "webextension-polyfill";
-import { getOriginalVideo } from "../utils/youtube";
+import { getOriginalVideo, getVideoId } from "../utils/youtube";
 import { displaySponsorInfo, stopSponsorInfo } from "./sponsor-info";
 import ReactionInfo from "./reaction-guidelines";
 
@@ -22,6 +21,14 @@ export async function removeInfo(): Promise<void> {
   if (reactionInfo) {
     reactionInfo.remove();
   }
+}
+
+function calculateRemainingTime(upload: string, hours: number) {
+  const uploadDate = new Date(upload);
+  const currentDate = new Date();
+  const timeElapsed = currentDate.getTime() - uploadDate.getTime();
+  const remainingTime = hours * 3600000 - timeElapsed;
+  return remainingTime;
 }
 
 async function adjustSettingsBorder(theme: "green" | "orange" | "red") {
@@ -89,14 +96,56 @@ export async function addReactionInfo(
     }
   }
 
-  if (
-    response.rules?.stream.sponsor_skips_allowed === false &&
-    (response.sponsor_segments?.length ?? 0) > 0
-  ) {
-    displaySponsorInfo(response.sponsor_segments ?? []);
-  }
+  const tosSegments = await fetchSegments(getVideoId(window.location.href));
+
+  displaySponsorInfo(
+    response.rules.stream.sponsor_skips_allowed === false
+      ? response.sponsor_segments ?? []
+      : [],
+    tosSegments?.filter((t) => t.votes >= 5).map((t) => [t.start, t.end]) ?? []
+  );
 
   reactionInfoComponent = new ReactionInfo(bottomRow, response, collapseState);
+
+  if (
+    response.rules.stream.stream_reaction_allowed_after_hours &&
+    !response.rules.stream.stream_reactions_allowed
+  ) {
+    const remainingTime = calculateRemainingTime(
+      response.video.uploaded_at,
+      response.rules.stream.stream_reaction_allowed_after_hours
+    );
+    streamCountdownInterval = setTimeout(async () => {
+      response.rules.stream.stream_reactions_allowed =
+        response.rules.stream.stream_reactions_generally_allowed;
+      reactionInfoComponent?.destroy();
+      reactionInfoComponent = new ReactionInfo(
+        bottomRow,
+        response,
+        collapseState
+      );
+    }, remainingTime);
+  }
+
+  if (
+    response.rules.video.video_reaction_allowed_after_hours &&
+    !response.rules.video.video_reactions_allowed
+  ) {
+    const remainingTime = calculateRemainingTime(
+      response.video.uploaded_at,
+      response.rules.video.video_reaction_allowed_after_hours
+    );
+    videoCountdownInterval = setTimeout(async () => {
+      response.rules.video.video_reactions_allowed =
+        response.rules.video.video_reactions_generally_allowed;
+      reactionInfoComponent?.destroy();
+      reactionInfoComponent = new ReactionInfo(
+        bottomRow,
+        response,
+        collapseState
+      );
+    }, remainingTime);
+  }
 }
 
 async function displayOriginalVideo(

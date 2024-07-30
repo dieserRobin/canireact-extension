@@ -1,4 +1,19 @@
 {
+  "tos_segment_editor_saved_segments_description": {
+    "message": "Bewerte bereits angelegte TOS Segmente von anderen Nutzer*innen oder erstelle eigene."
+  },
+  "tos_segments": {
+    "message": "Enthält TOS Segmente"
+  },
+  "editor_button": {
+    "message": "TOS Editor ein/ausblenden"
+  },
+  "tos_segment_title": {
+    "message": "TOS Segment eingehend"
+  },
+  "tos_segment_description": {
+    "message": "Der folgende Abschnitt könnte gegen die Twitch-Nutzungsbedingungen verstoßen. Bitte sei vorsichtig."
+  },
   "no_restrictions": {
     "message": "Keine Einschränkungen"
   },

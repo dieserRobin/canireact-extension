@@ -36,23 +36,56 @@ export async function getOriginalVideo(): Promise<string | null> {
   return match ? `https://www.youtube.com/watch?v=${match[5]}` : null;
 }
 
-export async function getCurrentTime() {
-  const currentTime = document.querySelector(".ytp-time-current");
-  if (!currentTime) return null;
+export function getVideo(): HTMLVideoElement | null {
+  return document.querySelector(".html5-main-video");
+}
 
-  const time = currentTime.textContent;
-  const timeArray = time?.split(":");
-  if (!timeArray) return null;
+export function skipTo(time: number) {
+  const video = getVideo();
+  if (video) video.currentTime = time;
+}
+
+export async function getCurrentTime() {
+  const video = getVideo();
+  return video ? video.currentTime : null;
+}
+
+export async function getVideoLength() {
+  const videoDuration = document.querySelector(".ytp-time-duration");
+  if (!videoDuration) return null;
+
+  const duration = videoDuration.textContent;
+  const durationArray = duration?.split(":");
+  if (!durationArray) return null;
 
   let seconds = 0;
 
-  for (let i = 0; i < timeArray.length; i++) {
-    seconds += parseInt(timeArray[i]) * Math.pow(60, timeArray.length - i - 1);
+  for (let i = 0; i < durationArray.length; i++) {
+    seconds +=
+      parseInt(durationArray[i]) * Math.pow(60, durationArray.length - i - 1);
   }
 
   return seconds;
 }
 
+export function formatTime(seconds: number) {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+
+  return `${hours > 0 ? hours + ":" : ""}${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
+}
+
 export async function getYouTubePlayer() {
   return document.querySelector(".ytd-player");
+}
+
+export async function getProgressBar() {
+  return document.querySelector(
+    ".ytp-progress-bar-container .ytp-progress-bar"
+  );
+}
+
+export async function getMoreDropdown() {
+  return document.querySelector("#items");
 }

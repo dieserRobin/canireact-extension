@@ -25,7 +25,7 @@ const DropdownMenuSubTrigger = React.forwardRef<
   <DropdownMenuPrimitive.SubTrigger
     ref={ref}
     className={cn(
-      "cir-flex cir-cursor-default cir-select-none cir-items-center cir-rounded-sm cir-px-2 cir-py-1.5 cir-text-xl cir-outline-none focus:cir-bg-neutral-100 data-[state=open]:cir-bg-neutral-100 dark:focus:cir-bg-neutral-800 dark:data-[state=open]:cir-bg-neutral-800",
+      "cir-flex cir-cursor-default cir-select-none cir-items-center cir-rounded-sm cir-px-4 cir-py-3 cir-text-xl cir-outline-none focus:cir-bg-neutral-100 data-[state=open]:cir-bg-neutral-100 dark:focus:cir-bg-neutral-800 dark:data-[state=open]:cir-bg-neutral-800",
       inset && "cir-pl-8",
       className
     )}
@@ -63,7 +63,7 @@ const DropdownMenuContent = React.forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
-        "cir-z-50 cir-min-w-[8rem] cir-overflow-hidden cir-rounded-md cir-border cir-border-neutral-200 cir-bg-neutral-400 cir-p-2 cir-text-neutral-950 cir-shadow-md data-[state=open]:cir-animate-in data-[state=closed]:cir-animate-out data-[state=closed]:cir-fade-out-0 data-[state=open]:cir-fade-in-0 data-[state=closed]:cir-zoom-out-95 data-[state=open]:cir-zoom-in-95 data-[side=bottom]:cir-slide-in-from-top-2 data-[side=left]:cir-slide-in-from-right-2 data-[side=right]:cir-slide-in-from-left-2 data-[side=top]:cir-slide-in-from-bottom-2 dark:cir-border-neutral-800 dark:cir-bg-neutral-800 dark:cir-text-neutral-50",
+        "cir-z-50 cir-min-w-[8rem] cir-overflow-hidden cir-rounded-2xl cir-border cir-border-white cir-bg-white cir-py-5 cir-text-neutral-950 cir-shadow-md data-[state=open]:cir-animate-in data-[state=closed]:cir-animate-out data-[state=closed]:cir-fade-out-0 data-[state=open]:cir-fade-in-0 data-[state=closed]:cir-zoom-out-95 data-[state=open]:cir-zoom-in-95 data-[side=bottom]:cir-slide-in-from-top-2 data-[side=left]:cir-slide-in-from-right-2 data-[side=right]:cir-slide-in-from-left-2 data-[side=top]:cir-slide-in-from-bottom-2 dark:cir-border-neutral-800 dark:cir-bg-neutral-800 dark:cir-text-neutral-50",
         className
       )}
       {...props}
@@ -81,7 +81,7 @@ const DropdownMenuItem = React.forwardRef<
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
-      "cir-relative cir-flex cir-cursor-default cir-select-none cir-items-center cir-rounded-sm cir-px-2 cir-py-1.5 cir-text-xl cir-outline-none cir-transition-colors focus:cir-bg-neutral-300 focus:cir-text-neutral-900 data-[disabled]:cir-pointer-events-none data-[disabled]:cir-opacity-50 hover:cir-bg-neutral-300 dark:hover:cir-bg-neutral-600 dark:focus:cir-bg-neutral-600 dark:focus:cir-text-neutral-50",
+      "cir-relative cir-flex cir-cursor-default cir-select-none cir-items-center cir-px-6 cir-py-4 cir-text-xl cir-outline-none cir-transition-colors focus:cir-bg-neutral-300 focus:cir-text-neutral-900 data-[disabled]:cir-pointer-events-none data-[disabled]:cir-opacity-50 hover:cir-bg-neutral-300 dark:hover:cir-bg-neutral-600 dark:focus:cir-bg-neutral-600 dark:focus:cir-text-neutral-50",
       inset && "cir-pl-8",
       className
     )}

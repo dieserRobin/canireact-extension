@@ -1,0 +1,45 @@
+body {
+    background-color: #13151A;
+    font-family: "Space Grotesk", sans-serif;
+    color: #fff;
+    min-width: 400px;
+    min-height: 300px;
+}
+
+.logged-in #info {
+    display: none;
+}
+
+button {
+    background-color: #fff;
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+#profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    margin-top: 20px;
+}
+
+#profile img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+#profile h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}

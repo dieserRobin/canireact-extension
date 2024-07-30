@@ -4,13 +4,16 @@
   "name": "Can I React?",
   "version": "1.0.3",
   "description": "Displays wether a YouTube channel allows reactions video and in what form.",
-  "permissions": ["storage"],
+  "permissions": ["storage", "identity"],
   "author": "robin.software",
   "homepage_url": "https://github.com/dieserRobin/canireact-extension",
   "default_locale": "en",
   "background": {
     "service_worker": "background.bundle.js",
     "scripts": ["background.bundle.js"]
+  },
+  "action": {
+    "default_popup": "popup.html"
   },
   "host_permissions": ["https://www.youtube.com/*"],
   "web_accessible_resources": [

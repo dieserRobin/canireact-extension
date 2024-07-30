@@ -34,6 +34,7 @@ export type Guidelines = {
   sponsor_segments?: [number, number][] | null;
   original_video?: string | null;
   info_text: string | null;
+  tos_segments?: TosSegment[];
   source: string;
 };
 
@@ -42,6 +43,33 @@ export type VideoDetails = {
   channelName: string;
   publishedAt: string;
   thumbnail: string;
+};
+
+export type TosSegment = {
+  id: string;
+  videoId: string;
+  start: number;
+  end: number;
+  category?: string;
+  user: string;
+  votes: number;
+};
+
+export type ReactionVideo = {
+  id: string;
+  title: string;
+  duration: {
+    text: string;
+    seconds: number;
+  };
+  views?: number;
+  thumbnail: string;
+  author: {
+    name: string;
+    profile_picture: string;
+    is_verfied?: boolean;
+    channel_url: string;
+  };
 };
 
 export async function fetchVideoInfo(
@@ -98,4 +126,120 @@ export async function fetchVideoDetails(
       log("Error fetching video details:", error);
       return null;
     });
+}
+
+export async function fetchReactions(
+  videoId: string
+): Promise<ReactionVideo[] | null> {
+  if (!videoId) return null;
+
+  return browser.runtime
+    .sendMessage({
+      message: "sendRequest",
+      url: `${API_URL}/v1/video/${videoId}/reactions`,
+      method: "GET",
+      data: null,
+    })
+    .then((response) => {
+      if (response && response.success) {
+        return response.data as ReactionVideo[];
+      } else {
+        return null;
+      }
+    })
+    .catch((error) => {
+      log("Error fetching reactions:", error);
+      return null;
+    });
+}
+
+export async function fetchSegments(
+  videoId: string
+): Promise<TosSegment[] | null> {
+  if (!videoId) return null;
+
+  return browser.runtime
+    .sendMessage({
+      message: "sendRequest",
+      url: `${API_URL}/v1/video/${videoId}/tos`,
+      method: "GET",
+      data: null,
+    })
+    .then((response) => {
+      if (response && response.success) {
+        return response.data as TosSegment[];
+      } else {
+        return null;
+      }
+    })
+    .catch((error) => {
+      log("Error fetching segments:", error);
+      return null;
+    });
+}
+
+export async function submitSegment(
+  videoId: string,
+  segment: { start: number; end: number; category: string }
+) {
+  if (!videoId) return null;
+
+  return browser.runtime
+    .sendMessage({
+      message: "sendRequest",
+      url: `${API_URL}/v1/tos/video/${videoId}`,
+      method: "POST",
+      data: {
+        start: segment.start,
+        end: segment.end,
+        category: segment.category,
+      },
+    })
+    .then(async (response) => {
+      if (response && response.success) {
+        await invalidateCache(`${API_URL}/v1/video/${videoId}/tos`);
+        return response.data as { success: boolean };
+      } else {
+        return null;
+      }
+    })
+    .catch((error) => {
+      log("Error submitting segments:", error);
+      return null;
+    });
+}
+
+export async function rateSegment(
+  segmentId: string,
+  type: "UPVOTE" | "DOWNVOTE"
+) {
+  if (!segmentId) return null;
+
+  return browser.runtime
+    .sendMessage({
+      message: "sendRequest",
+      url: `${API_URL}/v1/tos/segment/${segmentId}/${type.toLowerCase()}`,
+      method: "POST",
+      data: { type },
+    })
+    .then(async (response) => {
+      if (response && response.success) {
+        return response.data as { success: boolean };
+      } else {
+        return null;
+      }
+    })
+    .catch((error) => {
+      log("Error rating segment:", error);
+      return null;
+    });
+}
+
+export async function invalidateCache(url: string) {
+  if (!url) return null;
+
+  return browser.runtime.sendMessage({
+    message: "invalidateCache",
+    url,
+  });
 }

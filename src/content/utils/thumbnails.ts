@@ -3,40 +3,59 @@ import { addThumbnailReactionInfo } from "../components/thumbnail-info";
 import { fetchVideoInfo } from "./api";
 
 export const handledThumbnails = new Set<HTMLElement>();
+export let thumbnailObserver: MutationObserver | null = null;
 
 export async function getThumbnails(): Promise<NodeListOf<HTMLElement>> {
-    return document.querySelectorAll("ytd-rich-item-renderer.style-scope.ytd-rich-grid-row, ytd-video-renderer.style-scope");
+  return document.querySelectorAll(
+    "ytd-rich-item-renderer.style-scope.ytd-rich-grid-row, ytd-video-renderer.style-scope"
+  );
 }
 
 export async function handleThumbnails(): Promise<void> {
-    const thumbnails = await getThumbnails();
+  const thumbnails = await getThumbnails();
 
-    thumbnails.forEach(async thumbnail => {
-        if (handledThumbnails.has(thumbnail)) {
-            return;
-        }
-        try {
-            handledThumbnails.add(thumbnail);
+  thumbnails.forEach(async (thumbnail) => {
+    if (handledThumbnails.has(thumbnail)) {
+      return;
+    }
+    try {
+      handledThumbnails.add(thumbnail);
 
-            const channelLinkElement: HTMLAnchorElement | null = thumbnail.querySelector("#content ytd-rich-grid-media #dismissible #details #avatar-link, ytd-channel-name .ytd-channel-name yt-formatted-string a.yt-simple-endpoint");
-            const channelUrl = channelLinkElement ? channelLinkElement.href : null;
+      const liveBadge = thumbnail.querySelector(
+        "#content ytd-rich-grid-media #dismissible #details #meta #badges ytd-badge-supported-renderer #live-badge"
+      );
 
-            const thumbnailLinkElement: HTMLAnchorElement | null = thumbnail.querySelector("#content ytd-rich-grid-media #dismissible #details #meta #title, #video-title-link, #dismissible ytd-thumbnail #thumbnail");
+      if (liveBadge) {
+        return;
+      }
 
-            const videoId = thumbnailLinkElement ? new URL(thumbnailLinkElement.href).searchParams.get("v") : null;
+      const channelLinkElement: HTMLAnchorElement | null =
+        thumbnail.querySelector(
+          "#content ytd-rich-grid-media #dismissible #details #avatar-link, ytd-channel-name .ytd-channel-name yt-formatted-string a.yt-simple-endpoint"
+        );
+      const channelUrl = channelLinkElement ? channelLinkElement.href : null;
 
-            if (videoId === null || channelUrl === null) {
-                log("video id or channel not found");
-                return;
-            }
+      const thumbnailLinkElement: HTMLAnchorElement | null =
+        thumbnail.querySelector(
+          "#content ytd-rich-grid-media #dismissible #details #meta #title, #video-title-link, #dismissible ytd-thumbnail #thumbnail"
+        );
 
-            const response = await fetchVideoInfo(videoId, channelUrl, true);
+      const videoId = thumbnailLinkElement
+        ? new URL(thumbnailLinkElement.href).searchParams.get("v")
+        : null;
 
-            if (response) {
-                addThumbnailReactionInfo(thumbnail, response);
-            }
-        } catch (e) {
-            log("error handling thumbnail: " + e);
-        }
-    });
+      if (videoId === null || channelUrl === null) {
+        log("video id or channel not found");
+        return;
+      }
+
+      const response = await fetchVideoInfo(videoId, channelUrl, true);
+
+      if (response) {
+        addThumbnailReactionInfo(thumbnail, response);
+      }
+    } catch (e) {
+      log("error handling thumbnail: " + e);
+    }
+  });
 }
