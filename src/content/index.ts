@@ -101,7 +101,6 @@ async function processCurrentPage(): Promise<void> {
       const upperRow = document.querySelector(
         "#above-the-fold #top-row #actions #actions-inner #menu #top-level-buttons-computed"
       );
-      log("upper row: " + upperRow);
       if (upperRow) {
         obs.disconnect();
         settingsDropdown && settingsDropdown.destroy();

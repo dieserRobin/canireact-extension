@@ -150,7 +150,6 @@ class Settings {
     let container = document.querySelector(
       "#above-the-fold #top-row #actions #actions-inner #menu #top-level-buttons-computed"
     );
-    log("upper row: ", container);
 
     this.container = container as HTMLElement;
 
