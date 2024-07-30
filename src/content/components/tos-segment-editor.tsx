@@ -185,15 +185,17 @@ const TosSegmentEditor: React.FC = () => {
                 <p>No segments found for this video</p>
               )}
 
-              {segmentsQuery.data?.map((segment) => (
-                <Segment
-                  key={segment.id}
-                  start={segment.start}
-                  end={segment.end}
-                  vote={(vote) => handleVote(segment, vote)}
-                  stored
-                />
-              ))}
+              {segmentsQuery.data
+                ?.sort((a, b) => a.start - b.start)
+                .map((segment) => (
+                  <Segment
+                    key={segment.id}
+                    start={segment.start}
+                    end={segment.end}
+                    vote={(vote) => handleVote(segment, vote)}
+                    stored
+                  />
+                ))}
 
               <hr className="cir-my-4 cir-border-neutral-500" />
 
@@ -219,13 +221,13 @@ const TosSegmentEditor: React.FC = () => {
               Start
             </Button>
             <Button
-              disabled={endTimestamp > 0}
+              disabled={endTimestamp > 0 || startTimestamp === 0}
               onClick={async () => setEndTimestamp(await getCurrentTime())}
             >
               Stop
             </Button>
             <Button
-              disabled={startTimestamp === 0 && endTimestamp === 0}
+              disabled={startTimestamp === 0 || endTimestamp === 0}
               onClick={addCurrent}
             >
               Add
@@ -239,6 +241,7 @@ const TosSegmentEditor: React.FC = () => {
             className="cir-mt-4"
             disabled={saving || segments.length === 0}
             onClick={save}
+            variant="secondary"
           >
             Save
           </Button>
