@@ -342,7 +342,8 @@ const ReactionInfoComponent: React.FC<Props> = ({
             </a>
           )}
 
-          {guidelines.sponsor_segments &&
+          {guidelines.rules.stream.sponsor_skips_allowed === false &&
+            guidelines.sponsor_segments &&
             guidelines.sponsor_segments.length > 0 && (
               <p>
                 Uses SponsorBlock data for sponsor segment detection licensed

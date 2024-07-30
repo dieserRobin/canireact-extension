@@ -16,15 +16,24 @@ import {
 } from "..";
 import TosEditor from "./tos-segment-editor";
 import { log } from "../utils";
+import ReactionsList from "./reactions-list";
 
 type Props = {};
 
 export let tosEditor: TosEditor = undefined;
+export let reactionsList: ReactionsList = undefined;
 
 export function closeTosEditor() {
   if (tosEditor) {
     tosEditor.destroy();
     tosEditor = undefined;
+  }
+}
+
+export function closeReactionsList() {
+  if (reactionsList) {
+    reactionsList.destroy();
+    reactionsList = undefined;
   }
 }
 
@@ -51,6 +60,15 @@ const ReactionInfoComponent: React.FC<Props> = ({}) => {
     } else {
       tosEditor.destroy();
       tosEditor = undefined;
+    }
+  };
+
+  const handleToggleReactionsList = () => {
+    if (!reactionsList) {
+      reactionsList = new ReactionsList();
+    } else {
+      reactionsList.destroy();
+      reactionsList = undefined;
     }
   };
 
@@ -115,6 +133,9 @@ const ReactionInfoComponent: React.FC<Props> = ({}) => {
         <DropdownMenuItem onClick={handleToggleTosEditor}>
           Toggle Tos Editor
         </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleToggleReactionsList}>
+          Toggle Reactions List
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -155,7 +176,9 @@ class Settings {
     log("Settings component destroyed");
     this.root.unmount();
     tosEditor?.destroy();
+    reactionsList?.destroy();
     tosEditor = undefined;
+    reactionsList = undefined;
     document.getElementById("cir-settings")?.remove();
   }
 }

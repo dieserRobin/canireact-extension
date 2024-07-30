@@ -19,8 +19,9 @@ async function checkTime(
   let foundTosSegment = false;
 
   for (const segment of segments) {
-    if (currentTime >= segment[0] && currentTime <= segment[1]) {
+    if (currentTime >= segment[0] - 5 && currentTime <= segment[1]) {
       if (shownSegments.includes(segment)) return;
+      shownSegments.push(segment);
 
       log("Sponsor segment detected");
       foundSegment = true;
@@ -40,7 +41,7 @@ async function checkTime(
   }
 
   for (const shownSegment of shownSegments) {
-    if (shownSegment[1] + 5 > currentTime) {
+    if (shownSegment[1] + 5 < currentTime) {
       shownSegments = shownSegments.filter(
         (segment) => segment !== shownSegment
       );

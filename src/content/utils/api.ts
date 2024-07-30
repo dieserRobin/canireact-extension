@@ -55,6 +55,23 @@ export type TosSegment = {
   votes: number;
 };
 
+export type ReactionVideo = {
+  id: string;
+  title: string;
+  duration: {
+    text: string;
+    seconds: number;
+  };
+  views?: number;
+  thumbnail: string;
+  author: {
+    name: string;
+    profile_picture: string;
+    is_verfied?: boolean;
+    channel_url: string;
+  };
+};
+
 export async function fetchVideoInfo(
   videoId: string,
   channelUrl: string | null = null,
@@ -107,6 +124,31 @@ export async function fetchVideoDetails(
     })
     .catch((error) => {
       log("Error fetching video details:", error);
+      return null;
+    });
+}
+
+export async function fetchReactions(
+  videoId: string
+): Promise<ReactionVideo[] | null> {
+  if (!videoId) return null;
+
+  return browser.runtime
+    .sendMessage({
+      message: "sendRequest",
+      url: `${API_URL}/v1/video/${videoId}/reactions`,
+      method: "GET",
+      data: null,
+    })
+    .then((response) => {
+      if (response && response.success) {
+        return response.data as ReactionVideo[];
+      } else {
+        return null;
+      }
+    })
+    .catch((error) => {
+      log("Error fetching reactions:", error);
       return null;
     });
 }
