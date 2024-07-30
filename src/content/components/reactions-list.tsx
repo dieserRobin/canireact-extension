@@ -52,18 +52,6 @@ const ReactionsListCard: React.FC = () => {
         <XIcon size={20} />
       </button>
 
-      {reactionsQuery.isLoading && (
-        <div className="cir-p-4 cir-text-center cir-text-lg">
-          Loading reactions...
-        </div>
-      )}
-
-      {reactionsQuery.isError && (
-        <div className="cir-p-4 cir-text-center cir-text-lg">
-          Error loading reactions
-        </div>
-      )}
-
       {reactionsQuery.isSuccess &&
         reactionsQuery.data &&
         reactionsQuery.data.length >= 3 && (
@@ -80,6 +68,24 @@ const ReactionsListCard: React.FC = () => {
         )}
 
       <ScrollArea className="cir-h-96 cir-mt-4">
+        {reactionsQuery.isLoading && (
+          <div className="cir-p-4 cir-text-center cir-text-lg">
+            Loading reactions...
+          </div>
+        )}
+
+        {reactionsQuery.isError && (
+          <div className="cir-p-4 cir-text-center cir-text-lg">
+            Error loading reactions
+          </div>
+        )}
+
+        {reactionsQuery.data?.length === 0 && (
+          <div className="cir-p-4 cir-text-center cir-text-lg cir-my-auto">
+            No reactions found
+          </div>
+        )}
+
         {reactionsQuery.isSuccess &&
           reactionsQuery.data
             ?.sort((a, b) => (b.views ?? 0) - (a.views ?? 0))
