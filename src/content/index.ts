@@ -37,6 +37,14 @@ async function main() {
 
   let port = browser.runtime.connect();
   port.postMessage({ message: "hello" });
+
+  setInterval(
+    () => {
+      port.postMessage({ message: "keepAlive" });
+    },
+    1000 * 60 * 5
+  );
+
   port.onMessage.addListener((message) => {
     log("message received", message);
     if (message.message === "setCollapseState") {
@@ -89,11 +97,33 @@ async function processCurrentPage(): Promise<void> {
     }
     log("video id: " + videoId);
 
+    const upperRowObserver = new MutationObserver(async (_, obs) => {
+      const upperRow = document.querySelector(
+        "#above-the-fold #top-row #actions #actions-inner #menu #top-level-buttons-computed"
+      );
+      log("upper row: " + upperRow);
+      if (upperRow) {
+        obs.disconnect();
+        settingsDropdown && settingsDropdown.destroy();
+        settingsDropdown = new Settings();
+      }
+    });
+
+    upperRowObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
     // Wait for the bottom row to be available in the DOM
     const observer = new MutationObserver(async (_, obs) => {
       const channelUrl = await getChannelUrl();
       currentChannelUrl = channelUrl;
       log("channel url: " + channelUrl);
+
+      setTimeout(() => {
+        settingsDropdown && settingsDropdown.destroy();
+        settingsDropdown = new Settings();
+      }, 500);
 
       if (hasProcessed && currentChannelUrl === channelUrl) {
         obs.disconnect();
@@ -107,9 +137,6 @@ async function processCurrentPage(): Promise<void> {
         .catch((e) => {
           log("error adding tos segments: " + e);
         });
-
-      settingsDropdown && settingsDropdown.destroy();
-      settingsDropdown = new Settings();
 
       const bottomRows: NodeListOf<HTMLElement> =
         document.querySelectorAll("#bottom-row");
