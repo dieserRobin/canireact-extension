@@ -7,7 +7,7 @@ export let thumbnailObserver: MutationObserver | null = null;
 
 export async function getThumbnails(): Promise<NodeListOf<HTMLElement>> {
   return document.querySelectorAll(
-    "ytd-rich-item-renderer.style-scope.ytd-rich-grid-row, ytd-video-renderer.style-scope"
+    "ytd-rich-item-renderer.style-scope, ytd-video-renderer.style-scope"
   );
 }
 
@@ -18,16 +18,9 @@ export async function handleThumbnails(): Promise<void> {
     if (handledThumbnails.has(thumbnail)) {
       return;
     }
+
     try {
       handledThumbnails.add(thumbnail);
-
-      const liveBadge = thumbnail.querySelector(
-        "#content ytd-rich-grid-media #dismissible #details #meta #badges ytd-badge-supported-renderer #live-badge"
-      );
-
-      if (liveBadge) {
-        return;
-      }
 
       const channelLinkElement: HTMLAnchorElement | null =
         thumbnail.querySelector(
