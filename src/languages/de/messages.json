@@ -12,7 +12,7 @@
     "message": "TOS Segment eingehend"
   },
   "tos_segment_description": {
-    "message": "Der folgende Abschnitt könnte gegen die Twitch-Nutzungsbedingungen verstoßen. Bitte sei vorsichtig."
+    "message": "Der folgende Abschnitt könnte TOS sein. Bitte sei vorsichtig."
   },
   "no_restrictions": {
     "message": "Keine Einschränkungen"
@@ -30,7 +30,7 @@
     "message": "Du darfst Placements überspringen"
   },
   "sponsor_skips_not_allowed": {
-    "message": "Du darfst Placements nicht überspringen"
+    "message": "Placements nicht überspringen"
   },
   "video_reactions_allowed": {
     "message": "Reaction-Video erlaubt"
@@ -48,13 +48,10 @@
     "message": "Du darfst die Reaktion nicht monetarisieren"
   },
   "credit_stream_chat": {
-    "message": "Bitte verlinke das Video in deinem Stream Chat"
+    "message": "Link zum Video in Chat posten"
   },
   "credit_video_description": {
-    "message": "Bitte verlinke das Video in den ersten 3 Zeilen der Beschreibung deines Videos"
-  },
-  "credit_stream_video": {
-    "message": "Bitte verlinke das Video in deinem Stream Chat und in der Beschreibung deines Videos"
+    "message": "Link zum Video in ersten 3 Zeilen der Beschreibung"
   },
   "guidelines": {
     "message": "Erfahre mehr über die Richtlinien"
@@ -84,16 +81,16 @@
     "message": "Video nicht erlaubt"
   },
   "sponsor_cut_allowed": {
-    "message": "Du darfst Placements aus dem Reaction Video rausschneiden"
+    "message": "Placements dürfen rausgeschnitten werden"
   },
   "sponsor_cut_not_allowed": {
-    "message": "Du darfst Placements nicht aus dem Reaction Video rausschneiden"
+    "message": "Placements dürfen nicht rausgeschnitten werden"
   },
   "reaction_video_includes_title": {
-    "message": "Der Name des Kanals muss im Titel des Reaction Videos erwähnt werden"
+    "message": "Name des Kanals muss im Titel sein (z.B. 'Reaktion auf Kanalname')"
   },
   "reaction_video_splittling_not_allowed": {
-    "message": "Du darfst das Reaction Video nicht in mehrere Teile aufteilen"
+    "message": "Reaktion nicht in mehrere Videos aufteilen"
   },
   "guideline_disclaimer": {
     "message": "Die Richtlinien sind nicht rechtlich bindend und dienen nur als Leitfaden; der Kanalinhaber kann weiterhin seine Rechte durchsetzen."

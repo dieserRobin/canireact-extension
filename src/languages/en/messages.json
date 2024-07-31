@@ -53,9 +53,6 @@
   "credit_video_description": {
     "message": "Please link the video in your video description"
   },
-  "credit_stream_video": {
-    "message": "Please link the video in the first 3 lines of your video description"
-  },
   "guidelines": {
     "message": "Learn more about the guidelines"
   },
