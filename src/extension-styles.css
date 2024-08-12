@@ -208,6 +208,10 @@ html:not([dark]) .reaction-info-source.dark-version {
   background-color: #f44336;
 }
 
+.reaction-info-orange {
+  background-color: #ff9800;
+}
+
 .font-bold {
   font-weight: bold;
   margin-top: 6px;
@@ -382,4 +386,12 @@ html[dark] .tos-editor {
   background-color: rgba(0, 0, 0, 0.25);
   border: 2px solid #1a1a1a;
   color: #fff;
+}
+
+#cir-settings-button {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+html[dark] #cir-settings-button {
+  background-color: rgba(255, 255, 255, 0.1);
 }

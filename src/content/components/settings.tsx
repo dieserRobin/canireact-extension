@@ -81,7 +81,7 @@ const ReactionInfoComponent: React.FC<Props> = ({}) => {
       <DropdownMenuTrigger asChild>
         <button
           id="cir-settings-button"
-          className="cir-bg-neutral-200 hover:cir-bg-neutral-300 dark:cir-bg-neutral-800 dark:hover:cir-bg-neutral-700 cir-h-[36px] cir-w-auto cir-aspect-square cir-rounded-full cir-p-3 cir-ml-4 cir-flex cir-items-center cir-justify-center cir-outline-none focus-visible:cir-ring-2 cir-ring-black dark:cir-ring-white focus-visible:cir-bg-neutral-200 dark:focus-visible:cir-bg-neutral-950 cir-cursor-pointer"
+          className="hover:cir-bg-neutral-300 dark:hover:cir-bg-neutral-700 cir-h-[36px] cir-w-auto cir-aspect-square cir-rounded-full cir-p-3 cir-ml-4 cir-flex cir-items-center cir-justify-center cir-outline-none focus-visible:cir-ring-2 cir-ring-black dark:cir-ring-white focus-visible:cir-bg-neutral-200 dark:focus-visible:cir-bg-neutral-950 cir-cursor-pointer"
         >
           <svg
             viewBox="0 0 486 373"
