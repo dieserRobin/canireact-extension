@@ -12,6 +12,10 @@ export async function getThumbnails(): Promise<NodeListOf<HTMLElement>> {
 }
 
 export async function handleThumbnails(): Promise<void> {
+  if (window.location.href.includes("watch")) {
+    return;
+  }
+
   const thumbnails = await getThumbnails();
 
   thumbnails.forEach(async (thumbnail) => {

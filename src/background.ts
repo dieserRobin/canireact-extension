@@ -29,7 +29,14 @@ const sendRequestToServer = async (
     body: data ? JSON.stringify(data) : null,
     priority: priority ?? "auto",
   })
-    .then((response) => response.json())
+    .then((response) => {
+      if (response.status === 404) {
+        setCachedData(url, null);
+        return null;
+      }
+
+      return response.json();
+    })
     .then((responseData) => {
       if (method === "GET") setCachedData(url, responseData);
       return responseData;
@@ -58,10 +65,10 @@ const getCachedData = async (cacheKey: string, ignoreCache = false) => {
       }
       await browser.storage.local.remove(cacheKey);
     }
-    return null;
+    return undefined;
   } catch (error) {
     console.error("Error getting cached data:", error);
-    return null;
+    return undefined;
   }
 };
 
@@ -175,7 +182,8 @@ browser.runtime.onMessage.addListener(
 
       getCachedData(cacheKey, request.ignoreCache)
         .then((cachedData) => {
-          if (cachedData) {
+          console.log("Cached data:", cachedData);
+          if (cachedData !== undefined) {
             console.log("Using cached data");
             sendResponse({ success: true, data: cachedData });
           } else {
