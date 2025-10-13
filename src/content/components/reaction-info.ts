@@ -52,8 +52,7 @@ async function adjustSettingsBorder(theme: "green" | "orange" | "red") {
 
 export async function addReactionInfo(
   bottomRow: HTMLElement,
-  response: Guidelines,
-  isRedesign?: boolean
+  response: Guidelines
 ): Promise<void> {
   adjustSettingsBorder(
     response.rules.stream.stream_reactions_allowed &&

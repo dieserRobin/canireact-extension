@@ -13,7 +13,7 @@ import { removeAllThumbnailInfos } from "./components/thumbnail-info";
 import browser from "webextension-polyfill";
 import { getLanguage } from "./utils/language";
 import Settings from "./components/settings";
-import { addTosSegments } from "./components/tos-segments";
+import { addTosSegments, removeTosSegments } from "./components/tos-segments";
 
 export let API_URL = "https://api.canireact.com";
 export let hasProcessed = false;
@@ -22,6 +22,11 @@ export let collapseState: boolean = false;
 export let settingsDropdown: Settings | null = null;
 export let reactionInfoMinimized: boolean = false;
 export let sponsorRemindersActive = true;
+export let currentVideoId: string | null = null;
+
+const ACTIONS_CONTAINER_SELECTOR =
+  "#above-the-fold #top-row #actions #actions-inner #menu #top-level-buttons-computed";
+const REACTION_INFO_SELECTOR = "#reaction-info";
 
 let currentChannelNameObserver: MutationObserver | null = null;
 let latestRequest: string | null = null;
@@ -29,6 +34,25 @@ export let currentProfile: {
   name: string;
   image: string;
 } | null = null;
+
+export function destroySettingsDropdown() {
+  if (settingsDropdown) {
+    settingsDropdown.destroy();
+    settingsDropdown = null;
+  }
+}
+
+export function ensureSettingsMounted() {
+  const container = document.querySelector(ACTIONS_CONTAINER_SELECTOR);
+  const hasSettingsNode = document.getElementById("cir-settings");
+
+  if (!container || hasSettingsNode) {
+    return;
+  }
+
+  destroySettingsDropdown();
+  settingsDropdown = new Settings();
+}
 
 async function main() {
   const isProd = isProduction();
@@ -67,9 +91,28 @@ async function main() {
   document.addEventListener("yt-navigate-finish", async function () {
     log("switched page, processing...");
 
+    const newVideoId = new URL(window.location.href).searchParams
+      .get("v")
+      ?.toString();
+
+    const reactionInfoExists = document.querySelector(REACTION_INFO_SELECTOR);
+
+    if (
+      newVideoId &&
+      newVideoId === currentVideoId &&
+      hasProcessed &&
+      reactionInfoExists
+    ) {
+      log("navigation event fired but video unchanged, skipping");
+      ensureSettingsMounted();
+      return;
+    }
+
     await removeInfo();
     await removeAllThumbnailInfos();
+    destroySettingsDropdown();
     currentChannelNameObserver?.disconnect();
+    currentVideoId = null;
     await processCurrentPage();
     hasProcessed = false;
   });
@@ -97,14 +140,23 @@ async function processCurrentPage(): Promise<void> {
     }
     log("video id: " + videoId);
 
+    const reactionInfoExists = document.querySelector(REACTION_INFO_SELECTOR);
+
+    if (hasProcessed && currentVideoId === videoId && reactionInfoExists) {
+      log("video already processed, skipping setup");
+      ensureSettingsMounted();
+      return;
+    }
+
+    await removeInfo();
+    await removeTosSegments();
+    currentVideoId = videoId;
+
     const upperRowObserver = new MutationObserver(async (_, obs) => {
-      const upperRow = document.querySelector(
-        "#above-the-fold #top-row #actions #actions-inner #menu #top-level-buttons-computed"
-      );
+      const upperRow = document.querySelector(ACTIONS_CONTAINER_SELECTOR);
       if (upperRow) {
         obs.disconnect();
-        settingsDropdown && settingsDropdown.destroy();
-        settingsDropdown = new Settings();
+        ensureSettingsMounted();
       }
     });
 
@@ -119,10 +171,7 @@ async function processCurrentPage(): Promise<void> {
       currentChannelUrl = channelUrl;
       log("channel url: " + channelUrl);
 
-      setTimeout(() => {
-        settingsDropdown && settingsDropdown.destroy();
-        settingsDropdown = new Settings();
-      }, 500);
+      ensureSettingsMounted();
 
       if (hasProcessed && currentChannelUrl === channelUrl) {
         obs.disconnect();
@@ -137,14 +186,13 @@ async function processCurrentPage(): Promise<void> {
           log("error adding tos segments: " + e);
         });
 
-      const bottomRows: NodeListOf<HTMLElement> =
-        document.querySelectorAll("#bottom-row");
-      const bottomRow = bottomRows[bottomRows.length - 1];
+      const bottomRow = document.querySelector<HTMLElement>("#bottom-row");
 
       if (bottomRow && channelUrl) {
         hasProcessed = true;
 
         observeChannelNameChange(videoId);
+        ensureSettingsMounted();
 
         const currentRequest = `${videoId}-${channelUrl}`;
         latestRequest = currentRequest;
@@ -164,7 +212,7 @@ async function processCurrentPage(): Promise<void> {
         }
 
         if (response && (response.rules || response.info_text)) {
-          addReactionInfo(bottomRow, response, bottomRows.length === 2);
+          addReactionInfo(bottomRow, response);
         } else {
           log("no rules found for this video");
           removeInfo();

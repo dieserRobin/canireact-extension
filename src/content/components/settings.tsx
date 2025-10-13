@@ -37,7 +37,7 @@ export function closeReactionsList() {
   }
 }
 
-const ReactionInfoComponent: React.FC<Props> = ({}) => {
+const ReactionInfoComponent: React.FC<Props> = ({ }) => {
   const [minimized, setMinimized] = React.useState(reactionInfoMinimized);
   const [sponsorReminders, setSponsorReminders] = React.useState(
     sponsorRemindersActive

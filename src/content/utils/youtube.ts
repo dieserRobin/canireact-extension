@@ -6,14 +6,36 @@ export function getVideoId(url: string) {
 }
 
 export async function getChannelUrl(): Promise<string | null> {
-  const channelLink =
-    document.querySelector<HTMLAnchorElement>(
-      "#above-the-fold ytd-channel-name yt-formatted-string a"
-    ) ||
-    document.querySelector<HTMLAnchorElement>(
-      'span[itemprop="name"] link[itemprop="url"]'
-    );
-  return channelLink ? channelLink.href : null;
+  const selectorCandidates = [
+    "#above-the-fold ytd-channel-name yt-formatted-string a[href]",
+    "#owner ytd-video-owner-renderer a[href]",
+    'span[itemprop="name"] link[itemprop="url"]',
+    "a.yt-core-attributed-string__link[href]",
+    "ytd-video-description-infocards-section-renderer a#header[href]",
+  ];
+
+  for (const selector of selectorCandidates) {
+    const link = document.querySelector<HTMLAnchorElement>(selector);
+    if (!link?.href || link.href.toLowerCase().startsWith("javascript")) {
+      continue;
+    }
+
+    if (link.href.startsWith("/")) {
+      return `https://www.youtube.com${link.getAttribute("href")}`;
+    }
+
+    return link.href;
+  }
+
+  const fallbackChannelId =
+    (window as any)?.ytInitialPlayerResponse?.videoDetails?.channelId ??
+    (window as any)?.ytplayer?.config?.args?.ucid;
+
+  if (fallbackChannelId) {
+    return `https://www.youtube.com/channel/${fallbackChannelId}`;
+  }
+
+  return null;
 }
 
 export async function getOriginalVideo(): Promise<string | null> {
