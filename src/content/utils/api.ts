@@ -98,14 +98,14 @@ export async function fetchVideoInfo(
       data: null,
       priority: easyRequest ? "low" : "high",
     })
-    .then((response: RuntimeResponse<Guidelines>) => {
+    .then((response: RuntimeResponse<Guidelines>): Guidelines | null => {
       if (response?.data) {
         return response.data;
       } else {
         return null;
       }
     })
-    .catch((error) => {
+    .catch((error: unknown): Guidelines | null => {
       log("Error fetching video info:", error);
       return null;
     });
@@ -123,14 +123,14 @@ export async function fetchVideoDetails(
       method: "GET",
       data: null,
     })
-    .then((response: RuntimeResponse<VideoDetails>) => {
+    .then((response: RuntimeResponse<VideoDetails>): VideoDetails | null => {
       if (response?.success && response.data) {
         return response.data;
       } else {
         return null;
       }
     })
-    .catch((error) => {
+    .catch((error: unknown): VideoDetails | null => {
       log("Error fetching video details:", error);
       return null;
     });
@@ -148,14 +148,16 @@ export async function fetchReactions(
       method: "GET",
       data: null,
     })
-    .then((response: RuntimeResponse<ReactionVideo[]>) => {
-      if (response?.success && response.data) {
-        return response.data;
-      } else {
-        return null;
+    .then(
+      (response: RuntimeResponse<ReactionVideo[]>): ReactionVideo[] | null => {
+        if (response?.success && response.data) {
+          return response.data;
+        } else {
+          return null;
+        }
       }
-    })
-    .catch((error) => {
+    )
+    .catch((error: unknown): ReactionVideo[] | null => {
       log("Error fetching reactions:", error);
       return null;
     });
@@ -173,14 +175,14 @@ export async function fetchSegments(
       method: "GET",
       data: null,
     })
-    .then((response: RuntimeResponse<TosSegment[]>) => {
+    .then((response: RuntimeResponse<TosSegment[]>): TosSegment[] | null => {
       if (response?.success && response.data) {
         return response.data;
       } else {
         return null;
       }
     })
-    .catch((error) => {
+    .catch((error: unknown): TosSegment[] | null => {
       log("Error fetching segments:", error);
       return null;
     });
@@ -203,17 +205,21 @@ export async function submitSegment(
         category: segment.category,
       },
     })
-    .then(async (response: RuntimeResponse<{ success: boolean }>) => {
-      if (response?.success && response.data) {
-        await invalidateCache(`${API_URL}/v1/video/${videoId}/tos`);
-        return response.data;
-      } else {
-        return null;
+    .then(
+      async (
+        response: RuntimeResponse<{ success: boolean }>
+      ): Promise<{ success: boolean } | null> => {
+        if (response?.success && response.data) {
+          await invalidateCache(`${API_URL}/v1/video/${videoId}/tos`);
+          return response.data;
+        } else {
+          return null;
+        }
       }
-    })
-    .catch((error) => {
+    )
+    .catch((error: unknown): Promise<{ success: boolean } | null> => {
       log("Error submitting segments:", error);
-      return null;
+      return Promise.resolve(null);
     });
 }
 
@@ -230,16 +236,20 @@ export async function rateSegment(
       method: "POST",
       data: { type },
     })
-    .then(async (response: RuntimeResponse<{ success: boolean }>) => {
-      if (response?.success && response.data) {
-        return response.data;
-      } else {
-        return null;
+    .then(
+      async (
+        response: RuntimeResponse<{ success: boolean }>
+      ): Promise<{ success: boolean } | null> => {
+        if (response?.success && response.data) {
+          return response.data;
+        } else {
+          return null;
+        }
       }
-    })
-    .catch((error) => {
+    )
+    .catch((error: unknown): Promise<{ success: boolean } | null> => {
       log("Error rating segment:", error);
-      return null;
+      return Promise.resolve(null);
     });
 }
 
