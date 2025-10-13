@@ -2,6 +2,14 @@ import browser from "webextension-polyfill";
 import { API_URL } from "..";
 import { log } from ".";
 
+type RuntimeResponse<T> =
+  | {
+      success?: boolean;
+      data?: T;
+    }
+  | null
+  | undefined;
+
 export type Guidelines = {
   id: string;
   channel_id: string;
@@ -77,7 +85,7 @@ export async function fetchVideoInfo(
   channelUrl: string | null = null,
   easyRequest: boolean = false,
   language?: string
-): Promise<any> {
+): Promise<Guidelines | null> {
   if (!videoId || !channelUrl) {
     return null;
   }
@@ -90,9 +98,9 @@ export async function fetchVideoInfo(
       data: null,
       priority: easyRequest ? "low" : "high",
     })
-    .then((response) => {
-      if (response) {
-        return response.data as Guidelines;
+    .then((response: RuntimeResponse<Guidelines>) => {
+      if (response?.data) {
+        return response.data;
       } else {
         return null;
       }
@@ -115,9 +123,9 @@ export async function fetchVideoDetails(
       method: "GET",
       data: null,
     })
-    .then((response) => {
-      if (response && response.success) {
-        return response.data as VideoDetails;
+    .then((response: RuntimeResponse<VideoDetails>) => {
+      if (response?.success && response.data) {
+        return response.data;
       } else {
         return null;
       }
@@ -140,9 +148,9 @@ export async function fetchReactions(
       method: "GET",
       data: null,
     })
-    .then((response) => {
-      if (response && response.success) {
-        return response.data as ReactionVideo[];
+    .then((response: RuntimeResponse<ReactionVideo[]>) => {
+      if (response?.success && response.data) {
+        return response.data;
       } else {
         return null;
       }
@@ -165,9 +173,9 @@ export async function fetchSegments(
       method: "GET",
       data: null,
     })
-    .then((response) => {
-      if (response && response.success) {
-        return response.data as TosSegment[];
+    .then((response: RuntimeResponse<TosSegment[]>) => {
+      if (response?.success && response.data) {
+        return response.data;
       } else {
         return null;
       }
@@ -195,10 +203,10 @@ export async function submitSegment(
         category: segment.category,
       },
     })
-    .then(async (response) => {
-      if (response && response.success) {
+    .then(async (response: RuntimeResponse<{ success: boolean }>) => {
+      if (response?.success && response.data) {
         await invalidateCache(`${API_URL}/v1/video/${videoId}/tos`);
-        return response.data as { success: boolean };
+        return response.data;
       } else {
         return null;
       }
@@ -222,9 +230,9 @@ export async function rateSegment(
       method: "POST",
       data: { type },
     })
-    .then(async (response) => {
-      if (response && response.success) {
-        return response.data as { success: boolean };
+    .then(async (response: RuntimeResponse<{ success: boolean }>) => {
+      if (response?.success && response.data) {
+        return response.data;
       } else {
         return null;
       }
