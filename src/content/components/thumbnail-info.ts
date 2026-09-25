@@ -75,7 +75,9 @@ export async function addThumbnailReactionInfo(
     container.appendChild(originalVideoLink);
   }
 
-  metadata.appendChild(container);
+  if (window.location.pathname !== "/") {
+    metadata.appendChild(container);
+  }
 }
 
 export async function removeAllThumbnailInfos(): Promise<void> {

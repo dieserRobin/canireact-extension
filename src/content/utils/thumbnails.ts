@@ -12,7 +12,10 @@ export async function getThumbnails(): Promise<NodeListOf<HTMLElement>> {
 }
 
 export async function handleThumbnails(): Promise<void> {
-  if (window.location.href.includes("watch")) {
+  if (
+    window.location.pathname === "/" ||
+    window.location.href.includes("watch")
+  ) {
     return;
   }
 
@@ -48,8 +51,8 @@ export async function handleThumbnails(): Promise<void> {
 
       const response = await fetchVideoInfo(videoId, channelUrl, true);
 
-      if (response) {
-        addThumbnailReactionInfo(thumbnail, response);
+      if (response && window.location.pathname !== "/") {
+        await addThumbnailReactionInfo(thumbnail, response);
       }
     } catch (e) {
       log("error handling thumbnail: " + e);

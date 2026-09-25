@@ -7,8 +7,8 @@ import { getOriginalVideo, getVideoId } from "../utils/youtube";
 import { displaySponsorInfo, stopSponsorInfo } from "./sponsor-info";
 import ReactionInfo from "./reaction-guidelines";
 
-let videoCountdownInterval: NodeJS.Timeout | null = null;
-let streamCountdownInterval: NodeJS.Timeout | null = null;
+let videoCountdownInterval: (() => void) | null = null;
+let streamCountdownInterval: (() => void) | null = null;
 
 let reactionInfoComponent: ReactionInfo | null = null;
 
@@ -16,8 +16,10 @@ export async function removeInfo(): Promise<void> {
   reactionInfoComponent && reactionInfoComponent.destroy();
   const reactionInfo = document.querySelector("#reaction-info");
   stopSponsorInfo();
-  videoCountdownInterval && clearInterval(videoCountdownInterval);
-  streamCountdownInterval && clearInterval(streamCountdownInterval);
+  videoCountdownInterval?.();
+  streamCountdownInterval?.();
+  videoCountdownInterval = null;
+  streamCountdownInterval = null;
   if (reactionInfo) {
     reactionInfo.remove();
   }
@@ -29,6 +31,40 @@ function calculateRemainingTime(upload: string, hours: number) {
   const timeElapsed = currentDate.getTime() - uploadDate.getTime();
   const remainingTime = hours * 3600000 - timeElapsed;
   return remainingTime;
+}
+
+const MAX_TIMEOUT_MS = 2_147_483_647;
+
+function scheduleReactionCountdown(
+  uploadedAt: string,
+  hours: number,
+  onElapsed: () => void
+): () => void {
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  let cancelled = false;
+
+  const scheduleNextCheck = () => {
+    const remainingTime = calculateRemainingTime(uploadedAt, hours);
+    if (!Number.isFinite(remainingTime)) return;
+
+    timeout = setTimeout(
+      () => {
+        if (cancelled) return;
+        if (!hasTimeElapsed(uploadedAt, hours)) {
+          scheduleNextCheck();
+          return;
+        }
+        onElapsed();
+      },
+      Math.min(Math.max(remainingTime, 0), MAX_TIMEOUT_MS)
+    );
+  };
+
+  scheduleNextCheck();
+  return () => {
+    cancelled = true;
+    if (timeout !== undefined) clearTimeout(timeout);
+  };
 }
 
 async function adjustSettingsBorder(theme: "green" | "orange" | "red") {
@@ -110,40 +146,42 @@ export async function addReactionInfo(
     response.rules.stream.stream_reaction_allowed_after_hours &&
     !response.rules.stream.stream_reactions_allowed
   ) {
-    const remainingTime = calculateRemainingTime(
+    streamCountdownInterval = scheduleReactionCountdown(
       response.video.uploaded_at,
-      response.rules.stream.stream_reaction_allowed_after_hours
+      response.rules.stream.stream_reaction_allowed_after_hours,
+      () => {
+        streamCountdownInterval = null;
+        response.rules.stream.stream_reactions_allowed =
+          response.rules.stream.stream_reactions_generally_allowed;
+        reactionInfoComponent?.destroy();
+        reactionInfoComponent = new ReactionInfo(
+          bottomRow,
+          response,
+          collapseState
+        );
+      }
     );
-    streamCountdownInterval = setTimeout(async () => {
-      response.rules.stream.stream_reactions_allowed =
-        response.rules.stream.stream_reactions_generally_allowed;
-      reactionInfoComponent?.destroy();
-      reactionInfoComponent = new ReactionInfo(
-        bottomRow,
-        response,
-        collapseState
-      );
-    }, remainingTime);
   }
 
   if (
     response.rules.video.video_reaction_allowed_after_hours &&
     !response.rules.video.video_reactions_allowed
   ) {
-    const remainingTime = calculateRemainingTime(
+    videoCountdownInterval = scheduleReactionCountdown(
       response.video.uploaded_at,
-      response.rules.video.video_reaction_allowed_after_hours
+      response.rules.video.video_reaction_allowed_after_hours,
+      () => {
+        videoCountdownInterval = null;
+        response.rules.video.video_reactions_allowed =
+          response.rules.video.video_reactions_generally_allowed;
+        reactionInfoComponent?.destroy();
+        reactionInfoComponent = new ReactionInfo(
+          bottomRow,
+          response,
+          collapseState
+        );
+      }
     );
-    videoCountdownInterval = setTimeout(async () => {
-      response.rules.video.video_reactions_allowed =
-        response.rules.video.video_reactions_generally_allowed;
-      reactionInfoComponent?.destroy();
-      reactionInfoComponent = new ReactionInfo(
-        bottomRow,
-        response,
-        collapseState
-      );
-    }, remainingTime);
   }
 }
 
