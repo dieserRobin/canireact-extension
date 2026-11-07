@@ -16,6 +16,7 @@ import {
 } from "..";
 import TosEditor from "./tos-segment-editor";
 import { log } from "../utils";
+import { getLanguage } from "../utils/language";
 import ReactionsList from "./reactions-list";
 
 type Props = {};
@@ -73,7 +74,9 @@ const ReactionInfoComponent: React.FC<Props> = ({ }) => {
   };
 
   const handleOpenWebsite = () => {
-    window.open("https://canireact.com/create", "_blank");
+    // The website only offers German and English (issue #12)
+    const language = getLanguage()?.toLowerCase() === "de" ? "de" : "en";
+    window.open(`https://canireact.com/${language}/create`, "_blank");
   };
 
   return (
