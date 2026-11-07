@@ -1,9 +1,18 @@
 import { collapseState, reactionInfoMinimized } from "..";
 import { hasTimeElapsed, log } from "../utils";
-import { Guidelines, fetchSegments, fetchVideoDetails } from "../utils/api";
+import {
+  Guidelines,
+  VideoDetails,
+  fetchSegments,
+  fetchVideoDetails,
+} from "../utils/api";
 import { createImageElement, createTextElement } from "../utils/render";
 import browser from "webextension-polyfill";
-import { getOriginalVideo, getVideoId } from "../utils/youtube";
+import {
+  getCurrentChannelName,
+  getOriginalVideo,
+  getVideoId,
+} from "../utils/youtube";
 import { displaySponsorInfo, stopSponsorInfo } from "./sponsor-info";
 import ReactionInfo from "./reaction-guidelines";
 
@@ -185,15 +194,11 @@ export async function addReactionInfo(
   }
 }
 
-async function displayOriginalVideo(
+function displayOriginalVideo(
   originalVideoId: string,
+  videoData: VideoDetails,
   originalVideo: HTMLAnchorElement
-): Promise<void> {
-  const videoData = await fetchVideoDetails(originalVideoId);
-  log("Video data: ", videoData);
-
-  if (!videoData) return;
-
+): void {
   originalVideo.classList.add("reaction-info-original-video");
 
   const thumbnailContainer = document.createElement("div");
@@ -227,6 +232,24 @@ export async function addOriginalVideoOnly(bottomRow: HTMLElement) {
   const originalVideoId = originalVideo?.split("v=")[1];
   if (!originalVideoId) return;
 
+  const videoData = await fetchVideoDetails(originalVideoId);
+  log("Video data: ", videoData);
+  if (!videoData) return;
+
+  // A video of the same channel is self-promotion, not the original (#11)
+  const currentChannelName = getCurrentChannelName();
+  if (
+    currentChannelName &&
+    videoData.channelName?.trim().toLowerCase() ===
+      currentChannelName.toLowerCase()
+  ) {
+    log("original video candidate is from the same channel, skipping");
+    return;
+  }
+
+  // Another box may have been added while fetching the details
+  if (document.querySelector("#reaction-info")) return;
+
   const reactionInfo = document.createElement("div");
   const detailedInfo = document.createElement("div");
 
@@ -247,7 +270,7 @@ export async function addOriginalVideoOnly(bottomRow: HTMLElement) {
   );
 
   const originalVideoElement = document.createElement("a");
-  await displayOriginalVideo(originalVideoId, originalVideoElement);
+  displayOriginalVideo(originalVideoId, videoData, originalVideoElement);
   elements.push(originalVideoElement);
 
   const lightSrc = browser.runtime.getURL("images/canireact_source-light.svg");
